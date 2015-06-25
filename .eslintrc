@@ -1,0 +1,30 @@
+{
+    "plugins": [],
+    "env": {
+        "browser": true,
+        "node": true
+    },
+    "ecmaFeatures": {
+        "blockBindings": true,
+        "forOf": true,
+        "jsx": true
+    },
+    "rules": {
+        "strict": 1,
+        "quotes": [1, "single"],
+        "eqeqeq": 1,
+        "curly": 0,
+        "comma-spacing": 0,
+        "space-infix-ops": [1, {"int32Hint": false}],
+        "key-spacing": 1,
+        "no-empty": 1,
+        "no-unused-vars": 1,
+        "no-shadow": 2,
+        "no-multi-spaces": 0,
+        "space-return-throw-case": 0,
+        "camelcase": 2,
+        "no-redeclare": 2,
+        "no-unreachable": 2,
+        "no-underscore-dangle": 0
+    }
+}
