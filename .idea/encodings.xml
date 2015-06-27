@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/.eslintrc" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/gulpfile.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/index.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/PatternMatcher.js" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/test/Pattern.spec.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/utils/arrayUtils.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/test/PatternMatcher.spec.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/test/matching/Pattern.spec.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/test/matching/Token.spec.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/test/mocha.opts" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/test/utils/arrayUtils.spec.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webpack.config.js" charset="UTF-8" />
   </component>
 </project>

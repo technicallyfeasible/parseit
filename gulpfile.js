@@ -3,14 +3,17 @@
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
 
-var src = {};
+var src = {
+	serverFiles: ['./src/**/*.js', './index.js'],
+	testFiles: ['./test/**/*.spec.js']
+};
 
 
 // The default task
-gulp.task('default', ['serve']);
+gulp.task('default', ['watch']);
 
 gulp.task('lint', function () {
-	return gulp.src(['./server/**/*.*'])
+	return gulp.src(src.serverFiles.concat(src.testFiles))
 		// eslint() attaches the lint output to the eslint property
 		// of the file object so it can be used by other modules.
 		.pipe($.eslint())
@@ -24,7 +27,6 @@ gulp.task('lint', function () {
 
 // start the server and restart if the source changes
 gulp.task('test', ['lint'], function () {
-	src.testFiles = './test/**/*.spec.*';
 	$.util.log('Running tests.');
 	return gulp.src(src.testFiles)
 		.pipe($.mocha({reporter: 'spec'}))
@@ -34,39 +36,10 @@ gulp.task('test', ['lint'], function () {
 		});
 });
 
-// start the server and restart if the source changes
-gulp.task('serve', ['test'], function (cb) {
-    src.serverFiles = './server/**/*.*';
+// watch server and test files and restart tests when any change
+gulp.task('watch', ['test'], function (cb) {
 
-    var started = false;
-    var cp = require('child_process');
-    var assign = require('lodash').assign;
+	gulp.watch(src.serverFiles.concat(src.testFiles), ['test']);
 
-    var server = (function startup() {
-        var child = cp.fork('./server/server.js', {
-            env: assign({
-                NODE_ENV: 'development'
-            }, process.env)
-        });
-        child.once('message', function (message) {
-            if (message.match(/^online$/)) {
-                if (!started) {
-                    started = true;
-                    gulp.watch([src.serverFiles, src.testFiles], ['test', function () {
-                        $.util.log('Restarting development server.');
-                        server.kill('SIGTERM');
-                        server = startup();
-                    }]);
-                    cb();
-                }
-            }
-        });
-        return child;
-    })();
-
-    process.on('exit', function () {
-		$.util.log('server dying');
-        server.kill('SIGTERM');
-    });
 });
 

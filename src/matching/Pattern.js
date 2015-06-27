@@ -2,6 +2,8 @@
  * Pattern object
  */
 
+'use strict';
+
 var Pattern = function(match, parser) {
 	this.match = match || '';
 	this.parser = parser;
@@ -12,6 +14,10 @@ Pattern.prototype.toString = function() {
 };
 Pattern.prototype.parse = function(context, values) {
 	return this.parser(context, values);
+};
+Pattern.prototype.equals = function(other) {
+	if (!other) return false;
+	return this.match === other.match;
 };
 
 module.exports = Pattern;

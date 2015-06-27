@@ -2,24 +2,36 @@
  * Validates booleans
  */
 
-var Pattern = require('../matching/Pattern.js');
+'use strict';
+
+var Pattern = require('../matching/Pattern');
 
 var mainPatterns = [
-	new Pattern("{emptyline:*}{booleantrue}{emptyline:*}", Make(v[1])),
-	new Pattern("{emptyline:*}{booleanfalse}{emptyline:*}", Make(v[1]))
+	new Pattern('{emptyline:*}{booleantrue}{emptyline:*}', function() { return true; }),
+	new Pattern('{emptyline:*}{booleanfalse}{emptyline:*}', function() { return false; })
 ];
 
 
 /**
  * Singleton Module to parse boolean values
- * @type {{}}
+ * @constructor
  */
-var BooleanParserModule = {
-	trueValues: [ '1', 'true', 'wahr' ],
-	falseValues: [ '0', 'false', 'falsch' ]
+var BooleanParserModule = function() {
+	this.trueValues = [ '1', 'true', 'wahr' ];
+	this.falseValues = [ '0', 'false', 'falsch' ];
 
+	this.patternTags = [''];
+	this.tokenTags = ['booleanfalse', 'booleantrue'];
 };
-
+/**
+ * Return the patterns for the tag
+ * @param tag {string}
+ */
+BooleanParserModule.prototype.getPatterns = function(tag) {
+	if (tag === '')
+		return mainPatterns;
+	return [];
+};
 
 module.exports = BooleanParserModule;
 

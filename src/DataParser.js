@@ -2,9 +2,17 @@
  * Parses data values to figure out what actual type they are
  */
 
+/**
+ * @class Module
+ * @type {object}
+ * @property {string[]} patternTags - available pattern tags
+ * @property {string[]} tokenTags - available token tags
+ * @property {function(string)} getPatterns - returns patterns for a tag
+ */
+
 'use strict';
 
-var PatternMatcher = require('./PatternMatcher.js');
+var PatternMatcher = require('./PatternMatcher');
 
 var moduleTypes = [
 	require('./modules/BooleanParserModule')
@@ -21,28 +29,19 @@ var dateModuleTypes = [
 	require('./modules/DateParserModule')*/
 ];
 
-var defaultPatternMatcher = makePatternMatcher(moduleTypes);
-//var datePatternMatcher = makePatternMatcher(dateModuleTypes);
+var defaultPatternMatcher = null;
+//var datePatternMatcher = null;
 var namedPatternMatchers = {};
 
-/**
- * Make sure the default pattern matcher including all patterns is available and return it
- * @returns {PatternMatcher}
- */
-function getDefaultPatternMatcher() {
-	if (!defaultPatternMatcher)
-		defaultPatternMatcher = makePatternMatcher(moduleTypes);
-	return defaultPatternMatcher;
-}
 
 /**
  * Create a new PatternMatcher object including the specified modules
- * @param modules {Object[]} - List of modules to include
+ * @param modules {Module[]} - List of modules to include
  * @returns {PatternMatcher}
  * @constructor
  */
 function makePatternMatcher(modules) {
-	var matcher = new PatternMatcher(new Pattern[0]);
+	var matcher = new PatternMatcher([]);
 	if (!modules)
 		return matcher;
 
@@ -63,6 +62,16 @@ function makePatternMatcher(modules) {
 		}
 	});
 	return matcher;
+}
+
+/**
+ * Make sure the default pattern matcher including all patterns is available and return it
+ * @returns {PatternMatcher}
+ */
+function getDefaultPatternMatcher() {
+	if (!defaultPatternMatcher)
+		defaultPatternMatcher = makePatternMatcher(moduleTypes);
+	return defaultPatternMatcher;
 }
 
 
