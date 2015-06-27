@@ -24,10 +24,10 @@ var moduleTypes = [
 	require('./modules/IpParserModule'),
 	require('./modules/EmailParserModule')*/
 ];
-var dateModuleTypes = [
+//var dateModuleTypes = [
 	/*require('./modules/NumberParserModule'),
 	require('./modules/DateParserModule')*/
-];
+//];
 
 var defaultPatternMatcher = null;
 //var datePatternMatcher = null;
