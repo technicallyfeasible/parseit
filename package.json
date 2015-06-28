@@ -19,6 +19,7 @@
     "gulp-mocha": "^2.1.2",
     "gulp-util": "^3.0.6",
     "minimist": "^1.1.1",
+    "rewire": "^2.3.4",
     "sinon": "^1.15.3"
   },
   "dependencies": {

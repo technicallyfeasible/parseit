@@ -5,10 +5,36 @@
 'use strict';
 
 var Pattern = require('../matching/Pattern');
+var BooleanValue = require('../values/BooleanValue');
+
+
+/**
+ * Make the final output value
+ * @param value
+ * @returns {BooleanValue}
+ */
+function make(value) {
+	var boolValue = false;
+	if (typeof value === 'boolean')
+		boolValue = value;
+	else if (value)
+	{
+		var lowerValue = value.toString().toLowerCase();
+		boolValue = (this.const.trueValues.indexOf(lowerValue) !== -1);
+	}
+	return new BooleanValue(boolValue);
+}
+/**
+ * Reusable wrapper for the two patterns
+ * @param v
+ */
+function parsePattern(v) {
+	make(v[1]);
+}
 
 var mainPatterns = [
-	new Pattern('{emptyline:*}{booleantrue}{emptyline:*}', function() { return true; }),
-	new Pattern('{emptyline:*}{booleanfalse}{emptyline:*}', function() { return false; })
+	new Pattern('{emptyline:*}{booleantrue}{emptyline:*}', parsePattern),
+	new Pattern('{emptyline:*}{booleanfalse}{emptyline:*}', parsePattern)
 ];
 
 
@@ -17,8 +43,10 @@ var mainPatterns = [
  * @constructor
  */
 var BooleanParserModule = function() {
-	this.trueValues = [ '1', 'true', 'wahr' ];
-	this.falseValues = [ '0', 'false', 'falsch' ];
+	this.const = {
+		trueValues: [ '1', 'true', 'wahr' ],
+		falseValues: [ '0', 'false', 'falsch' ]
+	};
 
 	this.patternTags = [''];
 	this.tokenTags = ['booleanfalse', 'booleantrue'];

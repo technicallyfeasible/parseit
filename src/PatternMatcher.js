@@ -160,7 +160,7 @@ PatternMatcher.prototype.match = function(context, value) {
  * Begin a parsing session
  * @param context
  * @param matchTag
- * @returns MatchState
+ * @returns {MatchState}
  */
 PatternMatcher.prototype.matchStart = function(context, matchTag) {
 	var roots = this.compiledPatterns[matchTag];
@@ -179,9 +179,14 @@ PatternMatcher.prototype.matchStart = function(context, matchTag) {
 	return state;
 };
 
-/*PatternMatcher.prototype.registerValidator = function(tag, module) {
-
-};*/
+/**
+ * Register a validation object for the tag
+ * @param tag
+ * @param validator
+ */
+PatternMatcher.prototype.registerValidator = function(tag, validator) {
+	this.validators[tag] = validator;
+};
 
 module.exports = PatternMatcher;
 
