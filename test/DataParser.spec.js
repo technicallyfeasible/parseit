@@ -28,14 +28,16 @@ describe('DataParser', function() {
 		var getDefaultPatternMatcher = DataParser.__get__('getDefaultPatternMatcher');
 		DataParser.__set__('getDefaultPatternMatcher', spy);
 
-		var parser = new DataParser();
+		/* eslint-disable no-new */
+		new DataParser();
+		/* eslint-enable no-new */
 		assert.isTrue(spy.calledOnce);
 
 		// restore
 		DataParser.__set__('getDefaultPatternMatcher', getDefaultPatternMatcher);
 	});
 
-	describe('getDefaultPatternMatcher', function() {
+	describe('.getDefaultPatternMatcher', function() {
 
 		it('creates a default matcher or returns the cached instance', function() {
 			var getDefaultPatternMatcher = DataParser.__get__('getDefaultPatternMatcher');

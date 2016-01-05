@@ -55,7 +55,7 @@ describe('BooleanParserModule', function() {
 
 	});
 
-	describe('make', function() {
+	describe('.make', function() {
 
 		it('exists', function() {
 			var make = BooleanParserModule.__get__('make');

@@ -10,7 +10,7 @@ var arrayUtils = require('../../src/utils/arrayUtils');
 
 describe('Array Utils', function() {
 
-	describe('contains function', function() {
+	describe('.contains', function() {
 		it('exists', function() {
 			assert.isFunction(arrayUtils.contains);
 		});
