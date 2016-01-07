@@ -2,53 +2,47 @@
  * Tests for PatternMatcher
  */
 
-'use strict';
+const chai = require('chai');
+const assert = chai.assert;
+const sinon = require('sinon');
+const rewire = require('rewire');
 
-var chai = require('chai');
-var assert = chai.assert;
-var sinon = require('sinon');
-var rewire = require('rewire');
+const DataParser = rewire('../src/DataParser');
+const PatternMatcher = require('../src/PatternMatcher');
 
-var DataParser = rewire('../src/DataParser');
-var PatternMatcher = require('../src/PatternMatcher');
+describe('DataParser', () => {
+  let sandbox;
+  beforeEach(() => {
+    sandbox = sinon.sandbox.create();
+  });
 
-describe('DataParser', function() {
+  afterEach(() => {
+    sandbox.restore();
+  });
 
-	var sandbox;
-	beforeEach(function() {
-		sandbox = sinon.sandbox.create();
-	});
+  it('calls getDefaultPatternMatcher when created with no modules', () => {
+    const spy = sinon.spy();
+    const getDefaultPatternMatcher = DataParser.__get__('getDefaultPatternMatcher');
+    DataParser.__set__('getDefaultPatternMatcher', spy);
 
-	afterEach(function() {
-		sandbox.restore();
-	});
+    /* eslint-disable no-new */
+    new DataParser();
+    /* eslint-enable no-new */
+    assert.isTrue(spy.calledOnce);
 
-	it('calls getDefaultPatternMatcher when created with no modules', function() {
-		var spy = sinon.spy();
-		var getDefaultPatternMatcher = DataParser.__get__('getDefaultPatternMatcher');
-		DataParser.__set__('getDefaultPatternMatcher', spy);
+    // restore
+    DataParser.__set__('getDefaultPatternMatcher', getDefaultPatternMatcher);
+  });
 
-		/* eslint-disable no-new */
-		new DataParser();
-		/* eslint-enable no-new */
-		assert.isTrue(spy.calledOnce);
+  describe('.getDefaultPatternMatcher', () => {
+    it('creates a default matcher or returns the cached instance', () => {
+      const getDefaultPatternMatcher = DataParser.__get__('getDefaultPatternMatcher');
 
-		// restore
-		DataParser.__set__('getDefaultPatternMatcher', getDefaultPatternMatcher);
-	});
-
-	describe('.getDefaultPatternMatcher', function() {
-
-		it('creates a default matcher or returns the cached instance', function() {
-			var getDefaultPatternMatcher = DataParser.__get__('getDefaultPatternMatcher');
-
-			var matcher = getDefaultPatternMatcher();
-			assert.instanceOf(matcher, PatternMatcher);
-			// second call should return same instance
-			var matcher2 = getDefaultPatternMatcher();
-			assert.strictEqual(matcher, matcher2);
-		});
-
-	});
-
+      const matcher = getDefaultPatternMatcher();
+      assert.instanceOf(matcher, PatternMatcher);
+      // second call should return same instance
+      const matcher2 = getDefaultPatternMatcher();
+      assert.strictEqual(matcher, matcher2);
+    });
+  });
 });

@@ -12,10 +12,9 @@ gulp.task('default', ['watch']);
 
 // start the server and restart if the source changes
 gulp.task('test', function runTest() {
-  $.util.log('Running tests.');
   return gulp.src(src.testFiles)
     .pipe($.cached('testing', { optimizeMemory: true }))
-    .pipe($.mocha({ reporter: 'spec' }))
+    .pipe($.mocha({ reporter: 'dot' }))
     .once('error', function handleTestError(err) {
       $.util.log(err);
       this.emit('end');
