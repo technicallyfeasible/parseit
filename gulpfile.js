@@ -1,6 +1,8 @@
+require('babel-core/register');
 const gulp = require('gulp');
 const $ = require('gulp-load-plugins')();
-require('babel-core/register');
+const webpack = require('webpack');
+const configure = require('./webpack.config.js');
 
 const src = {
   serverFiles: ['./src/**/*.js', './index.js'],
@@ -32,3 +34,35 @@ gulp.task('watch', ['test'], function runWatch() {
       delete $.cached.caches.testing;
     });
 });
+
+gulp.task('debug', function runDebug(done) {
+  const config = configure({
+    DEBUG: true,
+  });
+  const bundler = webpack(config);
+  bundler.run(function handleResult(err, stats) {
+    $.util.log(stats.toString({
+      colors: true,
+      chunks: false,
+      modules: false,
+    }));
+    done(err);
+  });
+});
+
+gulp.task('release', function runRelease(done) {
+  const config = configure({
+    DEBUG: false,
+  });
+  const bundler = webpack(config);
+  bundler.run(function handleResult(err, stats) {
+    $.util.log(stats.toString({
+      colors: true,
+      chunks: false,
+      modules: false,
+    }));
+    done(err);
+  });
+});
+
+gulp.task('build', ['debug', 'release']);
