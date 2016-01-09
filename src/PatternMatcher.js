@@ -144,18 +144,19 @@ PatternMatcher.prototype.addPatterns = function addPatterns(matchTag, newPattern
  * @returns {*}
  */
 PatternMatcher.prototype.match = function match(context, value) {
-  var results = [];
-  if (!value)
-    return results;
-
-  var state = this.matchStart(context, '');
-  for (var i = 0; i < value.length; i++) {
-    var c = value.charAt(i);
-    if (!this.matchNext(state, c))
-      return results;
+  if (!value) {
+    return [];
   }
 
-  results = this.matchResults(state);
+  const state = this.matchStart(context, '');
+  for (let i = 0; i < value.length; i++) {
+    const c = value.charAt(i);
+    if (!this.matchNext(state, c)) {
+      return [];
+    }
+  }
+
+  const results = this.matchResults(state);
   // reverse results since the longest matches will be found last but are the most specific
   results.reverse();
   return results;
@@ -168,17 +169,18 @@ PatternMatcher.prototype.match = function match(context, value) {
  * @returns {MatchState}
  */
 PatternMatcher.prototype.matchStart = function matchStart(context, matchTag) {
-  var roots = this.compiledPatterns[matchTag];
-  if (!roots)
+  const roots = this.compiledPatterns[matchTag];
+  if (!roots) {
     return null;
+  }
 
-  var state = new MatchState();
+  const state = new MatchState();
   state.matchTag = matchTag;
   state.context = context || new PatternContext();
 
-  var root = new PatternPath();
+  const root = new PatternPath();
   root.paths = roots;
-  var startNode = new PathNode(null, root, '');
+  const startNode = new PathNode(null, root, '');
   state.candidatePaths.push(startNode);
 
   return state;
@@ -191,26 +193,29 @@ PatternMatcher.prototype.matchStart = function matchStart(context, matchTag) {
  * @returns {boolean} - true if this is still a valid match, false otherwise
  */
 PatternMatcher.prototype.matchNext = function matchNext(state, c) {
-  if (!state)
+  if (!state) {
     return false;
+  }
 
-  var candidatePaths = state.candidatePaths;
-  var newCandidates = state.newCandidates;
-  for (var i = 0; i < candidatePaths.length; i++) {
-    var candidate = candidatePaths[i];
+  const candidatePaths = state.candidatePaths;
+  const newCandidates = state.newCandidates;
+  for (let i = 0; i < candidatePaths.length; i++) {
+    const candidate = candidatePaths[i];
 
     // first check if any of the child nodes validate with the new character and remember them as candidates
     // any children can only be candidates if the final validation of the current value succeeds
-    if (!candidate.token || this.validateToken(state.context, candidate, true))
+    if (!candidate.token || this.validateToken(state.context, candidate, true)) {
       this.validateChildren(state.context, candidate.path.paths, candidate, c, newCandidates, 0);
+    }
 
     // token can be null for the root node but no validation needs to be done for that
     if (candidate.token != null) {
       // validate this candidate and remove it if it doesn't validate anymore
       candidate.isFinalized = false;
       candidate.textValue += c;
-      if (this.validateToken(state.context, candidate, false))
+      if (this.validateToken(state.context, candidate, false)) {
         continue;
+      }
     }
     candidatePaths.splice(i--, 1);
   }
@@ -258,17 +263,20 @@ PatternMatcher.prototype.validateCount = function validateCount(token, value, is
  */
 PatternMatcher.prototype.validateToken = function validateToken(context, node, isFinal) {
   // if it is finalized then it is definitely also valid
-  if (node.isFinalized)
+  if (node.isFinalized) {
     return true;
+  }
 
-  var token = node.token;
-  var textValue = node.textValue;
+  const token = node.token;
+  const textValue = node.textValue;
 
   // match exact values first
-  if (!textValue)
+  if (!textValue) {
     return false;
-  if (token.exactMatch)
+  }
+  if (token.exactMatch) {
     return ((isFinal && token.value === textValue) || (!isFinal && stringUtils.startsWith(token.value, textValue)));
+  }
 
   // test inbuilt tokens first
   switch (token.value) {
@@ -283,23 +291,28 @@ PatternMatcher.prototype.validateToken = function validateToken(context, node, i
       return this.validateCount(token, textValue, isFinal) && stringUtils.matchAll(textValue, LETTER_CHARACTERS);
     case 'any':
       return this.validateCount(token, textValue, isFinal);
+    default:
+      break;
   }
 
   // check pattern tags and do a sub match for each of them
   if (this.compiledPatterns[token.value]) {
     // sub matching is possible, so start a new one or continue the previous one
-    if (node.matchState == null)
+    if (node.matchState == null) {
       node.matchState = this.matchStart(context, token.value);
+    }
     // if this is the last match then assemble the results
-    if (isFinal)
+    if (isFinal) {
       return this.hasResults(node.matchState);
+    }
     return this.matchNext(node.matchState, textValue[textValue.length - 1]);
   }
 
   // check if a validator is registered for this token
-  var validator = this.validators[token.value];
-  if (!validator)
+  const validator = this.validators[token.value];
+  if (!validator) {
     return false;
+  }
 
   return validator.validateToken(token, textValue, isFinal);
 };
@@ -708,7 +721,6 @@ module.exports = PatternMatcher;
  {
  this.validators[tag] = validator;
  }
-
 
 
  private Boolean ValidateCount(Token token, String value, Boolean isFinal)

@@ -43,6 +43,13 @@ describe('PatternMatcher', () => {
     assert.isTrue(matcher.addPatterns.called);
   });
 
+  describe('.clearPatterns', () => {
+    it('exists', () => {
+      const matcher = new PatternMatcher();
+      assert.isFunction(matcher.clearPatterns);
+    });
+  });
+
   describe('.addPatterns', () => {
     it('adds a pattern only once', () => {
       const matcher = new PatternMatcher();
@@ -63,7 +70,7 @@ describe('PatternMatcher', () => {
     it('splits a pattern into tokens', () => {
       const matcher = new PatternMatcher();
       matcher.addPatterns('', [
-        new Pattern('{level1:?}{level2:?}', null)
+        new Pattern('{level1:?}{level2:?}', null),
       ]);
 
       const compiled = matcher.compiledPatterns[''];
@@ -91,7 +98,7 @@ describe('PatternMatcher', () => {
         }),
         new Pattern('{emptyline:*}{booleanfalse}{emptyline:*}', () => {
           return false;
-        })
+        }),
       ];
       const matcher = new PatternMatcher();
       matcher.addPatterns('', testPatterns);
@@ -181,7 +188,7 @@ describe('PatternMatcher', () => {
       context = new PatternContext();
     });
 
-    it('does not do macthing for empty value and returns empty array', () => {
+    it('does not do matching for empty value and returns empty array', () => {
       const mock = sandbox.mock(matcher);
       mock.expects('matchStart').never();
 
