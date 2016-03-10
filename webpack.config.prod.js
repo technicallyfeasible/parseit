@@ -1,6 +1,6 @@
 const configure = require('./webpack.base');
 
 module.exports = configure({
-  environment: 'development',
+  environment: 'production',
   publicPath: '/release/'
 });

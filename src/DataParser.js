@@ -10,9 +10,8 @@
  * @property {function(string)} getPatterns - returns patterns for a tag
  */
 
-'use strict';
-
 var PatternMatcher = require('./PatternMatcher');
+var PatternContext = require('./PatternContext');
 
 var moduleTypes = [
 	require('./modules/BooleanParserModule')
@@ -91,6 +90,17 @@ var DataParser = function(name, modules) {
 		this.patternMatcher = makePatternMatcher(modules);
 		namedPatternMatchers[name] = this.patternMatcher;
 	}
+};
+
+/**
+ * Parse a value into all possible native types
+ * @param value
+ * @param context
+ * @returns {Array}
+ */
+DataParser.prototype.parse = function(value, context) {
+  const matchResults = this.patternMatcher.match(context || new PatternContext(), value);
+  return matchResults || [];
 };
 
 /*

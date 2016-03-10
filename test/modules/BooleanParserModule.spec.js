@@ -74,7 +74,7 @@ describe('BooleanParserModule', () => {
       const make = BooleanParserModule.__get__('make');
 
       const parser = new BooleanParserModule();
-      parser.const.trueValues.forEach(function (trueValue) {
+      parser.const.trueValues.forEach((trueValue) => {
         const value = make.call(parser, trueValue);
         assert.strictEqual(value.bool, true);
       });
@@ -84,7 +84,7 @@ describe('BooleanParserModule', () => {
       const make = BooleanParserModule.__get__('make');
 
       const parser = new BooleanParserModule();
-      parser.const.falseValues.forEach(function (falseValue) {
+      parser.const.falseValues.forEach((falseValue) => {
         const value = make.call(parser, falseValue);
         assert.strictEqual(value.bool, false);
       });

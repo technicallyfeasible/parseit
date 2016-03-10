@@ -327,7 +327,35 @@ PatternMatcher.prototype.validateToken = function validateToken(context, node, i
  * @param depth {number}
  */
 PatternMatcher.prototype.validateChildren = function validateChildren(context, paths, node, val, newCandidates, depth) {
+  // first check if any of the child nodes validate with the new character and remember them as candidates
+  // foreach (KeyValuePair<Token, PatternPath> childPath in paths)
+  for (let i = 0; i < paths.length; i++)
+  {
+    const childPath = paths[i];
+    /*PathNode childNode = new PathNode(childPath.token, childPath.patternPath, val);
+    // if zero count is allowed it does not matter whether the child validates or not, we always try children as well
+    if (childPath.Key.MinCount == 0)
+      ValidateChildren(context, childPath.Value.Paths, node, val, newCandidates, depth + 1);
+    if (!ValidateToken(context, childNode, false))
+    {
+      // token did not validate but 0 count is allowed
+      //if (childPath.Key.MinCount == 0)
+      //	ValidateChildren(childPath.Value.Paths, node, val, newCandidates, depth + 1);
+      continue;
+    }
 
+    // validated successfully so add a new candidate
+    // add empty values for all skipped tokens
+    childNode.PreviousValues.AddRange(node.PreviousValues);
+    if (node.Token != null)
+    {
+      FinalizeValue(node);
+      childNode.PreviousValues.Add(node.Value);
+    }
+    for (Int32 i = 0; i < depth; i++)
+    childNode.PreviousValues.Add(null);
+    newCandidates.Add(childNode);*/
+  }
 };
 
 

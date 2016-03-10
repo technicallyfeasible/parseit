@@ -10,6 +10,8 @@ const rewire = require('rewire');
 const DataParser = rewire('../src/DataParser');
 const PatternMatcher = require('../src/PatternMatcher');
 
+const BooleanValue = require('../src/values/BooleanValue');
+
 describe('DataParser', () => {
   let sandbox;
   beforeEach(() => {
@@ -43,6 +45,16 @@ describe('DataParser', () => {
       // second call should return same instance
       const matcher2 = getDefaultPatternMatcher();
       assert.strictEqual(matcher, matcher2);
+    });
+  });
+
+  describe('.parse', () => {
+    it('returns BooleanValue when parsing "true" / "false"', () => {
+      const parser = new DataParser();
+      const result = parser.parse('true');
+      assert.isArray(result);
+      assert.lengthOf(result, 1);
+      assert.instanceOf(result[0], BooleanValue);
     });
   });
 });

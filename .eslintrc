@@ -1,5 +1,5 @@
 {
-  "extends": "airbnb",
+  "extends": "es2015",
   "env": {
     "browser": true,
     "node": true,
