@@ -4,9 +4,8 @@
 
 const chai = require('chai');
 const assert = chai.assert;
-const rewire = require('rewire');
 
-const BooleanParserModule = rewire('../../src/modules/BooleanParserModule');
+const BooleanParserModule = require('../../src/modules/BooleanParserModule');
 const BooleanValue = require('../../src/values/BooleanValue');
 
 describe('BooleanParserModule', () => {

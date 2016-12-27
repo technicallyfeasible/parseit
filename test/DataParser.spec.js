@@ -5,9 +5,8 @@
 const chai = require('chai');
 const assert = chai.assert;
 const sinon = require('sinon');
-const rewire = require('rewire');
 
-const DataParser = rewire('../src/DataParser');
+const DataParser = require('../src/DataParser');
 const PatternMatcher = require('../src/PatternMatcher');
 
 const BooleanValue = require('../src/values/BooleanValue');

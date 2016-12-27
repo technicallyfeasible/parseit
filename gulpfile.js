@@ -48,7 +48,7 @@ gulp.task('watch', ['test'], function runWatch() {
  * Development mode with watching and hot reload
  */
 gulp.task('dev', function runDebug() {
-  const config = require('./webpack.config.dev.js');
+  const config = require('./webpack/webpack.config.dev.js');
   const bundler = webpack(config);
 
   devApp = express();
@@ -77,7 +77,7 @@ gulp.task('dev', function runDebug() {
  * Compile as non-minified library
  */
 gulp.task('debug', function runDebug(done) {
-  const config = require('./webpack.config.js');
+  const config = require('./webpack/webpack.config.js');
   const bundler = webpack(config);
   bundler.run(function handleResult(err, stats) {
     $.util.log(stats.toString({
@@ -93,7 +93,7 @@ gulp.task('debug', function runDebug(done) {
  * Compile as minified library
  */
 gulp.task('release', function runRelease(done) {
-  const config = require('./webpack.config.prod.js');
+  const config = require('./webpack/webpack.config.prod.js');
   const bundler = webpack(config);
   bundler.run(function handleResult(err, stats) {
     $.util.log(stats.toString({

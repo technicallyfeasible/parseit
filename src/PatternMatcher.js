@@ -329,14 +329,15 @@ PatternMatcher.prototype.validateToken = function validateToken(context, node, i
 PatternMatcher.prototype.validateChildren = function validateChildren(context, paths, node, val, newCandidates, depth) {
   // first check if any of the child nodes validate with the new character and remember them as candidates
   // foreach (KeyValuePair<Token, PatternPath> childPath in paths)
-  for (let i = 0; i < paths.length; i++)
+  // TODO: replace with normal for-loop which is a lot faster
+  for (let key in paths)
   {
-    const childPath = paths[i];
-    /*PathNode childNode = new PathNode(childPath.token, childPath.patternPath, val);
+    const value = paths[key];
+    const childNode = new PathNode(key, value, val);
     // if zero count is allowed it does not matter whether the child validates or not, we always try children as well
-    if (childPath.Key.MinCount == 0)
-      ValidateChildren(context, childPath.Value.Paths, node, val, newCandidates, depth + 1);
-    if (!ValidateToken(context, childNode, false))
+    if (key.minCount === 0)
+      this.validateChildren(context, value.paths, node, val, newCandidates, depth + 1);
+    if (!this.validateToken(context, childNode, false))
     {
       // token did not validate but 0 count is allowed
       //if (childPath.Key.MinCount == 0)
@@ -346,15 +347,62 @@ PatternMatcher.prototype.validateChildren = function validateChildren(context, p
 
     // validated successfully so add a new candidate
     // add empty values for all skipped tokens
-    childNode.PreviousValues.AddRange(node.PreviousValues);
-    if (node.Token != null)
+    Array.prototype.push.apply(childNode.previousValues, node.previousValues);
+    if (node.token != null)
     {
-      FinalizeValue(node);
-      childNode.PreviousValues.Add(node.Value);
+      this.finalizeValue(node);
+      childNode.previousValues.push(node.value);
     }
-    for (Int32 i = 0; i < depth; i++)
-    childNode.PreviousValues.Add(null);
-    newCandidates.Add(childNode);*/
+    for (let i = 0; i < depth; i++)
+      childNode.previousValues.push(null);
+    newCandidates.push(childNode);
+  }
+};
+
+/// <summary>
+///
+/// </summary>
+/// <param name="node"></param>
+/// <returns>Returns true if successful, false if the TextValue is not valid</returns>
+/**
+ * Parses the TextValue of the node into the final value
+ * @param node
+ * Returns true if successful, false if the TextValue is not valid
+ */
+PatternMatcher.prototype.finalizeValue = function finalizeValue(node) {
+  // already finalized
+  if (node.isFinalized)
+    return;
+
+  const token = node.token;
+  const textValue = node.textValue;
+
+  if (token.exactMatch || token.value === ' ' || token.value === 'newline' || token.Value === 'emptyline' || token.Value === 'letter')
+  {
+    node.value = textValue;
+    node.isFinalized = true;
+    return;
+  }
+
+  // check pattern tags and do a sub match for each of them
+  if (this.compiledPatterns[token.value] && node.matchState !== null)
+  {
+    node.value = null;
+    const results = this.matchResults(node.matchState);
+    if (results.length === 0)
+      return;
+    // TODO: can be multiple results, choose the correct one depending on user culture
+    node.value = results[0];
+    node.isFinalized = true;
+    return;
+  }
+
+  // check if a validator is registered for this token
+  const validator = this.validators[token.Value];
+  if (validator)
+  {
+    node.value = validator.finalizeValue(token, textValue);
+    node.isFinalized = true;
   }
 };
 
