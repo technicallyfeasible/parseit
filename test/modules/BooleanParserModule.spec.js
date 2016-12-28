@@ -3,10 +3,11 @@
  */
 
 const chai = require('chai');
-const assert = chai.assert;
 
 const BooleanParserModule = require('../../src/modules/BooleanParserModule');
 const BooleanValue = require('../../src/values/BooleanValue');
+
+const assert = chai.assert;
 
 describe('BooleanParserModule', () => {
   it('sets up default constants for parsing', () => {
@@ -32,7 +33,7 @@ describe('BooleanParserModule', () => {
       const parser = new BooleanParserModule();
       assert.isFunction(parser.getPatterns);
 
-      parser.patternTags.forEach(tag => {
+      parser.patternTags.forEach((tag) => {
         const patterns = parser.getPatterns(tag);
         assert.isArray(patterns);
       });

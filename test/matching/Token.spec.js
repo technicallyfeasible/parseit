@@ -3,8 +3,9 @@
  */
 
 const chai = require('chai');
-const assert = chai.assert;
 const Token = require('../../src/matching/Token');
+
+const assert = chai.assert;
 
 describe('Token', () => {
   it('defaults to single count if only given a value', () => {
@@ -115,7 +116,7 @@ describe('Token', () => {
       assert.isTrue(token1.equals(token2));
 
       token1 = new Token('mytoken:+');
-      token2 = new Token('mytoken:1-' + Token.prototype.MAX_VALUE);
+      token2 = new Token(`mytoken:1-${Token.prototype.MAX_VALUE}`);
       assert.isTrue(token1.equals(token2));
     });
   });

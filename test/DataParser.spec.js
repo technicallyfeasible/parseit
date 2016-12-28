@@ -3,13 +3,14 @@
  */
 
 const chai = require('chai');
-const assert = chai.assert;
 const sinon = require('sinon');
 
 const DataParser = require('../src/DataParser');
 const PatternMatcher = require('../src/PatternMatcher');
 
 const BooleanValue = require('../src/values/BooleanValue');
+
+const assert = chai.assert;
 
 describe('DataParser', () => {
   let sandbox;

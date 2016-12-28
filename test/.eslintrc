@@ -1,0 +1,14 @@
+{
+  "parser": "babel-eslint",
+  "extends": "es2015",
+  "env": {
+    "node": true,
+    "mocha": true
+  },
+  "rules": {
+    "import/no-extraneous-dependencies": [0, {
+      "devDependencies": false
+    }],
+    "no-underscore-dangle": 0
+  }
+}

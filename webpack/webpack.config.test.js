@@ -33,7 +33,7 @@ const config = {
   },
   externals: nodeModules,
   cache: true,
-  devtool: '#source-map',
+  devtool: '#inline-source-map',
   stats: {
     colors: true,
     reasons: false,

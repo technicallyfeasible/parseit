@@ -3,8 +3,9 @@
  */
 
 const chai = require('chai');
-const assert = chai.assert;
 const arrayUtils = require('../../src/utils/arrayUtils');
+
+const assert = chai.assert;
 
 describe('Array Utils', () => {
   describe('.contains', () => {

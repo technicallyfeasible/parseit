@@ -3,9 +3,10 @@
  */
 
 const chai = require('chai');
-const assert = chai.assert;
-const sinon = require('sinon');
 const Pattern = require('../../src/matching/Pattern');
+const sinon = require('sinon');
+
+const assert = chai.assert;
 
 describe('Pattern', () => {
   it('is initialized with a pattern', () => {
@@ -23,7 +24,6 @@ describe('Pattern', () => {
     pattern.parse(context, values);
     assert.strictEqual(spy.callCount, 1);
     assert.isTrue(spy.calledWith(context, ['val1', 'val2']));
-
   });
 
   describe('.equals', () => {

@@ -3,7 +3,6 @@
  */
 
 const chai = require('chai');
-const assert = chai.assert;
 const sinon = require('sinon');
 
 const Pattern = require('../src/matching/Pattern');
@@ -12,6 +11,8 @@ const PathNode = require('../src/matching/PathNode');
 const PatternMatcher = require('../src/PatternMatcher');
 const MatchState = require('../src/MatchState');
 const PatternContext = require('../src/PatternContext');
+
+const assert = chai.assert;
 
 describe('PatternMatcher', () => {
   let sandbox;
@@ -32,12 +33,8 @@ describe('PatternMatcher', () => {
   it('calls addPatterns if patterns are supplied', () => {
     sandbox.spy(PatternMatcher.prototype, 'addPatterns');
     const testPatterns = [
-      new Pattern('{emptyline:*}{booleantrue}{emptyline:*}', () => {
-        return true;
-      }),
-      new Pattern('{emptyline:*}{booleanfalse}{emptyline:*}', () => {
-        return false;
-      }),
+      new Pattern('{emptyline:*}{booleantrue}{emptyline:*}', () => true),
+      new Pattern('{emptyline:*}{booleanfalse}{emptyline:*}', () => false),
     ];
     const matcher = new PatternMatcher(testPatterns);
     assert.isTrue(matcher.addPatterns.called);
@@ -93,17 +90,13 @@ describe('PatternMatcher', () => {
 
     it('remembers the pattern for each compiled node', () => {
       const testPatterns = [
-        new Pattern('{emptyline:*}{booleantrue}{emptyline:*}', () => {
-          return true;
-        }),
-        new Pattern('{emptyline:*}{booleanfalse}{emptyline:*}', () => {
-          return false;
-        }),
+        new Pattern('{emptyline:*}{booleantrue}{emptyline:*}', () => true),
+        new Pattern('{emptyline:*}{booleanfalse}{emptyline:*}', () => false),
       ];
       const matcher = new PatternMatcher();
       matcher.addPatterns('', testPatterns);
 
-      const tag = 'emptyline:0-' + Token.prototype.MAX_VALUE;
+      const tag = `emptyline:0-${Token.prototype.MAX_VALUE}`;
       const compiled = matcher.compiledPatterns[''];
       const root = compiled[tag];
       assert.strictEqual(root.matchedPatterns.length, 0);
@@ -127,12 +120,8 @@ describe('PatternMatcher', () => {
     let matcher;
     beforeEach(() => {
       matcher = new PatternMatcher([
-        new Pattern('{emptyline:*}true{emptyline:*}', () => {
-          return true;
-        }),
-        new Pattern('{emptyline:*}false{emptyline:*}', () => {
-          return false;
-        }),
+        new Pattern('{emptyline:*}true{emptyline:*}', () => true),
+        new Pattern('{emptyline:*}false{emptyline:*}', () => false),
       ]);
     });
 
@@ -178,12 +167,8 @@ describe('PatternMatcher', () => {
     let context;
     beforeEach(() => {
       matcher = new PatternMatcher([
-        new Pattern('{emptyline:*}true{emptyline:*}', () => {
-          return true;
-        }),
-        new Pattern('{emptyline:*}false{emptyline:*}', () => {
-          return false;
-        }),
+        new Pattern('{emptyline:*}true{emptyline:*}', () => true),
+        new Pattern('{emptyline:*}false{emptyline:*}', () => false),
       ]);
       context = new PatternContext();
     });
@@ -235,22 +220,18 @@ describe('PatternMatcher', () => {
     beforeEach(() => {
       exactToken = new Token('true', true);
       matcher = new PatternMatcher([
-        new Pattern('{emptyline:*}true{emptyline:*}', () => {
-          return true;
-        }),
-        new Pattern('{emptyline:*}false{emptyline:*}', () => {
-          return false;
-        }),
+        new Pattern('{emptyline:*}true{emptyline:*}', () => true),
+        new Pattern('{emptyline:*}false{emptyline:*}', () => false),
       ]);
       context = new PatternContext();
     });
 
     const predefTokens = {
       ' ': { correct: ['   ', '\t \t'], wrong: ['test'] },
-      'newline': { correct: ['\r', '\n', '\r\n'], wrong: [' ', '\t'] },
-      'emptyline': { correct: ['   ', '\t \t', '\r', '\n', '\r\n'], wrong: ['test'] },
-      'letter': { correct: ['longwordnospaces', 'UPPERCASE'], wrong: ['long word with spaces'] },
-      'any': { correct: ['   ', '\t ', 'abc', 'some text'], wrong: [''] },
+      newline: { correct: ['\r', '\n', '\r\n'], wrong: [' ', '\t'] },
+      emptyline: { correct: ['   ', '\t \t', '\r', '\n', '\r\n'], wrong: ['test'] },
+      letter: { correct: ['longwordnospaces', 'UPPERCASE'], wrong: ['long word with spaces'] },
+      any: { correct: ['   ', '\t ', 'abc', 'some text'], wrong: [''] },
     };
 
 
@@ -296,9 +277,10 @@ describe('PatternMatcher', () => {
     });
 
     it('returns true for predefined tokens and correct test strings', () => {
-      let value;
-      for (value in predefTokens) {
-        const token = new Token(value + ':*', false);
+      const keys = Object.keys(predefTokens);
+      for (let index = 0; index < keys.length; index++) {
+        const value = keys[index];
+        const token = new Token(`${value}:*`, false);
 
         const tests = predefTokens[value];
         let i;
@@ -306,14 +288,15 @@ describe('PatternMatcher', () => {
           const textValue = tests.correct[i];
           const node = new PathNode(token, null, textValue);
           const result = matcher.validateToken(context, node, false);
-          assert.isTrue(result, 'token "' + value + '" should match text "' + textValue);
+          assert.isTrue(result, `token "${value}" should match text "${textValue}`);
         }
       }
     });
     it('returns false for predefined tokens and wrong test strings', () => {
-      let value;
-      for (value in predefTokens) {
-        const token = new Token(value + ':*', false);
+      const keys = Object.keys(predefTokens);
+      for (let index = 0; index < keys.length; index++) {
+        const value = keys[index];
+        const token = new Token(`${value}:*`, false);
 
         const tests = predefTokens[value];
         let i;
@@ -321,7 +304,7 @@ describe('PatternMatcher', () => {
           const textValue = tests.wrong[i];
           const node = new PathNode(token, null, textValue);
           const result = matcher.validateToken(context, node, false);
-          assert.isFalse(result, 'token "' + value + '" should not match text "' + textValue);
+          assert.isFalse(result, `token "${value}" should not match text "${textValue}`);
         }
       }
     });

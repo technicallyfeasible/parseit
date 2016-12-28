@@ -1,12 +1,15 @@
 {
-  "extends": "es2015",
+  "extends": "airbnb-base",
   "env": {
     "browser": true,
-    "node": true,
-    "mocha": true
+    "node": true
   },
   "rules": {
     "quotes": [1, "single"],
-    "eqeqeq": [2, "smart"]
+    "eqeqeq": [2, "smart"],
+    "max-len": 0,
+    "no-plusplus": 0,
+    "no-continue": 0,
+    "arrow-parens": 0
   }
 }

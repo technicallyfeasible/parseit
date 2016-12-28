@@ -3,8 +3,9 @@
  */
 
 const chai = require('chai');
-const assert = chai.assert;
 const PathNode = require('../../src/matching/PathNode');
+
+const assert = chai.assert;
 
 describe('PathNode', () => {
   it('is initialized with token, path and text value', () => {

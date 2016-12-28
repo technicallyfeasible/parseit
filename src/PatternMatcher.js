@@ -219,7 +219,7 @@ PatternMatcher.prototype.matchNext = function matchNext(state, c) {
     }
     candidatePaths.splice(i--, 1);
   }
-  candidatePaths.push.apply(candidatePaths, newCandidates);
+  candidatePaths.push(...newCandidates);
   newCandidates.length = 0;
 
   return candidatePaths.length > 0;
@@ -231,7 +231,8 @@ PatternMatcher.prototype.matchNext = function matchNext(state, c) {
  * @returns {Object[]} - The list of matches
  */
 PatternMatcher.prototype.matchResults = function matchResults(currentState) {
-
+  // TODO
+  return currentState;
 };
 
 /**
@@ -299,7 +300,7 @@ PatternMatcher.prototype.validateToken = function validateToken(context, node, i
   if (this.compiledPatterns[token.value]) {
     // sub matching is possible, so start a new one or continue the previous one
     if (node.matchState == null) {
-      node.matchState = this.matchStart(context, token.value);
+      node.matchState = this.matchStart(context, token.value);  // eslint-disable-line no-param-reassign
     }
     // if this is the last match then assemble the results
     if (isFinal) {
@@ -330,67 +331,67 @@ PatternMatcher.prototype.validateChildren = function validateChildren(context, p
   // first check if any of the child nodes validate with the new character and remember them as candidates
   // foreach (KeyValuePair<Token, PatternPath> childPath in paths)
   // TODO: replace with normal for-loop which is a lot faster
-  for (let key in paths)
-  {
+  const keys = Object.keys(paths);
+  for (let index = 0; index < keys.length; index++) {
+    const key = keys[index];
     const value = paths[key];
     const childNode = new PathNode(key, value, val);
     // if zero count is allowed it does not matter whether the child validates or not, we always try children as well
-    if (key.minCount === 0)
-      this.validateChildren(context, value.paths, node, val, newCandidates, depth + 1);
-    if (!this.validateToken(context, childNode, false))
-    {
+    if (key.minCount === 0) { this.validateChildren(context, value.paths, node, val, newCandidates, depth + 1); }
+    if (!this.validateToken(context, childNode, false)) {
       // token did not validate but 0 count is allowed
-      //if (childPath.Key.MinCount == 0)
-      //	ValidateChildren(childPath.Value.Paths, node, val, newCandidates, depth + 1);
+      // if (childPath.Key.MinCount == 0)
+      //  ValidateChildren(childPath.Value.Paths, node, val, newCandidates, depth + 1);
       continue;
     }
 
     // validated successfully so add a new candidate
     // add empty values for all skipped tokens
     Array.prototype.push.apply(childNode.previousValues, node.previousValues);
-    if (node.token != null)
-    {
+    if (node.token != null) {
       this.finalizeValue(node);
       childNode.previousValues.push(node.value);
     }
-    for (let i = 0; i < depth; i++)
+    for (let i = 0; i < depth; i++) {
       childNode.previousValues.push(null);
+    }
     newCandidates.push(childNode);
   }
 };
 
-/// <summary>
-///
-/// </summary>
-/// <param name="node"></param>
-/// <returns>Returns true if successful, false if the TextValue is not valid</returns>
+// / <summary>
+// /
+// / </summary>
+// / <param name="node"></param>
+// / <returns>Returns true if successful, false if the TextValue is not valid</returns>
 /**
  * Parses the TextValue of the node into the final value
  * @param node
  * Returns true if successful, false if the TextValue is not valid
  */
 PatternMatcher.prototype.finalizeValue = function finalizeValue(node) {
+  /* eslint-disable no-param-reassign */
   // already finalized
-  if (node.isFinalized)
+  if (node.isFinalized) {
     return;
+  }
 
   const token = node.token;
   const textValue = node.textValue;
 
-  if (token.exactMatch || token.value === ' ' || token.value === 'newline' || token.Value === 'emptyline' || token.Value === 'letter')
-  {
+  if (token.exactMatch || token.value === ' ' || token.value === 'newline' || token.Value === 'emptyline' || token.Value === 'letter') {
     node.value = textValue;
     node.isFinalized = true;
     return;
   }
 
   // check pattern tags and do a sub match for each of them
-  if (this.compiledPatterns[token.value] && node.matchState !== null)
-  {
+  if (this.compiledPatterns[token.value] && node.matchState !== null) {
     node.value = null;
     const results = this.matchResults(node.matchState);
-    if (results.length === 0)
+    if (results.length === 0) {
       return;
+    }
     // TODO: can be multiple results, choose the correct one depending on user culture
     node.value = results[0];
     node.isFinalized = true;
@@ -399,11 +400,11 @@ PatternMatcher.prototype.finalizeValue = function finalizeValue(node) {
 
   // check if a validator is registered for this token
   const validator = this.validators[token.Value];
-  if (validator)
-  {
+  if (validator) {
     node.value = validator.finalizeValue(token, textValue);
     node.isFinalized = true;
   }
+  /* eslint-enable */
 };
 
 
@@ -755,7 +756,7 @@ module.exports = PatternMatcher;
  {
  // token did not validate but 0 count is allowed
  //if (childPath.Key.MinCount == 0)
- //	ValidateChildren(childPath.Value.Paths, node, val, newCandidates, depth + 1);
+ //  ValidateChildren(childPath.Value.Paths, node, val, newCandidates, depth + 1);
  continue;
  }
 

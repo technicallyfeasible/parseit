@@ -1,4 +1,4 @@
-require('babel-core/register');
+require('babel-register');
 const gulp = require('gulp');
 const $ = require('gulp-load-plugins')();
 const webpack = require('webpack');
@@ -6,6 +6,8 @@ const webpack = require('webpack');
 const express = require('express');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
+
+require('./gulp/test');
 
 const src = {
   serverFiles: ['./src/**/*.js', './index.js'],

@@ -3,8 +3,9 @@
  */
 
 const chai = require('chai');
-const assert = chai.assert;
 const stringUtils = require('../../src/utils/stringUtils');
+
+const assert = chai.assert;
 
 describe('String Utils', () => {
   describe('.startsWith', () => {
