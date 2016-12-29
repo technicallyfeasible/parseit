@@ -1,7 +1,6 @@
-/**
- * Parses data values to figure out what actual type they are
- */
-const BooleanParserModule = require('./modules/BooleanParserModule');
+import BooleanParserModule from './modules/BooleanParserModule';
+import PatternMatcher from './PatternMatcher';
+import PatternContext from './PatternContext';
 
 /**
  * @class Module
@@ -11,23 +10,9 @@ const BooleanParserModule = require('./modules/BooleanParserModule');
  * @property {function(string)} getPatterns - returns patterns for a tag
  */
 
-const PatternMatcher = require('./PatternMatcher');
-const PatternContext = require('./PatternContext');
-
 const moduleTypes = [
   BooleanParserModule,
-  /* require('./modules/NumberParserModule'),
-  require('./modules/DateParserModule'),
-  require('./modules/AddressParserModule'),
-  require('./modules/CurrencyParserModule'),
-  require('./modules/UrlParserModule'),
-  require('./modules/IpParserModule'),
-  require('./modules/EmailParserModule')*/
 ];
-// var dateModuleTypes = [
-  /* require('./modules/NumberParserModule'),
-  require('./modules/DateParserModule')*/
-// ];
 
 let defaultPatternMatcher = null;
 // var datePatternMatcher = null;
@@ -233,4 +218,4 @@ DataParser.prototype.parse = function parse(value, context) {
 }
 */
 
-module.exports = DataParser;
+export default DataParser;

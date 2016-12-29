@@ -2,13 +2,12 @@
  * Matches patterns according to registered rules
  */
 
-const arrayUtils = require('./utils/arrayUtils');
-const stringUtils = require('./utils/stringUtils');
-const Token = require('./matching/Token');
-const PatternPath = require('./matching/PatternPath');
-const MatchState = require('./MatchState');
-const PathNode = require('./matching/PathNode');
-const PatternContext = require('./PatternContext');
+import arrayUtils from './utils/arrayUtils';
+import stringUtils from './utils/stringUtils';
+import PatternPath from './matching/PatternPath';
+import MatchState from './MatchState';
+import PathNode from './matching/PathNode';
+import PatternContext from './PatternContext';
 
 /** @const */
 const LETTER_CHARACTERS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -37,7 +36,6 @@ function PatternMatcher(patterns) {
 PatternMatcher.prototype.clearPatterns = function clearPatterns() {
   this.patterns = {};
   this.compiledPatterns = {};
-
 };
 
 /**
@@ -53,16 +51,17 @@ PatternMatcher.prototype.addPatterns = function addPatterns(matchTag, newPattern
 
   let targetPatterns = this.patterns[matchTag];
   if (!targetPatterns) {
-    targetPatterns = this.patterns[matchTag] = [];
+    targetPatterns = [];
+    this.patterns[matchTag] = targetPatterns;
   }
 
   let pathRoot = this.compiledPatterns[matchTag];
   if (!pathRoot) {
-    pathRoot = this.compiledPatterns[matchTag] = {};
+    pathRoot = {};
+    this.compiledPatterns[matchTag] = pathRoot;
   }
 
   // parse each pattern into tokens and then parse the tokens
-  const tokens = [];
   for (let patternIndex = 0; patternIndex < newPatterns.length; patternIndex++) {
     const p = newPatterns[patternIndex];
 
@@ -74,38 +73,11 @@ PatternMatcher.prototype.addPatterns = function addPatterns(matchTag, newPattern
     const targetIndex = targetPatterns.length;
     targetPatterns.push(p);
 
-    const pattern = p.match;
-
     //
-    // parse the pattern into tokens
+    // Get parsed pattern tokens
     //
 
-    tokens.length = 0;
-    let currentToken = '';
-    let i;
-    for (i = 0; i < pattern.length; i++) {
-      switch (pattern[i]) {
-        case '{':
-          if (!currentToken.length) {
-            break;
-          }
-          tokens.push(new Token(currentToken, true));
-          currentToken = '';
-          break;
-        case '}':
-          tokens.push(new Token(currentToken, false));
-          currentToken = '';
-          break;
-        default:
-          currentToken += pattern[i];
-          break;
-      }
-    }
-
-    if (currentToken) {
-      tokens.push(new Token(currentToken, true));
-    }
-
+    const tokens = p.tokens;
     if (!tokens.length) {
       continue;
     }
@@ -116,7 +88,7 @@ PatternMatcher.prototype.addPatterns = function addPatterns(matchTag, newPattern
 
     let path = null;
     let paths = pathRoot;
-    for (i = 0; i < tokens.length; i++) {
+    for (let i = 0; i < tokens.length; i++) {
       const token = tokens[i];
       const tokenKey = token.toString();
       // check if the exact same node exists and take it if it does

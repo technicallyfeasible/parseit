@@ -2,9 +2,9 @@
  * Tests for Pattern
  */
 
-const chai = require('chai');
-const Pattern = require('../../src/matching/Pattern');
-const sinon = require('sinon');
+import chai from 'chai';
+import sinon from 'sinon';
+import Pattern from '../../src/matching/Pattern';
 
 const assert = chai.assert;
 

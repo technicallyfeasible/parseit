@@ -2,13 +2,13 @@
  * Matches patterns according to registered rules
  */
 
-const arrayUtils = require('./utils/arrayUtils');
-const stringUtils = require('./utils/stringUtils');
-const Token = require('./matching/Token');
-const PatternPath = require('./matching/PatternPath');
-const MatchState = require('./MatchState');
-const PathNode = require('./matching/PathNode');
-const PatternContext = require('./PatternContext');
+import arrayUtils from './utils/arrayUtils';
+import stringUtils from './utils/stringUtils';
+import Token from './matching/Token';
+import PatternPath from './matching/PatternPath';
+import MatchState from './MatchState';
+import PathNode from './matching/PathNode';
+import PatternContext from './PatternContext';
 
 /** @const */
 const LETTER_CHARACTERS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';

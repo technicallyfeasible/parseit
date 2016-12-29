@@ -1,73 +1,58 @@
-/**
- * Pattern object
- */
+import Token from './Token';
 
+class Pattern {
+  /**
+   * Pattern object
+   */
+  constructor(match, parser) {
+    this.match = match || '';
+    this.parser = parser;
+    this.tokens = this.tokenize();
+  }
 
-const Pattern = function Pattern(match, parser) {
-  this.match = match || '';
-  this.parser = parser;
-};
+  toString() {
+    return this.match;
+  }
 
-Pattern.prototype.toString = function toString() {
-  return this.match;
-};
-Pattern.prototype.parse = function parse(context, values) {
-  return this.parser(context, values);
-};
-Pattern.prototype.equals = function equals(other) {
-  if (!other) return false;
-  return this.match === other.match;
-};
+  parse(context, values) {
+    return this.parser(context, values);
+  }
 
-module.exports = Pattern;
+  equals(other) {
+    if (!other) return false;
+    return this.match === other.match;
+  }
 
-/*
-  public class Pattern
-  {
-    public String Match { get; private set; }
-    public Func<PatternContext, Object[], Object> Parser { get; private set; }
-    public Func<Object[], Object> ParserNoContext { get; private set; }
+  tokenize() {
+    const pattern = this.match;
+    const tokens = [];
 
-    public Pattern(String match, Func<Object[], Object> parser)
-    {
-      Match = match;
-      ParserNoContext = parser;
-    }
-    public Pattern(String match, Func<PatternContext, Object[], Object> parser)
-    {
-      Match = match;
-      Parser = parser;
-    }
-
-    public Object Parse(PatternContext context, Object[] values)
-    {
-      if (ParserNoContext != null)
-        return ParserNoContext(values);
-      return Parser(context, values);
-    }
-
-#if !SCRIPTSHARP
-    public override Boolean Equals(Object obj)
-    {
-      if (ReferenceEquals(null, obj)) return false;
-      if (ReferenceEquals(this, obj)) return true;
-      if (obj.GetType() != GetType()) return false;
-      return Equals((Pattern) obj);
+    let currentToken = '';
+    let i;
+    for (i = 0; i < pattern.length; i++) {
+      switch (pattern[i]) {
+        case '{':
+          if (!currentToken.length) {
+            break;
+          }
+          tokens.push(new Token(currentToken, true));
+          currentToken = '';
+          break;
+        case '}':
+          tokens.push(new Token(currentToken, false));
+          currentToken = '';
+          break;
+        default:
+          currentToken += pattern[i];
+          break;
+      }
     }
 
-    protected Boolean Equals(Pattern other)
-    {
-      return String.Equals(Match, other.Match);
+    if (currentToken) {
+      tokens.push(new Token(currentToken, true));
     }
+    return tokens;
+  }
+}
 
-    public override Int32 GetHashCode()
-    {
-      return (Match != null ? Match.GetHashCode() : 0);
-    }
-
-    public override String ToString()
-    {
-      return Match;
-    }
-#endif
-*/
+export default Pattern;

@@ -2,15 +2,15 @@
  * Tests for PatternMatcher
  */
 
-const chai = require('chai');
-const sinon = require('sinon');
+import chai from 'chai';
+import sinon from 'sinon';
 
-const Pattern = require('../src/matching/Pattern');
-const Token = require('../src/matching/Token');
-const PathNode = require('../src/matching/PathNode');
-const PatternMatcher = require('../src/PatternMatcher');
-const MatchState = require('../src/MatchState');
-const PatternContext = require('../src/PatternContext');
+import Pattern from '../src/matching/Pattern';
+import Token from '../src/matching/Token';
+import PathNode from '../src/matching/PathNode';
+import PatternMatcher from '../src/PatternMatcher';
+import MatchState from '../src/MatchState';
+import PatternContext from '../src/PatternContext';
 
 const assert = chai.assert;
 
@@ -96,7 +96,7 @@ describe('PatternMatcher', () => {
       const matcher = new PatternMatcher();
       matcher.addPatterns('', testPatterns);
 
-      const tag = `emptyline:0-${Token.prototype.MAX_VALUE}`;
+      const tag = `emptyline:0-${Token.MAX_VALUE}`;
       const compiled = matcher.compiledPatterns[''];
       const root = compiled[tag];
       assert.strictEqual(root.matchedPatterns.length, 0);

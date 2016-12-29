@@ -2,8 +2,8 @@
  * Tests for Pattern
  */
 
-const chai = require('chai');
-const PathNode = require('../../src/matching/PathNode');
+import chai from 'chai';
+import PathNode from '../../src/matching/PathNode';
 
 const assert = chai.assert;
 

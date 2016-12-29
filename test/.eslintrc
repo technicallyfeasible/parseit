@@ -1,6 +1,4 @@
 {
-  "parser": "babel-eslint",
-  "extends": "es2015",
   "env": {
     "node": true,
     "mocha": true

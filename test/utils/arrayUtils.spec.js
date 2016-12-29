@@ -2,8 +2,8 @@
  * Tests for PatternMatcher
  */
 
-const chai = require('chai');
-const arrayUtils = require('../../src/utils/arrayUtils');
+import chai from 'chai';
+import arrayUtils from '../../src/utils/arrayUtils';
 
 const assert = chai.assert;
 

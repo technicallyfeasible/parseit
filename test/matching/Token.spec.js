@@ -2,8 +2,8 @@
  * Tests for Pattern
  */
 
-const chai = require('chai');
-const Token = require('../../src/matching/Token');
+import chai from 'chai';
+import Token from '../../src/matching/Token';
 
 const assert = chai.assert;
 
@@ -36,13 +36,13 @@ describe('Token', () => {
     const token = new Token('mytoken:+');
     assert.strictEqual(token.value, 'mytoken');
     assert.strictEqual(token.minCount, 1);
-    assert.strictEqual(token.maxCount, token.MAX_VALUE);
+    assert.strictEqual(token.maxCount, Token.MAX_VALUE);
   });
   it('splits value by colon, * is 0-max count', () => {
     const token = new Token('mytoken:*');
     assert.strictEqual(token.value, 'mytoken');
     assert.strictEqual(token.minCount, 0);
-    assert.strictEqual(token.maxCount, token.MAX_VALUE);
+    assert.strictEqual(token.maxCount, Token.MAX_VALUE);
   });
   it('splits value by colon, ? is 0-1 count', () => {
     const token = new Token('mytoken:?');
@@ -116,7 +116,7 @@ describe('Token', () => {
       assert.isTrue(token1.equals(token2));
 
       token1 = new Token('mytoken:+');
-      token2 = new Token(`mytoken:1-${Token.prototype.MAX_VALUE}`);
+      token2 = new Token(`mytoken:1-${Token.MAX_VALUE}`);
       assert.isTrue(token1.equals(token2));
     });
   });

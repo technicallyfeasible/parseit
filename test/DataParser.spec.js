@@ -2,13 +2,13 @@
  * Tests for PatternMatcher
  */
 
-const chai = require('chai');
-const sinon = require('sinon');
+import chai from 'chai';
+import sinon from 'sinon';
 
-const DataParser = require('../src/DataParser');
-const PatternMatcher = require('../src/PatternMatcher');
+import DataParser from '../src/DataParser';
+import PatternMatcher from '../src/PatternMatcher';
 
-const BooleanValue = require('../src/values/BooleanValue');
+import BooleanValue from '../src/values/BooleanValue';
 
 const assert = chai.assert;
 

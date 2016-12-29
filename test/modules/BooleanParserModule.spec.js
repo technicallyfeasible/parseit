@@ -2,10 +2,10 @@
  * Tests for PatternMatcher
  */
 
-const chai = require('chai');
+import chai from 'chai';
 
-const BooleanParserModule = require('../../src/modules/BooleanParserModule');
-const BooleanValue = require('../../src/values/BooleanValue');
+import BooleanParserModule from '../../src/modules/BooleanParserModule';
+import BooleanValue from '../../src/values/BooleanValue';
 
 const assert = chai.assert;
 

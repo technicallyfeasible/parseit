@@ -1,10 +1,5 @@
-/**
- * Validates booleans
- */
-
-
-const Pattern = require('../matching/Pattern');
-const BooleanValue = require('../values/BooleanValue');
+import Pattern from '../matching/Pattern';
+import BooleanValue from '../values/BooleanValue';
 
 
 /**
