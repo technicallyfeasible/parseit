@@ -11,9 +11,6 @@ const file = path.join(__dirname, '../release/dataparser.test.js');
 function buildTestBundle(watch) {
   const bundler = webpack(webpackConfig.default);
 
-  const mocha = new Mocha();
-  mocha.addFile(file);
-
   function bundleReady(err, stats) {
     if (err) {
       console.error(err);
@@ -25,6 +22,10 @@ function buildTestBundle(watch) {
     try {
       console.log('Starting tests...');
 
+      // remove from cache and run again
+      delete require.cache[require.resolve(file)];
+      const mocha = new Mocha();
+      mocha.addFile(file);
       mocha.run(failures => {
         if (!watch) {
           process.on('exit', () => {
@@ -33,8 +34,6 @@ function buildTestBundle(watch) {
           });
         }
       });
-
-      console.log('Done.');
     } catch (e) {
       console.log('Error loading module:', e.stack);
     }

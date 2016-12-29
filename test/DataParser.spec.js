@@ -23,7 +23,7 @@ describe('DataParser', () => {
   });
 
   it('calls getDefaultPatternMatcher when created with no modules', () => {
-    const spy = sinon.spy();
+    const spy = sandbox.spy();
     const getDefaultPatternMatcher = DataParser.__get__('getDefaultPatternMatcher');
     DataParser.__set__('getDefaultPatternMatcher', spy);
 
