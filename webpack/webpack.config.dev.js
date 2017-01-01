@@ -1,4 +1,4 @@
-const configure = require('./webpack.base.js');
+const configure = require('./webpack.base.js').default;
 
 module.exports = configure({
   hot: true,

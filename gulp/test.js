@@ -16,7 +16,6 @@ function buildTestBundle(watch) {
       console.error(err);
       return;
     }
-
     console.log('[webpack]', stats.toString(webpackConfig.default.stats));
 
     try {
@@ -24,7 +23,9 @@ function buildTestBundle(watch) {
 
       // remove from cache and run again
       delete require.cache[require.resolve(file)];
-      const mocha = new Mocha();
+      const mocha = new Mocha({
+        reporter: 'dot',
+      });
       mocha.addFile(file);
       mocha.run(failures => {
         if (!watch) {

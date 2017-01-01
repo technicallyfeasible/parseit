@@ -1,43 +1,56 @@
 /**
  * Keeps tree information for patterns
  */
+class PatternPath {
+  /**
+   * Create a new patch
+   * @constructor
+   */
+  constructor() {
+    // Paths by token key
+    this.paths = {};
+    // child paths with token
+    this.children = [];
+    // Any patterns finishing at this path
+    this.matchedPatterns = [];
+  }
 
+  /**
+   * Add more tokens to the path and create sub-paths as necessary
+   * @param pattern - the pattern to add
+   * @param start - index of first token to add to this path
+   */
+  addPattern(pattern, start = 0) {
+    const tokens = pattern.tokens;
+    if (tokens.length <= start) return;
 
-/**
- * Create a new patch
- * @constructor
- */
-const PatternPath = function PatternPath() {
-  // Paths for all tokens
-  this.paths = {};
-  // Any patterns finishing at this path
-  this.matchedPatterns = [];
-};
-PatternPath.prototype.toString = function toString() {
-  const matches = (this.matchedPatterns || []).join(', ');
-  const children = (this.paths.map(token => token.toString())).join(', ');
-  return `${matches} :: ${children}`;
-};
+    const token = tokens[start];
+    const tokenKey = token.toString();
+    // check if the exact same node exists and take it if it does
+    let path = this.paths[tokenKey];
+    if (!path) {
+      path = new PatternPath();
+      this.paths[tokenKey] = path;
+      this.children.push({
+        token,
+        path,
+      });
+    }
+
+    // add remaining tokens to sub path
+    if (tokens.length > (start + 1)) {
+      path.addPattern(pattern, start + 1);
+    } else if (path.matchedPatterns.indexOf(pattern) === -1) {
+      // remember the matched pattern if this was the last token
+      path.matchedPatterns.push(pattern);
+    }
+  }
+
+  toString() {
+    const matches = (this.matchedPatterns || []).join(', ');
+    const children = Object.keys(this.paths).join(', ');
+    return `${matches} :: ${children}`;
+  }
+}
 
 module.exports = PatternPath;
-
-/*
-  internal class PatternPath
-  {
-#if !SCRIPTSHARP
-    public override String ToString()
-    {
-      var matches = String.Join(", ", this.MatchedPatterns ?? new List<Int32>(0));
-      var children = String.Join(", ", this.Paths.Keys.Select(t => t.ToString()));
-      return String.Format("{0} :: {1}", matches, children);
-    }
-#endif
-
-    public Dictionary<Token, PatternPath> Paths = new Dictionary<Token, PatternPath>();
-
-    /// <summary>
-    /// Any patterns finishing at this path
-    /// </summary>
-    public List<Int32> MatchedPatterns;
-  }
-*/

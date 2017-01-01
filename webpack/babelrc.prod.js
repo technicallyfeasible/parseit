@@ -4,7 +4,6 @@ module.exports = {
     'stage-0',
   ],
   plugins: [
-    'rewire',
     'transform-runtime',
   ],
   sourceMaps: true,

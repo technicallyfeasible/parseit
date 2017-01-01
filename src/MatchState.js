@@ -1,25 +1,43 @@
-/**
- * Holds state for a matching session
- */
+import PathNode from './matching/PathNode';
 
+class MatchState {
+  /**
+   * Holds state for a matching session
+   */
+  constructor(matchTag, context) {
+    this.matchTag = matchTag;
+    this.context = context;
 
-const MatchState = function MatchState() {
-  this.matchTag = null;
-  this.candidatePaths = [];
-  this.newCandidates = [];
+    this.candidateNodes = [];
+    this.newCandidates = [];
 
-  this.context = null;
-};
-
-module.exports = MatchState;
-
-/*
-  internal class MatchState
-  {
-    public String MatchTag;
-    public List<PathNode> CandidatePaths = new List<PathNode>();
-    public List<PathNode> NewCandidates = new List<PathNode>();
-
-    public PatternContext Context { get; set; }
+    if (context) {
+      this.logReasons = !!context.reasons;
+      this.reasons = [];
+    }
   }
-*/
+
+  /**
+   * Add candidate tokens from the path
+   * @param root
+   */
+  addCandidates(root) {
+    root.children.forEach(({ token, path }) => {
+      this.candidateNodes.push(new PathNode(token, path));
+    });
+  }
+
+  /**
+   * Remove a candidate
+   * @param index
+   */
+  removeCandidate(index) {
+    if (this.logReasons) {
+      const node = this.candidateNodes[index];
+      this.reasons.push(node);
+    }
+    this.candidateNodes.splice(index, 1);
+  }
+}
+
+export default MatchState;

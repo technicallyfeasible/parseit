@@ -6,6 +6,7 @@
 
 const PatternContext = function PatternContext(currentDate) {
   this.currentDate = currentDate || new Date();
+  this.reasons = true;
 };
 
 module.exports = PatternContext;

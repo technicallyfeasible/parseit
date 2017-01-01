@@ -7,7 +7,7 @@ class Pattern {
   constructor(match, parser) {
     this.match = match || '';
     this.parser = parser;
-    this.tokens = this.tokenize();
+    this.tokens = Pattern.tokenize(this);
   }
 
   toString() {
@@ -23,8 +23,13 @@ class Pattern {
     return this.match === other.match;
   }
 
-  tokenize() {
-    const pattern = this.match;
+  /**
+   * Parse the pattern into tokens
+   * @param p
+   * @returns {Token[]}
+   */
+  static tokenize(p) {
+    const pattern = p.match;
     const tokens = [];
 
     let currentToken = '';

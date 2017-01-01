@@ -182,7 +182,7 @@ PatternMatcher.prototype.matchStart = function matchStart(context, matchTag) {
   const root = new PatternPath();
   root.paths = roots;
   const startNode = new PathNode(null, root, '');
-  state.candidatePaths.push(startNode);
+  state.candidateNodes.push(startNode);
 
   return state;
 };
@@ -198,7 +198,7 @@ PatternMatcher.prototype.matchNext = function matchNext(state, c) {
     return false;
   }
 
-  const candidatePaths = state.candidatePaths;
+  const candidatePaths = state.candidateNodes;
   const newCandidates = state.newCandidates;
   for (let i = 0; i < candidatePaths.length; i++) {
     const candidate = candidatePaths[i];

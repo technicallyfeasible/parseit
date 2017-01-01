@@ -1,6 +1,8 @@
 import Pattern from '../matching/Pattern';
 import BooleanValue from '../values/BooleanValue';
 
+import { startsWith } from '../utils/stringUtils';
+
 
 /**
  * Make the final output value
@@ -31,31 +33,55 @@ const mainPatterns = [
 ];
 
 
-/**
- * Singleton Module to parse boolean values
- * @constructor
- */
-const BooleanParserModule = function BooleanParserModule() {
-  this.const = {
-    trueValues: ['1', 'true', 'wahr'],
-    falseValues: ['0', 'false', 'falsch'],
-  };
+class BooleanParserModule {
+  /**
+   * Singleton Module to parse boolean values
+   * @constructor
+   */
+  constructor() {
+    this.const = {
+      trueValues: ['1', 'true', 'wahr'],
+      falseValues: ['0', 'false', 'falsch'],
+    };
+    this.const.trueLookup = this.const.trueValues.reduce((r, text) => (r[text] = true) && r, {});   // eslint-disable-line no-param-reassign
+    this.const.falseLookup = this.const.falseValues.reduce((r, text) => (r[text] = true) && r, {}); // eslint-disable-line no-param-reassign
 
-  this.patternTags = [''];
-  this.tokenTags = ['booleanfalse', 'booleantrue'];
-};
-/**
- * Return the patterns for the tag
- * @param tag {string}
- */
-BooleanParserModule.prototype.getPatterns = function getPatterns(tag) {
-  if (tag === '') {
-    return mainPatterns;
+    this.patternTags = [''];
+    this.tokenTags = ['booleanfalse', 'booleantrue'];
   }
-  return [];
-};
 
-module.exports = BooleanParserModule;
+  /**
+   * Return the patterns for the tag
+   * @param tag {string}
+   */
+  getPatterns(tag) {
+    if (tag === '') {
+      return mainPatterns;
+    }
+    return [];
+  }
+
+  /**
+   * Callback handler when a value has to be validated against a token
+   * @param token - The token to validate against
+   * @param value - The value to validate
+   * @param isFinal - True if this is the final validation and no more characters are expected for the value
+   * @returns {*} - Returns true if the value matches the token, false if it doesn't match or the token is unknown
+   */
+  validateToken(token, value, isFinal) {
+    const lowerValue = value.toLowerCase();
+    switch (token.value) {
+      case 'booleantrue':
+        return (isFinal && this.const.trueLookup(lowerValue)) || (!isFinal && startsWith(this.const.trueValues, lowerValue));
+      case 'booleanfalse':
+        return (isFinal && this.const.falseLookup(lowerValue)) || (!isFinal && startsWith(this.const.falseValues, lowerValue));
+      default:
+        return false;
+    }
+  }
+}
+
+export default BooleanParserModule;
 
 /*
   public class BooleanParserModule : IParserModule

@@ -1,6 +1,14 @@
 const path = require('path');
 const webpack = require('webpack');
 
+const babelOptions = require('./babelrc.prod');
+
+const watcher = {
+  aggregateTimeout: 300,
+  poll: false,
+  ignore: /node_modules/,
+};
+
 /**
  * Generate a webpack configuration
  * @param o - options
@@ -12,62 +20,77 @@ function configure(o) {
   const config = {
     context: __dirname,
     resolve: {
-      extensions: ['', '.json', '.js'],
+      extensions: ['.json', '.js', '.jsx'],
     },
     entry: o.hot ? [
       'webpack-hot-middleware/client?http://localhost:3000',
-      './index',
+      '../index.js',
     ] : [
-      './index'
+      '../index.js',
     ],
     output: {
-      path: path.join(__dirname, 'release/'),
-      publicPath: publicPath,
-      filename: 'dataparser' + (DEBUG ? '' : '.min') + '.js',
+      path: path.join(__dirname, '..', 'release/'),
+      publicPath,
+      filename: `dataparser${DEBUG ? '' : '.min'}.js`,
       library: 'DataParser',
       libraryTarget: 'umd',
+      pathinfo: DEBUG,
     },
 
     cache: DEBUG,
-    debug: DEBUG,
-    devtool: DEBUG ? '#inline-source-map' : false,
+    devtool: '#source-map',
 
     plugins: DEBUG ? [
-      new webpack.DefinePlugin({
-        'process.env.NODE_ENV': '"' + (o.environment || 'development') + '"',
+      new webpack.LoaderOptionsPlugin({
+        debug: true,
       }),
-      new webpack.optimize.OccurenceOrderPlugin(),
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': `"${o.environment || 'development'}"`,
+      }),
       new webpack.HotModuleReplacementPlugin(),
-      new webpack.NoErrorsPlugin()
+      new webpack.NoErrorsPlugin(),
     ] : [
-      new webpack.DefinePlugin({
-        'process.env.NODE_ENV': '"' + (o.environment || 'production') + '"',
+      new webpack.LoaderOptionsPlugin({
+        minimize: true,
+        debug: false,
       }),
-      new webpack.optimize.DedupePlugin(),
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': `"${o.environment || 'production'}"`,
+      }),
       new webpack.optimize.UglifyJsPlugin({
         compress: {
-          'drop_console': true,
+          drop_console: true,
         },
       }),
-      new webpack.optimize.OccurenceOrderPlugin(),
       new webpack.optimize.AggressiveMergingPlugin(),
     ],
     module: {
-      loaders: [{
-        test: /\.css$/,
-        loader: 'style!css',
-      }, {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: 'babel',
-      }, {
-        test: /\.json$/,
-        loader: 'json-loader',
-      }],
+      rules: [
+        {
+          enforce: 'pre',
+          test: /\.jsx?$/,
+          exclude: /node_modules/,
+          loader: 'eslint-loader',
+          options: {
+            quiet: true,
+          },
+        },
+        {
+          test: /\.jsx?$/,
+          use: [{
+            loader: 'babel-loader',
+            options: babelOptions,
+          }],
+          exclude: /node_modules/,
+        },
+      ],
     },
   };
 
   return config;
 }
 
-module.exports = configure;
+module.exports = {
+  default: configure,
+  watcher,
+};

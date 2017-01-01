@@ -8,6 +8,7 @@ import sinon from 'sinon';
 import Pattern from '../src/matching/Pattern';
 import Token from '../src/matching/Token';
 import PathNode from '../src/matching/PathNode';
+import PatternPath from '../src/matching/PatternPath';
 import PatternMatcher from '../src/PatternMatcher';
 import MatchState from '../src/MatchState';
 import PatternContext from '../src/PatternContext';
@@ -60,8 +61,8 @@ describe('PatternMatcher', () => {
 
       assert.isArray(matcher.patterns['']);
       assert.strictEqual(matcher.patterns[''].length, 1);
-      assert.isObject(matcher.compiledPatterns['']);
-      assert.strictEqual(Object.keys(matcher.compiledPatterns['']).length, 1);
+      assert.instanceOf(matcher.compiledPatterns[''], PatternPath);
+      assert.strictEqual(Object.keys(matcher.compiledPatterns[''].paths).length, 1);
     });
 
     it('splits a pattern into tokens', () => {
@@ -71,8 +72,8 @@ describe('PatternMatcher', () => {
       ]);
 
       const compiled = matcher.compiledPatterns[''];
-      assert.isDefined(compiled['level1:0-1']);
-      assert.isDefined(compiled['level1:0-1'].paths['level2:0-1']);
+      assert.isDefined(compiled.paths['level1:0-1']);
+      assert.isDefined(compiled.paths['level1:0-1'].paths['level2:0-1']);
     });
 
     it('identifies exact patterns and custom patterns correctly', () => {
@@ -84,8 +85,8 @@ describe('PatternMatcher', () => {
       ]);
 
       const compiled = matcher.compiledPatterns[''];
-      assert.isDefined(compiled[token1]);
-      assert.isDefined(compiled[token1].paths['level2:0-1']);
+      assert.isDefined(compiled.paths[token1]);
+      assert.isDefined(compiled.paths[token1].paths['level2:0-1']);
     });
 
     it('remembers the pattern for each compiled node', () => {
@@ -98,7 +99,7 @@ describe('PatternMatcher', () => {
 
       const tag = `emptyline:0-${Token.MAX_VALUE}`;
       const compiled = matcher.compiledPatterns[''];
-      const root = compiled[tag];
+      const root = compiled.paths[tag];
       assert.strictEqual(root.matchedPatterns.length, 0);
 
       const levelTrue = root.paths['booleantrue:1-1'];
@@ -109,10 +110,10 @@ describe('PatternMatcher', () => {
       // the last level should have the patterns referenced
       let end = levelTrue.paths[tag];
       assert.strictEqual(end.matchedPatterns.length, 1);
-      assert.strictEqual(end.matchedPatterns[0], 0);
+      assert.strictEqual(end.matchedPatterns[0], testPatterns[0]);
       end = levelFalse.paths[tag];
       assert.strictEqual(end.matchedPatterns.length, 1);
-      assert.strictEqual(end.matchedPatterns[0], 1);
+      assert.strictEqual(end.matchedPatterns[0], testPatterns[1]);
     });
   });
 
@@ -151,14 +152,14 @@ describe('PatternMatcher', () => {
       assert.instanceOf(state.context, PatternContext);
       assert.strictEqual(state.matchTag, '');
 
-      assert.strictEqual(state.candidatePaths.length, 1);
-      assert.instanceOf(state.candidatePaths[0], PathNode);
+      assert.strictEqual(state.candidateNodes.length, 1);
+      assert.instanceOf(state.candidateNodes[0], PathNode);
     });
 
     it('adds the starting node as first candidate path', () => {
       const state = matcher.matchStart(new PatternContext(), '');
-      assert.isArray(state.candidatePaths);
-      assert.strictEqual(state.candidatePaths.length, 1);
+      assert.isArray(state.candidateNodes);
+      assert.strictEqual(state.candidateNodes.length, 1);
     });
   });
 

@@ -2,6 +2,7 @@ const PatternMatcher = require('./src/PatternMatcher');
 const DataParser = require('./src/DataParser');
 
 const Pattern = require('./src/matching/Pattern');
+const PatternContext = require('./src/PatternContext');
 
 /**
  * Entry point for the DataParser library
@@ -9,6 +10,7 @@ const Pattern = require('./src/matching/Pattern');
 module.exports = {
   PatternMatcher,
   DataParser,
+  PatternContext,
   matching: {
     Pattern,
   },
