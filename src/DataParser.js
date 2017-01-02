@@ -35,23 +35,15 @@ function makePatternMatcher(modules) {
 
   modules.forEach((Module) => {
     const module = new Module();
-    let i;
-    let tag;
 
     // add patterns
     if (module.patternTags) {
-      for (i = 0; i < module.patternTags.length; i++) {
-        tag = module.patternTags[i];
-        matcher.addPatterns(tag, module.getPatterns(tag));
-      }
+      module.patternTags.forEach(tag => matcher.addPatterns(tag, module.getPatterns(tag)));
     }
 
     // register validators
-    if (module.tokenTags) {
-      for (i = 0; i < module.tokenTags.length; i++) {
-        tag = module.tokenTags[i];
-        matcher.registerValidator(tag, module);
-      }
+    if (Module.tokenTags) {
+      Module.tokenTags.forEach(tag => matcher.registerValidator(tag, Module));
     }
   });
   return matcher;

@@ -23,8 +23,7 @@ describe('BooleanParserModule', () => {
   });
 
   it('defines tokenTags', () => {
-    const parser = new BooleanParserModule();
-    assert.isArray(parser.tokenTags);
+    assert.isArray(BooleanParserModule.tokenTags);
   });
 
   describe('.getPatterns', () => {

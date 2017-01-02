@@ -219,6 +219,7 @@ describe('PatternMatcher', () => {
     let exactToken;
     let matcher;
     let context;
+    let state;
     beforeEach(() => {
       context = new PatternContext();
       exactToken = new Token('true', true);
@@ -226,8 +227,8 @@ describe('PatternMatcher', () => {
         new Pattern('{emptyline:*}true{emptyline:*}', () => true),
         new Pattern('{emptyline:*}false{emptyline:*}', () => false),
       ]);
-      const defaultValidator = new DefaultValidator(context);
-      defaultValidator.tokenTags.forEach(tag => matcher.registerValidator(tag, defaultValidator));
+      DefaultValidator.tokenTags.forEach(tag => matcher.registerValidator(tag, DefaultValidator));
+      state = matcher.matchStart(context, '');
     });
 
     const predefTokens = {
@@ -246,43 +247,43 @@ describe('PatternMatcher', () => {
     it('returns true for finalized nodes', () => {
       const node = new PathNode(exactToken, null, 'true');
       node.isFinalized = true;
-      const result = matcher.validateToken(context, node, true);
+      const result = matcher.validateToken(state, node, true);
       assert.isTrue(result);
     });
 
     it('returns false for empty textValue', () => {
       const node = new PathNode(exactToken, null, '');
-      const result = matcher.validateToken(context, node, true);
+      const result = matcher.validateToken(state, node, true);
       assert.isFalse(result);
     });
 
     it('returns true if the token is an exact match and starts with the text value (!isFinal)', () => {
       const node = new PathNode(exactToken, null, 'tr');
-      const result = matcher.validateToken(context, node, false);
+      const result = matcher.validateToken(state, node, false);
       assert.isTrue(result);
     });
 
     it('returns false if the token is an exact match and does not start with the text value (!isFinal)', () => {
       const node = new PathNode(exactToken, null, 'te');
-      const result = matcher.validateToken(context, node, false);
+      const result = matcher.validateToken(state, node, false);
       assert.isFalse(result);
     });
 
     it('returns true if the token is an exact match and equals the text value (isFinal=true)', () => {
       const node = new PathNode(exactToken, null, 'true');
-      const result = matcher.validateToken(context, node, true);
+      const result = matcher.validateToken(state, node, true);
       assert.isTrue(result);
     });
 
     it('returns false if the token is an exact match and does not equal the text value (isFinal=true)', () => {
       const node = new PathNode(exactToken, null, 'tru');
-      const result = matcher.validateToken(context, node, true);
+      const result = matcher.validateToken(state, node, true);
       assert.isFalse(result);
     });
 
     it('returns false if the token does not allow zero length and the text is empty', () => {
       const node = new PathNode(new Token('', false), null, '');
-      const result = matcher.validateToken(context, node, true);
+      const result = matcher.validateToken(state, node, true);
       assert.isFalse(result);
     });
 
@@ -297,7 +298,7 @@ describe('PatternMatcher', () => {
         for (i = 0; i < tests.correct.length; i++) {
           const textValue = tests.correct[i];
           const node = new PathNode(token, null, textValue);
-          const result = matcher.validateToken(context, node, false);
+          const result = matcher.validateToken(state, node, false);
           assert.isTrue(result, `token "${value}" should match text "${textValue}`);
         }
       }
@@ -313,7 +314,7 @@ describe('PatternMatcher', () => {
         for (i = 0; i < tests.wrong.length; i++) {
           const textValue = tests.wrong[i];
           const node = new PathNode(token, null, textValue);
-          const result = matcher.validateToken(context, node, false);
+          const result = matcher.validateToken(state, node, false);
           assert.isFalse(result, `token "${value}" should not match text "${textValue}`);
         }
       }

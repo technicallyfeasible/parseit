@@ -8,7 +8,7 @@ const LETTER_CHARACTERS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
  * Matches some basic patterns like whitespace, letters and numbers
  */
 class DefaultValidator extends ValidatorBase {
-  tokenTags = [' ', 'newline', 'emptyline', 'letter', 'any'];
+  static tokenTags = [' ', 'newline', 'emptyline', 'letter', 'any'];
 
   /* eslint-disable class-methods-use-this */
 

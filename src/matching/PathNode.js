@@ -41,6 +41,7 @@ class PathNode {
     this.reasons.push({
       test,
       args,
+      token: this.token.toString(),
       textValue: this.textValue,
       result,
     });
