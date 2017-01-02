@@ -3,7 +3,7 @@
  */
 
 import chai from 'chai';
-import arrayUtils from '../../src/utils/arrayUtils';
+import * as arrayUtils from '../../src/utils/arrayUtils';
 
 const assert = chai.assert;
 

@@ -232,7 +232,7 @@ describe('PatternMatcher', () => {
       newline: { correct: ['\r', '\n', '\r\n'], wrong: [' ', '\t'] },
       emptyline: { correct: ['   ', '\t \t', '\r', '\n', '\r\n'], wrong: ['test'] },
       letter: { correct: ['longwordnospaces', 'UPPERCASE'], wrong: ['long word with spaces'] },
-      any: { correct: ['   ', '\t ', 'abc', 'some text'], wrong: [''] },
+      any: { correct: ['   ', '\t ', 'abc', 'some text'], wrong: [] },
     };
 
 
@@ -273,6 +273,12 @@ describe('PatternMatcher', () => {
 
     it('returns false if the token is an exact match and does not equal the text value (isFinal=true)', () => {
       const node = new PathNode(exactToken, null, 'tru');
+      const result = matcher.validateToken(context, node, true);
+      assert.isFalse(result);
+    });
+
+    it('returns false if the token does not allow zero length and the text is empty', () => {
+      const node = new PathNode(new Token('', false), null, '');
       const result = matcher.validateToken(context, node, true);
       assert.isFalse(result);
     });

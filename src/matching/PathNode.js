@@ -36,10 +36,11 @@ class PathNode {
    * @param test
    * @param result
    */
-  logReason(test, result) {
+  logReason(test, args, result) {
     if (!this.reasons) this.reasons = [];
     this.reasons.push({
       test,
+      args,
       textValue: this.textValue,
       result,
     });

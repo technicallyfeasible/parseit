@@ -1,7 +1,7 @@
 import Pattern from '../matching/Pattern';
 import BooleanValue from '../values/BooleanValue';
 
-import { startsWith } from '../utils/stringUtils';
+import { startsWith } from '../utils/arrayUtils';
 
 
 /**
@@ -72,9 +72,9 @@ class BooleanParserModule {
     const lowerValue = value.toLowerCase();
     switch (token.value) {
       case 'booleantrue':
-        return (isFinal && this.const.trueLookup(lowerValue)) || (!isFinal && startsWith(this.const.trueValues, lowerValue));
+        return (isFinal && this.const.trueLookup[lowerValue]) || (!isFinal && startsWith(this.const.trueValues, lowerValue));
       case 'booleanfalse':
-        return (isFinal && this.const.falseLookup(lowerValue)) || (!isFinal && startsWith(this.const.falseValues, lowerValue));
+        return (isFinal && this.const.falseLookup[lowerValue]) || (!isFinal && startsWith(this.const.falseValues, lowerValue));
       default:
         return false;
     }

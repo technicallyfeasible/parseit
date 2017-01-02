@@ -2,8 +2,8 @@
  * Matches patterns according to registered rules
  */
 
-import arrayUtils from './utils/arrayUtils';
-import stringUtils from './utils/stringUtils';
+import * as arrayUtils from './utils/arrayUtils';
+import * as stringUtils from './utils/stringUtils';
 import Token from './matching/Token';
 import PatternPath from './matching/PatternPath';
 import MatchState from './MatchState';

@@ -1,5 +1,5 @@
-import arrayUtils from './utils/arrayUtils';
-import stringUtils from './utils/stringUtils';
+import * as arrayUtils from './utils/arrayUtils';
+import * as stringUtils from './utils/stringUtils';
 import PatternPath from './matching/PatternPath';
 import MatchState from './MatchState';
 import PathNode from './matching/PathNode';
@@ -214,18 +214,19 @@ class PatternMatcher {
       return true;
     }
 
+    const args = { isFinal };
     const token = node.token;
     const textValue = node.textValue;
 
     // match exact values first
     if (textValue === '') {
       const result = token.minCount === 0;
-      if (context.reasons) node.logReason('Exact match', result);
+      if (context.reasons) node.logReason('Exact match', args, result);
       return result;
     }
     if (token.exactMatch) {
       const result = ((isFinal && token.value === textValue) || (!isFinal && stringUtils.startsWith(token.value, textValue)));
-      if (context.reasons) node.logReason('Exact match', result);
+      if (context.reasons) node.logReason('Exact match', args, result);
       return result;
     }
 
@@ -252,7 +253,7 @@ class PatternMatcher {
         break;
     }
     if (inbuiltResult !== undefined) {
-      if (context.reasons) node.logReason(`Inbuilt(${token.value})`, inbuiltResult);
+      if (context.reasons) node.logReason(`Inbuilt(${token.value})`, args, inbuiltResult);
       return inbuiltResult;
     }
 
@@ -272,12 +273,12 @@ class PatternMatcher {
     // check if a validator is registered for this token
     const validator = this.validators[token.value];
     if (!validator) {
-      if (context.reasons) node.logReason('No validator', false);
+      if (context.reasons) node.logReason('No validator', args, false);
       return false;
     }
 
     const validatorResult = validator.validateToken(token, textValue, isFinal);
-    if (context.reasons) node.logReason('Validator', validatorResult);
+    if (context.reasons) node.logReason('Validator', args, validatorResult);
     return validatorResult;
   }
 
