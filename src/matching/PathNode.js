@@ -22,7 +22,7 @@ class PathNode {
     // The final assembled value
     this.value = null;
     // All values of earlier tokens
-    this.previousValues = [];
+    this.previousValues = null;
 
     // True if the value has been finalized and assigned
     this.isFinalized = null;

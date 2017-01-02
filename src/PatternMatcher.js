@@ -2,12 +2,7 @@ import * as arrayUtils from './utils/arrayUtils';
 import * as stringUtils from './utils/stringUtils';
 import PatternPath from './matching/PatternPath';
 import MatchState from './MatchState';
-import PathNode from './matching/PathNode';
 import PatternContext from './PatternContext';
-
-/** @const */
-const LETTER_CHARACTERS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
 
 /**
  * Matches patterns according to registered rules
@@ -29,6 +24,15 @@ class PatternMatcher {
     if (patterns) {
       this.addPatterns('', patterns);
     }
+  }
+
+  /**
+   * @preserve Register a validation object for the tag
+   * @param tag
+   * @param validator
+   */
+  registerValidator(tag, validator) {
+    this.validators[tag] = validator;
   }
 
   /**
@@ -95,9 +99,11 @@ class PatternMatcher {
       return [];
     }
 
-    for (let i = 0; i < value.length; i++) {
+    const len = value.length;
+    const finalIndex = len - 1;
+    for (let i = 0; i < len; i++) {
       const c = value.charAt(i);
-      if (!this.matchNext(state, c)) {
+      if (!this.matchNext(state, c, i === finalIndex)) {
         PatternMatcher.logReasons(state);
         return [];
       }
@@ -108,6 +114,7 @@ class PatternMatcher {
     results.reverse();
     return results;
   }
+
 
   /**
    * Begin a parsing session
@@ -131,29 +138,27 @@ class PatternMatcher {
    * Match the next character
    * @param state {MatchState} - The current matching state
    * @param c {String} - The next character
+   * @param isFinal
    * @returns {boolean} - true if this is still a valid match, false otherwise
    */
-  matchNext(state, c) {
+  matchNext(state, c, isFinal) {
     const candidateNodes = state.candidateNodes;
-    // const newCandidates = state.newCandidates;
     for (let i = 0; i < candidateNodes.length; i++) {
       const candidate = candidateNodes[i];
 
       // first check if any of the child nodes validate with the new character and remember them as candidates
       // any children can only be candidates if the final validation of the current value succeeds
       if (this.validateToken(state.context, candidate, true)) {
-        state.addCandidates(candidate.path);
-        // this.validateChildren(state.context, candidate.path, candidate, c, newCandidates, 0);
+        state.addCandidates(candidate.path, candidate.previousValues.concat(candidate.textValue));
       }
 
       // validate this candidate and remove it if it doesn't validate anymore
       candidate.isFinalized = false;
       candidate.textValue += c;
-      if (!this.validateToken(state.context, candidate, false)) {
+      if (!this.validateToken(state.context, candidate, isFinal)) {
         state.removeCandidate(i--);
       }
     }
-    // candidateNodes.push(...newCandidates);
 
     return candidateNodes.length > 0;
   }
@@ -164,7 +169,7 @@ class PatternMatcher {
         .forEach(node => {
           console.log('\n', node.token.toString());
           node.reasons.forEach(reason => {
-            console.log('  ', reason.result, reason.test, `"${reason.textValue}"`);
+            console.log('  ', reason.test, JSON.stringify(reason.args), `"${reason.textValue}"`, '=>', reason.result);
           });
         });
     }
@@ -172,33 +177,89 @@ class PatternMatcher {
 
   /**
    * Assemble the results after the last character has been matched
+   * @param state
+   * @returns {boolean}
+   */
+  hasResults(state) {
+    const candidatePaths = state.candidateNodes;
+
+    if (!this.patterns[state.matchTag]) {
+      return false;
+    }
+
+    // fetch patterns for all matching candidates
+    for (let index = 0; index < candidatePaths.length; index++) {
+      const path = candidatePaths[index];
+      // do final validation
+      if (!this.validateToken(state.context, path, true)) {
+        continue;
+      }
+      let result = false;
+      PatternMatcher.matchToLast(path.path, () => { result = true; });
+      return result;
+    }
+    return false;
+  }
+
+/**
+   * Assemble the results after the last character has been matched
    * @param state {MatchState} - The current matching state
    * @returns {Object[]} - The list of matches
    */
   matchResults(state) {
+    const results = [];
+
+    const { context, candidateNodes } = state;
+
+    // fetch patterns for all matching candidates
+    for (let i = 0; i < candidateNodes.length; i++) {
+      const node = candidateNodes[i];
+
+      this.finalizeValue(context, node);
+
+      const previousValues = node.previousValues.concat(node.value);
+      const previousValuesCount = previousValues.length - 1;
+      // traverse the tree to the leaf nodes with empty values added so we find all valid patterns
+      PatternMatcher.matchToLast(node.path, (path, depth) => {
+        if (depth > 0) {
+          previousValues[previousValuesCount + depth] = '';
+        }
+        for (let m = 0; m < path.matchedPatterns.length; m++) {
+          const pattern = path.matchedPatterns[m];
+          const result = pattern.parse(context, previousValues);
+          if (context.reasons) {
+            node.logReason(`Parse "${pattern}"`, {
+              values: previousValues,
+            }, result);
+          }
+          // only add if it is not in the list yet
+          if (!arrayUtils.contains(results, result)) {
+            results.push(result);
+          }
+        }
+      });
+    }
     PatternMatcher.logReasons(state);
-    // TODO
-    return state;
+    return results;
   }
 
   /**
-   * Register a validation object for the tag
-   * @param tag
-   * @param validator
+   * Recursively traverse all children of the path and call the "add" function
+   * @param path - path to traverse
+   * @param add - callback function
+   * @param depth
    */
-  registerValidator(tag, validator) {
-    this.validators[tag] = validator;
-  }
-
-  /**
-   * Checks whether the value is within the required length for token
-   * @param token
-   * @param value
-   * @param isFinal
-   * @returns {boolean}
-   */
-  validateCount(token, value, isFinal) {
-    return (!isFinal || value.length >= token.minCount) && value.length <= token.maxCount;
+  static matchToLast(path, add, depth = 0) {
+    if (path.matchedPatterns && path.matchedPatterns.length > 0) {
+      add(path, depth);
+    }
+    // check children if they allow 0 length as well
+    path.children.forEach(child => {
+      if (child.token.minCount > 0) {
+        return;
+      }
+      PatternMatcher.matchToLast(child.path, add, depth + 1);
+    });
   }
 
   /**
@@ -230,37 +291,10 @@ class PatternMatcher {
       return result;
     }
 
-    // test inbuilt tokens first
-    let inbuiltResult;
-    switch (token.value) {
-      // whitespace
-      case ' ':
-        inbuiltResult = this.validateCount(token, textValue, isFinal) && stringUtils.matchAll(textValue, ' \t');
-        break;
-      case 'newline':
-        inbuiltResult = this.validateCount(token, textValue, isFinal) && stringUtils.matchAll(textValue, '\r\n');
-        break;
-      case 'emptyline':
-        inbuiltResult = this.validateCount(token, textValue, isFinal) && stringUtils.matchAll(textValue, '\r\n \t');
-        break;
-      case 'letter':
-        inbuiltResult = this.validateCount(token, textValue, isFinal) && stringUtils.matchAll(textValue, LETTER_CHARACTERS);
-        break;
-      case 'any':
-        inbuiltResult = this.validateCount(token, textValue, isFinal);
-        break;
-      default:
-        break;
-    }
-    if (inbuiltResult !== undefined) {
-      if (context.reasons) node.logReason(`Inbuilt(${token.value})`, args, inbuiltResult);
-      return inbuiltResult;
-    }
-
     // check pattern tags and do a sub match for each of them
     if (this.compiledPatterns[token.value]) {
       // sub matching is possible, so start a new one or continue the previous one
-      if (node.matchState == null) {
+      if (!node.matchState) {
         node.matchState = this.matchStart(context, token.value);  // eslint-disable-line no-param-reassign
       }
       // if this is the last match then assemble the results
@@ -278,57 +312,15 @@ class PatternMatcher {
     }
 
     const validatorResult = validator.validateToken(token, textValue, isFinal);
-    if (context.reasons) node.logReason('Validator', args, validatorResult);
+    if (context.reasons) node.logReason(`Validator[${validator.constructor && validator.constructor.displayName}]`, args, validatorResult);
     return validatorResult;
-  }
-
-  /**
-   * Recursively check candidates
-   * @param context {PatternContext}
-   * @param paths {object[]}
-   * @param node {PathNode}
-   * @param val {string}
-   * @param newCandidates {PathNode[]}
-   * @param depth {number}
-   */
-  validateChildren(context, paths, node, val, newCandidates, depth) {
-    // first check if any of the child nodes validate with the new character and remember them as candidates
-    // foreach (KeyValuePair<Token, PatternPath> childPath in paths)
-    // TODO: replace with normal for-loop which is a lot faster
-    const keys = Object.keys(paths);
-    for (let index = 0; index < keys.length; index++) {
-      const key = keys[index];
-      const value = paths[key];
-      const childNode = new PathNode(key, value, val);
-      // if zero count is allowed it does not matter whether the child validates or not, we always try children as well
-      if (key.minCount === 0) { this.validateChildren(context, value.paths, node, val, newCandidates, depth + 1); }
-      if (!this.validateToken(context, childNode, false)) {
-        // token did not validate but 0 count is allowed
-        // if (childPath.Key.MinCount == 0)
-        //  ValidateChildren(childPath.Value.Paths, node, val, newCandidates, depth + 1);
-        continue;
-      }
-
-      // validated successfully so add a new candidate
-      // add empty values for all skipped tokens
-      Array.prototype.push.apply(childNode.previousValues, node.previousValues);
-      if (node.token != null) {
-        this.finalizeValue(node);
-        childNode.previousValues.push(node.value);
-      }
-      for (let i = 0; i < depth; i++) {
-        childNode.previousValues.push(null);
-      }
-      newCandidates.push(childNode);
-    }
   }
 
   /**
    * Parses the TextValue of the node into the final value
    * @param node
-   * Returns true if successful, false if the TextValue is not valid
    */
-  finalizeValue(node) {
+  finalizeValue(context, node) {
     /* eslint-disable no-param-reassign */
     // already finalized
     if (node.isFinalized) {
@@ -338,31 +330,37 @@ class PatternMatcher {
     const token = node.token;
     const textValue = node.textValue;
 
-    if (token.exactMatch || token.value === ' ' || token.value === 'newline' || token.Value === 'emptyline' || token.Value === 'letter') {
-      node.value = textValue;
+    if (token.exactMatch) {
+      node.value = textValue || '';
       node.isFinalized = true;
+      if (context.reasons) node.logReason('Finalize exact', null, true);
       return;
     }
 
     // check pattern tags and do a sub match for each of them
-    if (this.compiledPatterns[token.value] && node.matchState !== null) {
+    if (this.compiledPatterns[token.value] && node.matchState) {
       node.value = null;
       const results = this.matchResults(node.matchState);
       if (results.length === 0) {
+        if (context.reasons) node.logReason(`Finalize pattern[${token.value}] failed`, null, false);
         return;
       }
       // TODO: can be multiple results, choose the correct one depending on user culture
       node.value = results[0];
       node.isFinalized = true;
+      if (context.reasons) node.logReason(`Finalize pattern[${token.value}]`, null, node.value);
       return;
     }
 
     // check if a validator is registered for this token
-    const validator = this.validators[token.Value];
+    const validator = this.validators[token.value];
     if (validator) {
       node.value = validator.finalizeValue(token, textValue);
       node.isFinalized = true;
+      if (context.reasons) node.logReason(`Finalize validator[${validator.constructor && validator.constructor.displayName}]`, null, node.value);
+      return;
     }
+    if (context.reasons) node.logReason('Finalize failed', null, false);
     /* eslint-enable */
   }
 }

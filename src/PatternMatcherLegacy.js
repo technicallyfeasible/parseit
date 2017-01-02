@@ -18,7 +18,7 @@ const LETTER_CHARACTERS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
  * @param patterns
  * @constructor
  */
-function PatternMatcher(patterns) {
+function PatternMatcherLegacy(patterns) {
   // All currently active patterns
   this.patterns = {};
   // All active patterns compiled for use
@@ -34,7 +34,7 @@ function PatternMatcher(patterns) {
 /**
  * Clear all compiled patterns
  */
-PatternMatcher.prototype.clearPatterns = function clearPatterns() {
+PatternMatcherLegacy.prototype.clearPatterns = function clearPatterns() {
   this.patterns = {};
   this.compiledPatterns = {};
 
@@ -45,7 +45,7 @@ PatternMatcher.prototype.clearPatterns = function clearPatterns() {
  * @param matchTag
  * @param newPatterns
  */
-PatternMatcher.prototype.addPatterns = function addPatterns(matchTag, newPatterns) {
+PatternMatcherLegacy.prototype.addPatterns = function addPatterns(matchTag, newPatterns) {
   // if no patterns are in the list then there's nothing to do
   if (!newPatterns || !newPatterns.length) {
     return;
@@ -144,7 +144,7 @@ PatternMatcher.prototype.addPatterns = function addPatterns(matchTag, newPattern
  * @param value
  * @returns {*}
  */
-PatternMatcher.prototype.match = function match(context, value) {
+PatternMatcherLegacy.prototype.match = function match(context, value) {
   if (!value) {
     return [];
   }
@@ -169,7 +169,7 @@ PatternMatcher.prototype.match = function match(context, value) {
  * @param matchTag
  * @returns {MatchState}
  */
-PatternMatcher.prototype.matchStart = function matchStart(context, matchTag) {
+PatternMatcherLegacy.prototype.matchStart = function matchStart(context, matchTag) {
   const roots = this.compiledPatterns[matchTag];
   if (!roots) {
     return null;
@@ -193,7 +193,7 @@ PatternMatcher.prototype.matchStart = function matchStart(context, matchTag) {
  * @param c {String} - The next character
  * @returns {boolean} - true if this is still a valid match, false otherwise
  */
-PatternMatcher.prototype.matchNext = function matchNext(state, c) {
+PatternMatcherLegacy.prototype.matchNext = function matchNext(state, c) {
   if (!state) {
     return false;
   }
@@ -231,7 +231,7 @@ PatternMatcher.prototype.matchNext = function matchNext(state, c) {
  * @param currentState {MatchState} - The current matching state
  * @returns {Object[]} - The list of matches
  */
-PatternMatcher.prototype.matchResults = function matchResults(currentState) {
+PatternMatcherLegacy.prototype.matchResults = function matchResults(currentState) {
   // TODO
   return currentState;
 };
@@ -241,7 +241,7 @@ PatternMatcher.prototype.matchResults = function matchResults(currentState) {
  * @param tag
  * @param validator
  */
-PatternMatcher.prototype.registerValidator = function registerValidator(tag, validator) {
+PatternMatcherLegacy.prototype.registerValidator = function registerValidator(tag, validator) {
   this.validators[tag] = validator;
 };
 
@@ -252,7 +252,7 @@ PatternMatcher.prototype.registerValidator = function registerValidator(tag, val
  * @param isFinal
  * @returns {boolean}
  */
-PatternMatcher.prototype.validateCount = function validateCount(token, value, isFinal) {
+PatternMatcherLegacy.prototype.validateCount = function validateCount(token, value, isFinal) {
   return (!isFinal || value.length >= token.minCount) && value.length <= token.maxCount;
 };
 
@@ -263,7 +263,7 @@ PatternMatcher.prototype.validateCount = function validateCount(token, value, is
  * @param isFinal {boolean} - True if this is the final match and no further values will be added
  * @returns {boolean} - true if the value can be parsed successfully using the token
  */
-PatternMatcher.prototype.validateToken = function validateToken(context, node, isFinal) {
+PatternMatcherLegacy.prototype.validateToken = function validateToken(context, node, isFinal) {
   // if it is finalized then it is definitely also valid
   if (node.isFinalized) {
     return true;
@@ -328,7 +328,7 @@ PatternMatcher.prototype.validateToken = function validateToken(context, node, i
  * @param newCandidates {PathNode[]}
  * @param depth {number}
  */
-PatternMatcher.prototype.validateChildren = function validateChildren(context, paths, node, val, newCandidates, depth) {
+PatternMatcherLegacy.prototype.validateChildren = function validateChildren(context, paths, node, val, newCandidates, depth) {
   // first check if any of the child nodes validate with the new character and remember them as candidates
   // foreach (KeyValuePair<Token, PatternPath> childPath in paths)
   // TODO: replace with normal for-loop which is a lot faster
@@ -370,7 +370,7 @@ PatternMatcher.prototype.validateChildren = function validateChildren(context, p
  * @param node
  * Returns true if successful, false if the TextValue is not valid
  */
-PatternMatcher.prototype.finalizeValue = function finalizeValue(node) {
+PatternMatcherLegacy.prototype.finalizeValue = function finalizeValue(node) {
   /* eslint-disable no-param-reassign */
   // already finalized
   if (node.isFinalized) {
@@ -409,7 +409,7 @@ PatternMatcher.prototype.finalizeValue = function finalizeValue(node) {
 };
 
 
-module.exports = PatternMatcher;
+module.exports = PatternMatcherLegacy;
 
 
 /*

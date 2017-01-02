@@ -1,3 +1,4 @@
+import DefaultValidator from './validators/DefaultValidator';
 import BooleanParserModule from './modules/BooleanParserModule';
 import PatternMatcher from './PatternMatcher';
 import PatternContext from './PatternContext';
@@ -11,6 +12,7 @@ import PatternContext from './PatternContext';
  */
 
 const moduleTypes = [
+  DefaultValidator,
   BooleanParserModule,
 ];
 
@@ -37,15 +39,19 @@ function makePatternMatcher(modules) {
     let tag;
 
     // add patterns
-    for (i = 0; i < module.patternTags.length; i++) {
-      tag = module.patternTags[i];
-      matcher.addPatterns(tag, module.getPatterns(tag));
+    if (module.patternTags) {
+      for (i = 0; i < module.patternTags.length; i++) {
+        tag = module.patternTags[i];
+        matcher.addPatterns(tag, module.getPatterns(tag));
+      }
     }
 
     // register validators
-    for (i = 0; i < module.tokenTags.length; i++) {
-      tag = module.tokenTags[i];
-      matcher.registerValidator(tag, module);
+    if (module.tokenTags) {
+      for (i = 0; i < module.tokenTags.length; i++) {
+        tag = module.tokenTags[i];
+        matcher.registerValidator(tag, module);
+      }
     }
   });
   return matcher;
@@ -63,35 +69,39 @@ function getDefaultPatternMatcher() {
 }
 
 
-/**
- * Create a data parser with the specified name and modules. If name and modules is empty, matches all default patterns.
- * @param name
- * @param modules
- * @constructor
- */
-const DataParser = function DataParser(name, modules) {
-  if (!name || !modules) {
-    this.patternMatcher = getDefaultPatternMatcher();
-  } else {
-    if (namedPatternMatchers[name]) {
-      return;
+class DataParser {
+  /**
+   * Create a data parser with the specified name and modules. If name and modules is empty, matches all default patterns.
+   * @param name
+   * @param modules
+   * @constructor
+   */
+  constructor(name, modules) {
+    if (!name || !modules) {
+      this.patternMatcher = getDefaultPatternMatcher();
+    } else {
+      if (namedPatternMatchers[name]) {
+        return;
+      }
+
+      this.patternMatcher = makePatternMatcher(modules);
+      namedPatternMatchers[name] = this.patternMatcher;
     }
-
-    this.patternMatcher = makePatternMatcher(modules);
-    namedPatternMatchers[name] = this.patternMatcher;
   }
-};
 
-/**
- * Parse a value into all possible native types
- * @param value
- * @param context
- * @returns {Array}
- */
-DataParser.prototype.parse = function parse(value, context) {
-  const matchResults = this.patternMatcher.match(context || new PatternContext(), value);
-  return matchResults || [];
-};
+  /**
+   * Parse a value into all possible native types
+   * @param value
+   * @param context
+   * @returns {Array}
+   */
+  parse(value, context) {
+    const matchResults = this.patternMatcher.match(context || new PatternContext(), value);
+    return matchResults || [];
+  }
+}
+
+export default DataParser;
 
 /*
 {
@@ -217,5 +227,3 @@ DataParser.prototype.parse = function parse(value, context) {
   }
 }
 */
-
-export default DataParser;

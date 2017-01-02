@@ -4,17 +4,16 @@
 
 import chai from 'chai';
 
-import BooleanParserModule from '../../src/modules/BooleanParserModule';
+import BooleanParserModule, { constants } from '../../src/modules/BooleanParserModule';
 import BooleanValue from '../../src/values/BooleanValue';
 
 const assert = chai.assert;
 
 describe('BooleanParserModule', () => {
   it('sets up default constants for parsing', () => {
-    const parser = new BooleanParserModule();
-    assert.isObject(parser.const);
-    assert.isArray(parser.const.trueValues);
-    assert.isArray(parser.const.falseValues);
+    assert.isObject(constants);
+    assert.isArray(constants.trueValues);
+    assert.isArray(constants.falseValues);
   });
 
   it('defines patternTags', () => {
@@ -74,7 +73,7 @@ describe('BooleanParserModule', () => {
       const make = BooleanParserModule.__get__('make');
 
       const parser = new BooleanParserModule();
-      parser.const.trueValues.forEach((trueValue) => {
+      constants.trueValues.forEach((trueValue) => {
         const value = make.call(parser, trueValue);
         assert.strictEqual(value.bool, true);
       });
@@ -84,7 +83,7 @@ describe('BooleanParserModule', () => {
       const make = BooleanParserModule.__get__('make');
 
       const parser = new BooleanParserModule();
-      parser.const.falseValues.forEach((falseValue) => {
+      constants.falseValues.forEach((falseValue) => {
         const value = make.call(parser, falseValue);
         assert.strictEqual(value.bool, false);
       });

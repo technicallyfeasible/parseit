@@ -3,6 +3,12 @@ import BooleanValue from '../values/BooleanValue';
 
 import { startsWith } from '../utils/arrayUtils';
 
+export const constants = {
+  trueValues: ['1', 'true', 'wahr'],
+  falseValues: ['0', 'false', 'falsch'],
+};
+constants.trueLookup = constants.trueValues.reduce((r, text) => (r[text] = true) && r, {});   // eslint-disable-line no-param-reassign
+constants.falseLookup = constants.falseValues.reduce((r, text) => (r[text] = true) && r, {}); // eslint-disable-line no-param-reassign
 
 /**
  * Make the final output value
@@ -15,16 +21,17 @@ function make(value) {
     boolValue = value;
   } else if (value) {
     const lowerValue = value.toString().toLowerCase();
-    boolValue = (this.const.trueValues.indexOf(lowerValue) !== -1);
+    boolValue = !constants.falseLookup[lowerValue];
   }
   return new BooleanValue(boolValue);
 }
 /**
  * Reusable wrapper for the two patterns
+ * @param context
  * @param v
  */
-function parsePattern(v) {
-  make(v[1]);
+function parsePattern(context, v) {
+  return make(v[1]);
 }
 
 const mainPatterns = [
@@ -34,21 +41,10 @@ const mainPatterns = [
 
 
 class BooleanParserModule {
-  /**
-   * Singleton Module to parse boolean values
-   * @constructor
-   */
-  constructor() {
-    this.const = {
-      trueValues: ['1', 'true', 'wahr'],
-      falseValues: ['0', 'false', 'falsch'],
-    };
-    this.const.trueLookup = this.const.trueValues.reduce((r, text) => (r[text] = true) && r, {});   // eslint-disable-line no-param-reassign
-    this.const.falseLookup = this.const.falseValues.reduce((r, text) => (r[text] = true) && r, {}); // eslint-disable-line no-param-reassign
+  patternTags = [''];
+  tokenTags = ['booleanfalse', 'booleantrue'];
 
-    this.patternTags = [''];
-    this.tokenTags = ['booleanfalse', 'booleantrue'];
-  }
+  /* eslint-disable class-methods-use-this, no-unused-vars */
 
   /**
    * Return the patterns for the tag
@@ -72,13 +68,32 @@ class BooleanParserModule {
     const lowerValue = value.toLowerCase();
     switch (token.value) {
       case 'booleantrue':
-        return (isFinal && this.const.trueLookup[lowerValue]) || (!isFinal && startsWith(this.const.trueValues, lowerValue));
+        return (isFinal && constants.trueLookup[lowerValue]) || (!isFinal && startsWith(constants.trueValues, lowerValue));
       case 'booleanfalse':
-        return (isFinal && this.const.falseLookup[lowerValue]) || (!isFinal && startsWith(this.const.falseValues, lowerValue));
+        return (isFinal && constants.falseLookup[lowerValue]) || (!isFinal && startsWith(constants.falseValues, lowerValue));
       default:
         return false;
     }
   }
+
+  /**
+   * Parses the TextValue of the node into the final value
+   * @param token - The token to finalize
+   * @param value - The text value to parse
+   * @returns {*} - Returns the parsed result
+   */
+  finalizeValue(token, value) {
+    switch (token.value) {
+      case 'booleantrue':
+        return true;
+      case 'booleanfalse':
+        return false;
+      default:
+        return value;
+    }
+  }
+
+  /* eslint-enable */
 }
 
 export default BooleanParserModule;

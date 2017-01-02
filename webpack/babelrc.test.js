@@ -6,6 +6,7 @@ module.exports = {
   plugins: [
     'rewire',
     'transform-runtime',
+    'transform-class-display-name',
   ],
   sourceMaps: true,
 };

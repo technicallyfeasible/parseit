@@ -5,6 +5,7 @@ module.exports = {
   ],
   plugins: [
     'transform-runtime',
+    'transform-class-display-name',
   ],
   sourceMaps: true,
 };

@@ -12,6 +12,7 @@ import PatternPath from '../src/matching/PatternPath';
 import PatternMatcher from '../src/PatternMatcher';
 import MatchState from '../src/MatchState';
 import PatternContext from '../src/PatternContext';
+import DefaultValidator from '../src/validators/DefaultValidator';
 
 const assert = chai.assert;
 
@@ -219,12 +220,14 @@ describe('PatternMatcher', () => {
     let matcher;
     let context;
     beforeEach(() => {
+      context = new PatternContext();
       exactToken = new Token('true', true);
       matcher = new PatternMatcher([
         new Pattern('{emptyline:*}true{emptyline:*}', () => true),
         new Pattern('{emptyline:*}false{emptyline:*}', () => false),
       ]);
-      context = new PatternContext();
+      const defaultValidator = new DefaultValidator(context);
+      defaultValidator.tokenTags.forEach(tag => matcher.registerValidator(tag, defaultValidator));
     });
 
     const predefTokens = {
