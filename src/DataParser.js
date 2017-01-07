@@ -16,7 +16,6 @@ const moduleTypes = [
   BooleanParserModule,
 ];
 
-let defaultPatternMatcher = null;
 // var datePatternMatcher = null;
 const namedPatternMatchers = {};
 
@@ -24,59 +23,50 @@ const namedPatternMatchers = {};
 /**
  * Create a new PatternMatcher object including the specified modules
  * @param modules {Module[]} - List of modules to include
+ * @param context - A parser context that will be used across all parse calls
  * @returns {PatternMatcher}
  * @constructor
  */
-function makePatternMatcher(modules) {
+function makePatternMatcher(modules, context) {
   const matcher = new PatternMatcher([]);
   if (!modules) {
     return matcher;
   }
 
-  modules.forEach((Module) => {
-    const module = new Module();
+  modules.forEach(Module => {
+    const module = new Module(context);
 
     // add patterns
-    if (module.patternTags) {
-      module.patternTags.forEach(tag => matcher.addPatterns(tag, module.getPatterns(tag)));
+    if (Module.patternTags) {
+      Module.patternTags.forEach(tag => matcher.addPatterns(tag, module.getPatterns(tag)));
     }
 
     // register validators
     if (Module.tokenTags) {
-      Module.tokenTags.forEach(tag => matcher.registerValidator(tag, Module));
+      Module.tokenTags.forEach(tag => matcher.registerValidator(tag, module));
     }
   });
   return matcher;
-}
-
-/**
- * Make sure the default pattern matcher including all patterns is available and return it
- * @returns {PatternMatcher}
- */
-function getDefaultPatternMatcher() {
-  if (!defaultPatternMatcher) {
-    defaultPatternMatcher = makePatternMatcher(moduleTypes);
-  }
-  return defaultPatternMatcher;
 }
 
 
 class DataParser {
   /**
    * Create a data parser with the specified name and modules. If name and modules is empty, matches all default patterns.
-   * @param name
-   * @param modules
+   * @param [name] {string} - if a name is specified, remembers the created matcher for quicker reuse
+   * @param [modules]
+   * @param [context] - A parser context that will be used across all parse calls
    * @constructor
    */
-  constructor(name, modules) {
-    if (!name || !modules) {
-      this.patternMatcher = getDefaultPatternMatcher();
-    } else {
-      if (namedPatternMatchers[name]) {
-        return;
-      }
+  constructor(name, modules, context) {
+    if (name && namedPatternMatchers[name] && !modules && !context) {
+      this.patternMatcher = namedPatternMatchers[name];
+      return;
+    }
 
-      this.patternMatcher = makePatternMatcher(modules);
+    this.patternMatcher = makePatternMatcher(modules || moduleTypes, context);
+
+    if (name) {
       namedPatternMatchers[name] = this.patternMatcher;
     }
   }
@@ -84,7 +74,7 @@ class DataParser {
   /**
    * Parse a value into all possible native types
    * @param value
-   * @param context
+   * @param context - A context for this particular parse
    * @returns {Array}
    */
   parse(value, context) {

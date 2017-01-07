@@ -227,7 +227,8 @@ describe('PatternMatcher', () => {
         new Pattern('{emptyline:*}true{emptyline:*}', () => true),
         new Pattern('{emptyline:*}false{emptyline:*}', () => false),
       ]);
-      DefaultValidator.tokenTags.forEach(tag => matcher.registerValidator(tag, DefaultValidator));
+      const defaultValidator = new DefaultValidator(context);
+      DefaultValidator.tokenTags.forEach(tag => matcher.registerValidator(tag, defaultValidator));
       state = matcher.matchStart(context, '');
     });
 

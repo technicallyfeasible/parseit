@@ -17,9 +17,8 @@ describe('BooleanParserModule', () => {
   });
 
   it('defines patternTags', () => {
-    const parser = new BooleanParserModule();
-    assert.isArray(parser.patternTags);
-    assert.include(parser.patternTags, '');
+    assert.isArray(BooleanParserModule.patternTags);
+    assert.include(BooleanParserModule.patternTags, '');
   });
 
   it('defines tokenTags', () => {
@@ -31,7 +30,7 @@ describe('BooleanParserModule', () => {
       const parser = new BooleanParserModule();
       assert.isFunction(parser.getPatterns);
 
-      parser.patternTags.forEach((tag) => {
+      BooleanParserModule.patternTags.forEach((tag) => {
         const patterns = parser.getPatterns(tag);
         assert.isArray(patterns);
       });

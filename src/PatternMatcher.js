@@ -131,9 +131,6 @@ class PatternMatcher {
     const state = new MatchState(matchTag, context || new PatternContext());
     state.addCandidates(root);
 
-    // add validators
-    state.setValidators(this.validators);
-
     return state;
   }
 
@@ -306,13 +303,13 @@ class PatternMatcher {
     }
 
     // check if a validator is registered for this token
-    const validator = state.getValidator(token.value);
+    const validator = this.validators[token.value];
     if (!validator) {
       if (context.reasons) node.logReason('No validator', args, false);
       return false;
     }
 
-    const validatorResult = validator.validateToken(token, textValue, isFinal);
+    const validatorResult = validator.validateToken(context, token, textValue, isFinal);
     if (context.reasons) node.logReason(`Validator[${validator.constructor && validator.constructor.displayName}]`, args, validatorResult);
     return validatorResult;
   }
@@ -355,9 +352,9 @@ class PatternMatcher {
     }
 
     // check if a validator is registered for this token
-    const validator = state.getValidator(token.value);
+    const validator = this.validators[token.value];
     if (validator) {
-      node.value = validator.finalizeValue(token, textValue);
+      node.value = validator.finalizeValue(context, token, textValue);
       node.isFinalized = true;
       if (context.reasons) node.logReason(`Finalize validator[${validator.constructor && validator.constructor.displayName}]`, null, node.value);
       return;

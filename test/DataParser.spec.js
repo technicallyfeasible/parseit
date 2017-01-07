@@ -22,29 +22,45 @@ describe('DataParser', () => {
     sandbox.restore();
   });
 
-  it('calls getDefaultPatternMatcher when created with no modules', () => {
+  it('calls makePatternMatcher with default modules when none are supplied', () => {
     const spy = sandbox.spy();
-    const getDefaultPatternMatcher = DataParser.__get__('getDefaultPatternMatcher');
-    DataParser.__set__('getDefaultPatternMatcher', spy);
+    const makePatternMatcher = DataParser.__get__('makePatternMatcher');
+    DataParser.__set__('makePatternMatcher', spy);
 
-    /* eslint-disable no-new */
-    new DataParser();
-    /* eslint-enable no-new */
+    new DataParser();   // eslint-disable-line no-new
+
     assert.isTrue(spy.calledOnce);
 
     // restore
-    DataParser.__set__('getDefaultPatternMatcher', getDefaultPatternMatcher);
+    DataParser.__set__('makePatternMatcher', makePatternMatcher);
   });
 
-  describe('.getDefaultPatternMatcher', () => {
-    it('creates a default matcher or returns the cached instance', () => {
-      const getDefaultPatternMatcher = DataParser.__get__('getDefaultPatternMatcher');
+  describe('.constructor', () => {
+    it('creates a matcher or uses the cached instance', () => {
+      const parser1 = new DataParser('parser');
+      const parser2 = new DataParser('parser');
 
-      const matcher = getDefaultPatternMatcher();
-      assert.instanceOf(matcher, PatternMatcher);
+      assert.instanceOf(parser1.patternMatcher, PatternMatcher);
+      assert.instanceOf(parser2.patternMatcher, PatternMatcher);
+
       // second call should return same instance
-      const matcher2 = getDefaultPatternMatcher();
-      assert.strictEqual(matcher, matcher2);
+      assert.strictEqual(parser2.patternMatcher, parser1.patternMatcher, 'Should reuse a cached PatternMatcher instance if a name is specified');
+    });
+
+    it('creates a new matcher if modules or context are set', () => {
+      const parser1 = new DataParser('parser');
+      const parser2 = new DataParser('parser', []);
+      const parser3 = new DataParser('parser', null, {});
+
+      assert.instanceOf(parser1.patternMatcher, PatternMatcher);
+      assert.instanceOf(parser2.patternMatcher, PatternMatcher);
+      assert.instanceOf(parser3.patternMatcher, PatternMatcher);
+
+      // second call should return different instance
+      assert.notStrictEqual(parser2.patternMatcher, parser1.patternMatcher, 'Should create a new PatternMatcher instance if modules are specified');
+
+      // third call should return different instance
+      assert.notStrictEqual(parser3.patternMatcher, parser2.patternMatcher, 'Should create a new PatternMatcher instance if context is specified');
     });
   });
 

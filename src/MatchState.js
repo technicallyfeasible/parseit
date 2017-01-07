@@ -51,27 +51,6 @@ class MatchState {
     }
     this.candidateNodes.splice(index, 1);
   }
-
-  /**
-   * @preserve Create instances of the validators for use during matching
-   * @param validators
-   */
-  setValidators(validators) {
-    this.validators = Object.keys(validators).reduce((r, key) => {
-      const Validator = validators[key];
-      r[key] = new Validator(this.context);   // eslint-disable-line no-param-reassign
-      return r;
-    }, {});
-  }
-
-  /**
-   * Get the validator instances
-   * @returns {object}
-   */
-  getValidator(tag) {
-    if (!this.validators) return null;
-    return this.validators[tag];
-  }
 }
 
 export default MatchState;
