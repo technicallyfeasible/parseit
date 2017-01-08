@@ -65,12 +65,16 @@ describe('DataParser', () => {
   });
 
   describe('.parse', () => {
-    it('returns BooleanValue when parsing "true" / "false"', () => {
+    it('returns BooleanValue when parsing "true" / "false" with or without surrounding spaces', () => {
       const parser = new DataParser();
-      const result = parser.parse('true');
-      assert.isArray(result);
-      assert.lengthOf(result, 1);
-      assert.instanceOf(result[0], BooleanValue);
+
+      const testStrings = ['true', 'false', '  true', ' true  '];
+      testStrings.forEach(str => {
+        const result = parser.parse(str);
+        assert.isArray(result);
+        assert.lengthOf(result, 1);
+        assert.instanceOf(result[0], BooleanValue);
+      });
     });
   });
 });

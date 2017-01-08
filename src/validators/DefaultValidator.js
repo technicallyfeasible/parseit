@@ -45,8 +45,6 @@ class DefaultValidator extends ValidatorBase {
     return result;
   }
 
-  /* eslint-enable */
-
   /**
    * Checks whether the value is within the required length for token
    * @param token
@@ -66,12 +64,14 @@ class DefaultValidator extends ValidatorBase {
    * @returns {*} - Returns the parsed result
    */
   finalizeValue(context, token, value) {
-    if (this.tokenTags.indexOf(token.value) !== -1) {
+    if (DefaultValidator.tokenTags.indexOf(token.value) !== -1) {
       return value;
     }
     // TODO: return something else if unknown?
     return value;
   }
+
+  /* eslint-enable */
 }
 
 export default DefaultValidator;

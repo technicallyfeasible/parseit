@@ -23,17 +23,6 @@ process.on('uncaughtException', function onProcessException(err) {
   $.util.log('Error:', err);
 });
 
-// start the server and restart if the source changes
-gulp.task('test', function runTest() {
-  return gulp.src(src.testFiles)
-    .pipe($.cached('testing', { optimizeMemory: true }))
-    .pipe($.mocha({ reporter: 'dot' }))
-    .once('error', function handleTestError(err) {
-      $.util.log(err);
-      this.emit('end');
-    });
-});
-
 // watch server and test files and restart tests when any change
 gulp.task('watch', ['test'], function runWatch() {
   // rerun test task when files change
@@ -82,11 +71,7 @@ gulp.task('debug', function runDebug(done) {
   const config = require('./webpack/webpack.config.js');
   const bundler = webpack(config);
   bundler.run(function handleResult(err, stats) {
-    $.util.log(stats.toString({
-      colors: true,
-      chunks: false,
-      modules: false,
-    }));
+    $.util.log(stats.toString(config.stats));
     done(err);
   });
 });
@@ -98,11 +83,7 @@ gulp.task('release', function runRelease(done) {
   const config = require('./webpack/webpack.config.prod.js');
   const bundler = webpack(config);
   bundler.run(function handleResult(err, stats) {
-    $.util.log(stats.toString({
-      colors: true,
-      chunks: false,
-      modules: false,
-    }));
+    $.util.log(stats.toString(config.stats));
     done(err);
   });
 });

@@ -10,60 +10,85 @@ const watcher = {
 };
 
 /**
+ * Plugins by environment
+ */
+const plugins = {
+  development: () => [
+    new webpack.LoaderOptionsPlugin({
+      debug: true,
+    }),
+  ],
+  production: () => [
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false,
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        drop_console: true,
+      },
+    }),
+    new webpack.optimize.AggressiveMergingPlugin(),
+  ],
+  hot: () => [
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoErrorsPlugin(),
+  ],
+};
+
+/**
  * Generate a webpack configuration
  * @param o - options
  */
 function configure(o) {
+  const files = o.hot ? [
+    'webpack-hot-middleware/client?http://localhost:3000',
+    '../index.js',
+  ] : [
+    '../index.js',
+  ];
   const DEBUG = o.environment !== 'production';
   const publicPath = o.publicPath || '/release/';
+  const env = o.environment || (DEBUG ? 'development' : 'production');
+
+  const hotPlugins = o.hot ? plugins.hot : [];
 
   const config = {
     context: __dirname,
     resolve: {
       extensions: ['.json', '.js', '.jsx'],
     },
-    entry: o.hot ? [
-      'webpack-hot-middleware/client?http://localhost:3000',
-      '../index.js',
-    ] : [
-      '../index.js',
-    ],
+    entry: {
+      dataparser: files,
+      'dataparser-with-locales': files.concat('../src/modules/contexts/index.js'),
+    },
     output: {
       path: path.join(__dirname, '..', 'release/'),
       publicPath,
-      filename: `dataparser${DEBUG ? '' : '.min'}.js`,
-      library: 'DataParser',
+      filename: `[name]${DEBUG ? '' : '.min'}.js`,
+      library: 'dataparser',
       libraryTarget: 'umd',
       pathinfo: DEBUG,
+    },
+
+    externals: {
+      dataparser: true,
     },
 
     cache: DEBUG,
     devtool: '#source-map',
 
-    plugins: DEBUG ? [
-      new webpack.LoaderOptionsPlugin({
-        debug: true,
-      }),
+    stats: {
+      colors: true,
+      chunks: false,
+      modules: false,
+    },
+
+    plugins: [
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': `"${o.environment || 'development'}"`,
+        'process.env.NODE_ENV': JSON.stringify(env),
       }),
-      new webpack.HotModuleReplacementPlugin(),
-      new webpack.NoErrorsPlugin(),
-    ] : [
-      new webpack.LoaderOptionsPlugin({
-        minimize: true,
-        debug: false,
-      }),
-      new webpack.DefinePlugin({
-        'process.env.NODE_ENV': `"${o.environment || 'production'}"`,
-      }),
-      new webpack.optimize.UglifyJsPlugin({
-        compress: {
-          drop_console: true,
-        },
-      }),
-      new webpack.optimize.AggressiveMergingPlugin(),
-    ],
+    ].concat(plugins[env]()).concat(hotPlugins),
     module: {
       rules: [
         {

@@ -1,6 +1,6 @@
 class PatternContext {
   /**
-   * @preserve Context for pattern matching
+   * Context for pattern matching
    * Holds values which may influence parsing outcome like current date and time, location or language
    * @param options {{ [date]: ?Date, [reasons]: ?boolean }}
    */

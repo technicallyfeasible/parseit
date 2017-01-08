@@ -73,6 +73,18 @@ describe('BooleanParserModule', () => {
       const parser = new BooleanParserModule();
       constants.trueValues.forEach((trueValue) => {
         const value = make.call(parser, trueValue);
+        assert.instanceOf(value, BooleanValue);
+        assert.strictEqual(value.bool, true);
+      });
+    });
+
+    it('converts values in trueValues with surrounding spaces to BooleanValue(true)', () => {
+      const make = BooleanParserModule.__get__('make');
+
+      const parser = new BooleanParserModule();
+      constants.trueValues.forEach((trueValue) => {
+        const value = make.call(parser, trueValue);
+        assert.instanceOf(value, BooleanValue);
         assert.strictEqual(value.bool, true);
       });
     });
@@ -83,6 +95,7 @@ describe('BooleanParserModule', () => {
       const parser = new BooleanParserModule();
       constants.falseValues.forEach((falseValue) => {
         const value = make.call(parser, falseValue);
+        assert.instanceOf(value, BooleanValue);
         assert.strictEqual(value.bool, false);
       });
     });

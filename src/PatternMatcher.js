@@ -9,7 +9,7 @@ import PatternContext from './PatternContext';
  */
 class PatternMatcher {
   /**
-   * @preserve Create a new pattern matcher with the given base patterns
+   * Create a new pattern matcher with the given base patterns
    * @param patterns
    * @constructor
    */
@@ -27,7 +27,7 @@ class PatternMatcher {
   }
 
   /**
-   * @preserve Register a validator type for the tag
+   * Register a validator type for the tag
    * @param tag
    * @param validator
    */
@@ -36,7 +36,7 @@ class PatternMatcher {
   }
 
   /**
-   * @preserve Clear all compiled patterns
+   * Clear all compiled patterns
    */
   clearPatterns() {
     this.patterns = {};
@@ -44,7 +44,7 @@ class PatternMatcher {
   }
 
   /**
-   * @preserve Add more patterns to the compiled ones
+   * Add more patterns to the compiled ones
    * @param matchTag
    * @param newPatterns
    */
@@ -84,7 +84,7 @@ class PatternMatcher {
   }
 
   /**
-   * @preserve Match the value against all patterns and return the ones that fit
+   * Match the value against all patterns and return the ones that fit
    * @param context - The current context for matching
    * @param value
    * @returns {*}

@@ -6,6 +6,8 @@ const PatternContext = require('./src/PatternContext');
 
 const ValidatorBase = require('./src/validators/ValidatorBase');
 
+const BooleanParserModule = require('./src/modules/BooleanParserModule');
+
 /**
  * Entry point for the DataParser library
  */
@@ -18,5 +20,8 @@ module.exports = {
   },
   validators: {
     ValidatorBase,
+  },
+  modules: {
+    BooleanParserModule,
   },
 };

@@ -2,6 +2,11 @@
   "rules": {
     "import/no-extraneous-dependencies": [0, {
       "devDependencies": false
+    }],
+    "import/no-unresolved": [2, {
+      "ignore": [
+        "dataparser"
+      ]
     }]
   }
 }

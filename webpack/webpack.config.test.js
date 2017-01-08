@@ -1,4 +1,4 @@
-
+'use strict';
 
 const path = require('path');
 const glob = require('glob');
@@ -31,11 +31,16 @@ const config = {
     libraryTarget: 'commonjs2',
     pathinfo: true,
   },
-  externals: nodeModules,
+  externals: {
+    ...nodeModules,
+    dataparser: true,
+  },
   cache: true,
   devtool: '#inline-source-map',
   stats: {
     colors: true,
+    chunks: false,
+    modules: false,
     reasons: false,
   },
   performance: {

@@ -22,7 +22,7 @@ function make(value) {
     boolValue = value;
   } else if (value) {
     const lowerValue = value.toString().toLowerCase();
-    boolValue = !constants.falseLookup[lowerValue];
+    boolValue = !!constants.trueLookup[lowerValue];
   }
   return new BooleanValue(boolValue);
 }
@@ -44,6 +44,10 @@ const mainPatterns = [
 class BooleanParserModule extends ValidatorBase {
   static tokenTags = ['booleanfalse', 'booleantrue'];
   static patternTags = [''];
+
+  static defineContext() {
+
+  }
 
   /* eslint-disable class-methods-use-this, no-unused-vars */
 
