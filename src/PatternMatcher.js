@@ -165,13 +165,13 @@ class PatternMatcher {
 
   static logReasons(state) {
     if (state.context.reasons) {
-      state.reasons.concat(state.getCandidateNodes())
-        .forEach(node => {
-          console.log('\n', node.token.toString());
-          node.reasons.forEach(reason => {
-            console.log('  ', reason.test, JSON.stringify(reason.args), `"${reason.textValue}"`, '=>', reason.result);
-          });
-        });
+      state.reasons = state.reasons.concat(state.getCandidateNodes());  // eslint-disable-line no-param-reassign
+      // state.reasons.forEach(node => {
+      //   console.log('\n', node.token.toString());
+      //   node.reasons.forEach(reason => {
+      //     console.log('  ', reason.test, JSON.stringify(reason.args), `"${reason.textValue}"`, '=>', reason.result);
+      //   });
+      // });
     }
   }
 

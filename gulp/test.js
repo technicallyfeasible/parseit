@@ -24,7 +24,7 @@ function buildTestBundle(watch) {
       // remove from cache and run again
       delete require.cache[require.resolve(file)];
       const mocha = new Mocha({
-        reporter: 'dot',
+        reporter: 'list',
       });
       mocha.addFile(file);
       mocha.run(failures => {

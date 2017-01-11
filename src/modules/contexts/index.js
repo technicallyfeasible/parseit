@@ -1,1 +1,1 @@
-import './boolean.de-de';
+import './boolean.de';

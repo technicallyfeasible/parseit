@@ -8,6 +8,8 @@ class PatternContext {
     const opts = options || {};
     this.date = opts.date || new Date();
     this.reasons = opts.reasons === undefined ? true : opts.reasons;
+    this.language = 'en';
+    this.country = 'us';
   }
 }
 

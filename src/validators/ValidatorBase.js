@@ -1,9 +1,45 @@
+
 /**
  * Validator base class to reduce some boilerplate
  */
 class ValidatorBase {
   constructor(context) {
     this.context = context;
+  }
+
+  /**
+   * Get cache key from context
+   * @param context
+   * @param keyProps
+   * @returns {string}
+   */
+  static getKey(context = {}, keyProps = []) {
+    return keyProps.map(prop => context[prop] || '').join('_');
+  }
+
+  /**
+   * Store options for the given context. Used to set different values by country or language
+   * @param cache
+   * @param context
+   * @param options
+   */
+  static defineContext(cache, context, options) {
+    /* eslint-disable no-param-reassign */
+    // automatically determine which context properties to use for the key
+    if (!cache.keys) {
+      cache.keys = Object.keys(context);
+    }
+    cache[ValidatorBase.getKey(context, cache.keys)] = options;
+    /* eslint-enable */
+  }
+
+  /**
+   * Retrieve options matching the given context
+   * @param cache
+   * @param context
+   */
+  static getOptions(cache, context) {
+    return cache[ValidatorBase.getKey(context, cache.keys)];
   }
 
   /* eslint-disable class-methods-use-this, no-unused-vars */

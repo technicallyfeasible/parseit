@@ -6,9 +6,8 @@ import PatternContext from './PatternContext';
 /**
  * @class Module
  * @type {object}
- * @property {string[]} patternTags - available pattern tags
  * @property {string[]} tokenTags - available token tags
- * @property {function(string)} getPatterns - returns patterns for a tag
+ * @property {function()} getPatterns - returns patterns for a tag
  */
 
 const moduleTypes = [
@@ -37,8 +36,9 @@ function makePatternMatcher(modules, context) {
     const module = new Module(context);
 
     // add patterns
-    if (Module.patternTags) {
-      Module.patternTags.forEach(tag => matcher.addPatterns(tag, module.getPatterns(tag)));
+    if (module.getPatterns) {
+      const patterns = module.getPatterns();
+      Object.keys(patterns).forEach(tag => matcher.addPatterns(tag, patterns[tag]));
     }
 
     // register validators
@@ -64,7 +64,7 @@ class DataParser {
       return;
     }
 
-    this.patternMatcher = makePatternMatcher(modules || moduleTypes, context);
+    this.patternMatcher = makePatternMatcher(modules || moduleTypes, context || new PatternContext());
 
     if (name) {
       namedPatternMatchers[name] = this.patternMatcher;

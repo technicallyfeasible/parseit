@@ -2,23 +2,23 @@
  * Tests for PatternMatcher
  */
 
-import chai from 'chai';
+import { assert } from 'chai';
 
-import BooleanParserModule, { constants } from '../../src/modules/BooleanParserModule';
-import BooleanValue from '../../src/values/BooleanValue';
+import BooleanParserModule, { optionsCache } from '../../src/modules/BooleanParserModule';
 
-const assert = chai.assert;
 
 describe('BooleanParserModule', () => {
-  it('sets up default constants for parsing', () => {
-    assert.isObject(constants);
-    assert.isArray(constants.trueValues);
-    assert.isArray(constants.falseValues);
+  let context;
+  beforeEach(() => {
+    context = {
+      language: 'en',
+    };
   });
 
-  it('defines patternTags', () => {
-    assert.isArray(BooleanParserModule.patternTags);
-    assert.include(BooleanParserModule.patternTags, '');
+  it('loads english language constants by default', () => {
+    assert.isObject(optionsCache.en);
+    assert.isArray(optionsCache.en.trueValues);
+    assert.isArray(optionsCache.en.falseValues);
   });
 
   it('defines tokenTags', () => {
@@ -26,78 +26,26 @@ describe('BooleanParserModule', () => {
   });
 
   describe('.getPatterns', () => {
-    it('returns patterns for all tags in patternTags', () => {
-      const parser = new BooleanParserModule();
+    it('returns en patterns by default', () => {
+      const parser = new BooleanParserModule(context);
       assert.isFunction(parser.getPatterns);
 
-      BooleanParserModule.patternTags.forEach((tag) => {
-        const patterns = parser.getPatterns(tag);
-        assert.isArray(patterns);
+      const patterns = parser.getPatterns();
+      assert.isObject(patterns);
+      assert.isNotNull(patterns['']);
+      Object.keys(patterns).forEach((tag) => {
+        assert.isArray(patterns[tag]);
       });
     });
 
     it('returns mainPatterns for empty tag', () => {
-      const mainPatterns = BooleanParserModule.__get__('mainPatterns');
+      const mainPatterns = optionsCache.en.patterns[''];
       assert.isArray(mainPatterns);
 
-      const parser = new BooleanParserModule();
-      const patterns = parser.getPatterns('');
-      assert.isArray(patterns);
-      assert.strictEqual(patterns, mainPatterns);
-    });
-  });
-
-  describe('.make', () => {
-    it('exists', () => {
-      const make = BooleanParserModule.__get__('make');
-      assert.isFunction(make);
-    });
-
-    it('returns a BooleanValue with false if supplied no argument', () => {
-      const make = BooleanParserModule.__get__('make');
-      const value = make();
-      assert.instanceOf(value, BooleanValue);
-    });
-
-    it('returns a BooleanValue for boolean arguments', () => {
-      const make = BooleanParserModule.__get__('make');
-      let value = make(false);
-      assert.strictEqual(value.bool, false);
-      value = make(true);
-      assert.strictEqual(value.bool, true);
-    });
-
-    it('converts values in trueValues to BooleanValue(true)', () => {
-      const make = BooleanParserModule.__get__('make');
-
-      const parser = new BooleanParserModule();
-      constants.trueValues.forEach((trueValue) => {
-        const value = make.call(parser, trueValue);
-        assert.instanceOf(value, BooleanValue);
-        assert.strictEqual(value.bool, true);
-      });
-    });
-
-    it('converts values in trueValues with surrounding spaces to BooleanValue(true)', () => {
-      const make = BooleanParserModule.__get__('make');
-
-      const parser = new BooleanParserModule();
-      constants.trueValues.forEach((trueValue) => {
-        const value = make.call(parser, trueValue);
-        assert.instanceOf(value, BooleanValue);
-        assert.strictEqual(value.bool, true);
-      });
-    });
-
-    it('converts values in falseValues to BooleanValue(false)', () => {
-      const make = BooleanParserModule.__get__('make');
-
-      const parser = new BooleanParserModule();
-      constants.falseValues.forEach((falseValue) => {
-        const value = make.call(parser, falseValue);
-        assert.instanceOf(value, BooleanValue);
-        assert.strictEqual(value.bool, false);
-      });
+      const parser = new BooleanParserModule(context);
+      const patterns = parser.getPatterns();
+      assert.isArray(patterns['']);
+      assert.strictEqual(patterns[''], mainPatterns);
     });
   });
 });

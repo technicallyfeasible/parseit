@@ -1,65 +1,31 @@
 import ValidatorBase from '../validators/ValidatorBase';
-import Pattern from '../matching/Pattern';
-import BooleanValue from '../values/BooleanValue';
-
 import { startsWith } from '../utils/arrayUtils';
+import makeOptions from './contexts/boolean.global';
 
-export const constants = {
-  trueValues: ['1', 'true', 'wahr'],
-  falseValues: ['0', 'false', 'falsch'],
-};
-constants.trueLookup = constants.trueValues.reduce((r, text) => (r[text] = true) && r, {});   // eslint-disable-line no-param-reassign
-constants.falseLookup = constants.falseValues.reduce((r, text) => (r[text] = true) && r, {}); // eslint-disable-line no-param-reassign
+export const optionsCache = {};
 
 /**
- * Make the final output value
- * @param value
- * @returns {BooleanValue}
+ * Parses booleans
  */
-function make(value) {
-  let boolValue = false;
-  if (typeof value === 'boolean') {
-    boolValue = value;
-  } else if (value) {
-    const lowerValue = value.toString().toLowerCase();
-    boolValue = !!constants.trueLookup[lowerValue];
-  }
-  return new BooleanValue(boolValue);
-}
-/**
- * Reusable wrapper for the two patterns
- * @param context
- * @param v
- */
-function parsePattern(context, v) {
-  return make(v[1]);
-}
-
-const mainPatterns = [
-  new Pattern('{emptyline:*}{booleantrue}{emptyline:*}', parsePattern),
-  new Pattern('{emptyline:*}{booleanfalse}{emptyline:*}', parsePattern),
-];
-
-
 class BooleanParserModule extends ValidatorBase {
   static tokenTags = ['booleanfalse', 'booleantrue'];
-  static patternTags = [''];
 
-  static defineContext() {
+  constructor(context) {
+    super(context);
+    this.options = ValidatorBase.getOptions(optionsCache, context);
+  }
 
+  static defineContext(context, options) {
+    ValidatorBase.defineContext(optionsCache, context, options);
   }
 
   /* eslint-disable class-methods-use-this, no-unused-vars */
 
   /**
-   * Return the patterns for the tag
-   * @param tag {string}
+   * Get all the patterns
    */
-  getPatterns(tag) {
-    if (tag === '') {
-      return mainPatterns;
-    }
-    return [];
+  getPatterns() {
+    return (this.options && this.options.patterns) || {};
   }
 
   /**
@@ -72,11 +38,13 @@ class BooleanParserModule extends ValidatorBase {
    */
   validateToken(context, token, value, isFinal) {
     const lowerValue = value.toLowerCase();
+    const options = this.options;
+    if (!options) return false;
     switch (token.value) {
       case 'booleantrue':
-        return (isFinal && constants.trueLookup[lowerValue]) || (!isFinal && startsWith(constants.trueValues, lowerValue));
+        return (isFinal && options.trueLookup[lowerValue]) || (!isFinal && startsWith(options.trueValues, lowerValue));
       case 'booleanfalse':
-        return (isFinal && constants.falseLookup[lowerValue]) || (!isFinal && startsWith(constants.falseValues, lowerValue));
+        return (isFinal && options.falseLookup[lowerValue]) || (!isFinal && startsWith(options.falseValues, lowerValue));
       default:
         return false;
     }
@@ -102,5 +70,15 @@ class BooleanParserModule extends ValidatorBase {
 
   /* eslint-enable */
 }
+
+/**
+ * Define english language context
+ */
+BooleanParserModule.defineContext({
+  language: 'en',
+}, makeOptions({
+  trueValues: ['1', 'true'],
+  falseValues: ['0', 'false'],
+}));
 
 export default BooleanParserModule;
