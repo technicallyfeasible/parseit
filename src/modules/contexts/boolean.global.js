@@ -15,10 +15,11 @@ function makeOptions(constants) {
 
   /**
    * Make the final output value
-   * @param v
+   * @param [context] - parser context
+   * @param [v]
    * @returns {BooleanValue}
    */
-  function make(v) {
+  function make(context, v) {
     const value = v && v[1];
     let boolValue = false;
     if (typeof value === 'boolean') {

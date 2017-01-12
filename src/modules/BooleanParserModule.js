@@ -10,6 +10,10 @@ export const optionsCache = {};
 class BooleanParserModule extends ValidatorBase {
   static tokenTags = ['booleanfalse', 'booleantrue'];
 
+  /**
+   * Create a boolean parser
+   * @param context
+   */
   constructor(context) {
     super(context);
     this.options = ValidatorBase.getOptions(optionsCache, context);
@@ -77,8 +81,8 @@ class BooleanParserModule extends ValidatorBase {
 BooleanParserModule.defineContext({
   language: 'en',
 }, makeOptions({
-  trueValues: ['1', 'true'],
-  falseValues: ['0', 'false'],
+  trueValues: ['1', 'true', 'yes'],
+  falseValues: ['0', 'false', 'no'],
 }));
 
 export default BooleanParserModule;

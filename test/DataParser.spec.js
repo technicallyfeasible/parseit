@@ -8,6 +8,8 @@ import sinon from 'sinon';
 import DataParser from '../src/DataParser';
 import PatternMatcher from '../src/PatternMatcher';
 
+import DefaultValidator from '../src/validators/DefaultValidator';
+import BooleanParserModule from '../src/modules/BooleanParserModule';
 import BooleanValue from '../src/values/BooleanValue';
 
 const assert = chai.assert;
@@ -66,14 +68,16 @@ describe('DataParser', () => {
 
   describe('.parse', () => {
     it('returns BooleanValue when parsing "true" / "false" with or without surrounding spaces', () => {
-      const parser = new DataParser();
+      const parser = new DataParser('boolean', [DefaultValidator, BooleanParserModule]);
 
-      const testStrings = ['true', 'false', '  true', ' true  '];
-      testStrings.forEach(str => {
+      const testStrings = ['true', 'false', '  true', ' true  ', ' 0', '1 '];
+      const testValues = [true, false, true, true, false, true];
+      testStrings.forEach((str, index) => {
         const result = parser.parse(str);
         assert.isArray(result);
         assert.lengthOf(result, 1);
         assert.instanceOf(result[0], BooleanValue);
+        assert.strictEqual(result[0].bool, testValues[index], 'Expected the parsed value to be correct');
       });
     });
   });

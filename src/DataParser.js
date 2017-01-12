@@ -15,7 +15,6 @@ const moduleTypes = [
   BooleanParserModule,
 ];
 
-// var datePatternMatcher = null;
 const namedPatternMatchers = {};
 
 
@@ -64,7 +63,9 @@ class DataParser {
       return;
     }
 
-    this.patternMatcher = makePatternMatcher(modules || moduleTypes, context || new PatternContext());
+    this.context = context || new PatternContext();
+
+    this.patternMatcher = makePatternMatcher(modules || moduleTypes, this.context);
 
     if (name) {
       namedPatternMatchers[name] = this.patternMatcher;
@@ -78,134 +79,9 @@ class DataParser {
    * @returns {Array}
    */
   parse(value, context) {
-    const matchResults = this.patternMatcher.match(context || new PatternContext(), value);
+    const matchResults = this.patternMatcher.match(context || this.context, value);
     return matchResults || [];
   }
 }
 
 export default DataParser;
-
-/*
-{
-  private static readonly Type[] ModuleTypes =
-  {
-    typeof(NumberParserModule), typeof(DateParserModule), typeof(AddressParserModule), typeof(CurrencyParserModule), typeof(BooleanParserModule),
-    typeof(UrlParserModule), typeof(IpParserModule), typeof(EmailParserModule)
-  };
-  private static readonly Type[] DateModuleTypes =
-  {
-    typeof(NumberParserModule), typeof(DateParserModule)
-  };
-  private static readonly PatternMatcher DefaultPatternMatcher;
-  private static readonly PatternMatcher DatePatternMatcher;
-  private static readonly Dictionary<String, PatternMatcher> NamedPatternMatchers = new Dictionary<String, PatternMatcher>();
-
-  private readonly PatternMatcher patternMatcher;
-
-  /// <summary>
-  /// Default context for parsing
-  /// </summary>
-  public PatternContext DefaultPatternContext { get; set; }
-
-  /// <summary>
-  /// Load all patterns from the defined modules
-  /// </summary>
-  static DataParser()
-  {
-    DefaultPatternMatcher = makePatternMatcher(ModuleTypes);
-    DatePatternMatcher = makePatternMatcher(DateModuleTypes);
-  }
-
-  /// <summary>
-  /// Use the default pattern matcher
-  /// </summary>
-  public DataParser()
-  {
-    this.patternMatcher = DefaultPatternMatcher;
-  }
-
-  /// <summary>
-  /// Load all patterns from the defined modules
-  /// </summary>
-  public DataParser(String name, Type[] modules)
-  {
-    if (String.IsNullOrEmpty(name) || modules == null)
-    {
-      this.patternMatcher = DefaultPatternMatcher;
-      return;
-    }
-
-    if (NamedPatternMatchers.TryGetValue(name, out this.patternMatcher) && this.patternMatcher != null)
-      return;
-
-    this.patternMatcher = makePatternMatcher(modules);
-    NamedPatternMatchers[name] = this.patternMatcher;
-  }
-
-
-  private static PatternMatcher makePatternMatcher(Type[] modules)
-  {
-    PatternMatcher matcher = new PatternMatcher(new Pattern[0]);
-
-    foreach (Type moduleType in modules)
-    {
-      IParserModule module = Activator.CreateInstance(moduleType) as IParserModule;
-      if (module == null) continue;
-
-      // add patterns
-      foreach (String tag in module.PatternTags)
-        matcher.AddPatterns(tag, module.GetPatterns(tag));
-
-      // register validators
-      foreach (String tag in module.TokenTags)
-        matcher.RegisterValidator(tag, module);
-    }
-    return matcher;
-  }
-
-  /// <summary>
-  /// Parse a value into all possible native types
-  /// </summary>
-  /// <param name="value"></param>
-  /// <returns></returns>
-  public List<IValue> Parse(String value)
-  {
-    return Parse(DefaultPatternContext ?? new PatternContext(), value);
-  }
-
-  /// <summary>
-  /// Parse a value into all possible native types
-  /// </summary>
-  /// <param name="context"></param>
-  /// <param name="value"></param>
-  /// <returns></returns>
-  public List<IValue> Parse(PatternContext context, String value)
-  {
-    List<Object> matchResults = this.patternMatcher.Match(context, value);
-    return (matchResults == null ? new List<IValue>() : matchResults.Cast<IValue>().ToList());
-  }
-
-  /// <summary>
-  /// Parse a value as a LocalDate
-  /// </summary>
-  /// <param name="value"></param>
-  /// <returns></returns>
-  public LocalDate ParseDate(String value)
-  {
-    return ParseDate(DefaultPatternContext ?? new PatternContext(), value);
-  }
-
-  /// <summary>
-  /// Parse a value as a LocalDate
-  /// </summary>
-  /// <param name="context"></param>
-  /// <param name="value"></param>
-  /// <returns></returns>
-  public LocalDate ParseDate(PatternContext context, String value)
-  {
-    List<Object> results = DatePatternMatcher.Match(context, value);
-    LocalDate dateResult = results.OfType<LocalDate>().FirstOrDefault();
-    return dateResult;
-  }
-}
-*/

@@ -48,4 +48,46 @@ describe('BooleanParserModule', () => {
       assert.strictEqual(patterns[''], mainPatterns);
     });
   });
+
+  describe('.validateToken', () => {
+    it('returns true for final en "true" boolean values and false for "false" values', () => {
+      const parser = new BooleanParserModule(context);
+      assert.isFunction(parser.validateToken);
+
+      const trueValues = ['true', '1', 'yes'];
+      trueValues.forEach(value => {
+        assert.isTrue(parser.validateToken(context, { value: 'booleantrue' }, value, true));
+        assert.isFalse(parser.validateToken(context, { value: 'booleanfalse' }, value, true));
+      });
+    });
+
+    it('returns true for final en "false" boolean values and false for "true" values', () => {
+      const parser = new BooleanParserModule(context);
+      assert.isFunction(parser.validateToken);
+
+      const trueValues = ['false', '0', 'no'];
+      trueValues.forEach(value => {
+        assert.isTrue(parser.validateToken(context, { value: 'booleanfalse' }, value, true));
+        assert.isFalse(parser.validateToken(context, { value: 'booleantrue' }, value, true));
+      });
+    });
+  });
+
+  describe('.finalizeValue', () => {
+    it('returns "true" if the token is "booleantrue"', () => {
+      const parser = new BooleanParserModule(context);
+      assert.isFunction(parser.finalizeValue);
+
+      assert.isTrue(parser.finalizeValue(context, { value: 'booleantrue' }, ''));
+      assert.isTrue(parser.finalizeValue(context, { value: 'booleantrue' }, 'true'));
+    });
+
+    it('returns "false" if the token is "booleanfalse"', () => {
+      const parser = new BooleanParserModule(context);
+      assert.isFunction(parser.finalizeValue);
+
+      assert.isFalse(parser.finalizeValue(context, { value: 'booleanfalse' }, ''));
+      assert.isFalse(parser.finalizeValue(context, { value: 'booleanfalse' }, 'false'));
+    });
+  });
 });
