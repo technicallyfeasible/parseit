@@ -32,7 +32,7 @@ const plugins = {
   ],
   hot: () => [
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
   ],
 };
 
@@ -41,11 +41,8 @@ const plugins = {
  * @param o - options
  */
 function configure(o) {
-  const files = o.hot ? [
-    'webpack-hot-middleware/client?http://localhost:3000',
-    '../index.js',
-  ] : [
-    '../index.js',
+  const files = [
+    '../src/index.js',
   ];
   const DEBUG = o.environment !== 'production';
   const publicPath = o.publicPath || '/release/';
@@ -61,6 +58,12 @@ function configure(o) {
     entry: {
       dataparser: files,
       'dataparser-with-locales': files.concat('../src/modules/contexts/index.js'),
+      demo: o.hot ? [
+        'webpack-hot-middleware/client?http://localhost:3000',
+        '../demo/index.js',
+      ] : [
+        '../demo/index.js',
+      ],
     },
     output: {
       path: path.join(__dirname, '..', 'release/'),
@@ -88,7 +91,7 @@ function configure(o) {
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(env),
       }),
-    ].concat(plugins[env]()).concat(hotPlugins),
+    ].concat(plugins[env]()).concat(hotPlugins()),
     module: {
       rules: [
         {

@@ -1,0 +1,29 @@
+{
+  "parser": "babel-eslint",
+  "extends": "airbnb",
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true
+  },
+  "rules": {
+    "quotes": [1, "single"],
+    "eqeqeq": [2, "smart"],
+    "max-len": 0,
+    "no-plusplus": 0,
+    "no-continue": 0,
+    "arrow-parens": 0,
+    "import/extensions": ["error", "never"],
+    "import/no-extraneous-dependencies": [0, {
+      "dependencies": [
+        "dataparser"
+      ]
+    }],
+    "import/no-unresolved": [2, {
+      "ignore": [
+        "dataparser"
+      ]
+    }],
+    "react/jsx-filename-extension": 0
+  }
+}

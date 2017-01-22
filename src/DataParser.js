@@ -4,10 +4,15 @@ import PatternMatcher from './PatternMatcher';
 import PatternContext from './PatternContext';
 
 /**
+ * @function getPatterns
+ * @param {Context} context - The context for which to get the patterns
+ */
+
+/**
  * @class Module
  * @type {object}
  * @property {string[]} tokenTags - available token tags
- * @property {function()} getPatterns - returns patterns for a tag
+ * @function getPatterns - returns patterns for a tag
  */
 
 const moduleTypes = [
@@ -52,8 +57,12 @@ function makePatternMatcher(modules, context) {
 class DataParser {
   /**
    * Create a data parser with the specified name and modules. If name and modules is empty, matches all default patterns.
+   * Features:
+   * - initialize PatternMatcher with a list of modules
+   * - patterns depend on context
+   * - can initialize patterns based on multiple contexts
    * @param [name] {string} - if a name is specified, remembers the created matcher for quicker reuse
-   * @param [modules]
+   * @param [modules] {Module[]} - A list of modules to use for matching
    * @param [context] - A parser context that will be used across all parse calls
    * @constructor
    */

@@ -3,10 +3,10 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/.eslintrc" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/gulpfile.js" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/index.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/MatchState.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/PatternContext.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/PatternMatcher.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/index.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/utils/arrayUtils.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/utils/stringUtils.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/test/DataParser.spec.js" charset="UTF-8" />

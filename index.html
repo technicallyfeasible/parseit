@@ -6,37 +6,9 @@
   <link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
   <!--script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
   <script type="application/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script-->
-  <script type="application/javascript" src="js/dataparser.js"></script>
+  <script type="application/javascript" src="js/demo.js"></script>
 </head>
 <body>
-  <div class="container">
-    <div class="row">
-      <div class="col col-xs-12">
-        <h3>Type some text to analyse it</h3>
-        <input type="text" class="form-control" onkeyup="window.parseInput(this.value)"/>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col col-xs-12">
-        <h3>Results<span id="durationLabel"></span></h3>
-        <div id="resultContainer"></div>
-      </div>
-    </div>
-  </div>
-
-  <script type="application/javascript">
-    const parser = new dataparser.DataParser();
-
-    function parseInput(text) {
-      const start = new Date().getTime();
-      const results = parser.parse(text);
-      const duration = new Date().getTime() - start;
-      document.getElementById('durationLabel').innerHTML = ' (' + duration.toFixed(0) + 'ms)';
-
-      const resultContainer = document.getElementById('resultContainer');
-      resultContainer.innerHTML = JSON.stringify(results);
-    }
-  </script>
+  <div id="root"></div>
 </body>
 </html>

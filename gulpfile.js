@@ -46,6 +46,7 @@ gulp.task('dev', function runDebug() {
   devApp.use(webpackDevMiddleware(bundler, {
     lazy: false,
     noInfo: false,
+    hot: true,
     stats: {
       colors: true,
       chunks: false,
