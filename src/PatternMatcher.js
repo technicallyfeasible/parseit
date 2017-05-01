@@ -1,5 +1,8 @@
+// @flow
 import * as arrayUtils from './utils/arrayUtils';
 import * as stringUtils from './utils/stringUtils';
+import Pattern from './matching/Pattern';
+import PathNode from './matching/PathNode';
 import PatternPath from './matching/PatternPath';
 import MatchState from './MatchState';
 import PatternContext from './PatternContext';
@@ -8,12 +11,16 @@ import PatternContext from './PatternContext';
  * Matches patterns according to registered rules
  */
 class PatternMatcher {
+  patterns: Object;
+  compiledPatterns: Object;
+  validators: Object;
+
   /**
    * Create a new pattern matcher with the given base patterns
    * @param patterns
    * @constructor
    */
-  constructor(patterns) {
+  constructor(patterns: Array<Pattern>) {
     // All currently active patterns
     this.patterns = {};
     // All active patterns compiled for use
@@ -31,7 +38,7 @@ class PatternMatcher {
    * @param tag
    * @param validator
    */
-  registerValidator(tag, validator) {
+  registerValidator(tag : string, validator: Object) {
     this.validators[tag] = validator;
   }
 
@@ -48,7 +55,7 @@ class PatternMatcher {
    * @param matchTag
    * @param newPatterns
    */
-  addPatterns(matchTag, newPatterns) {
+  addPatterns(matchTag : string, newPatterns : Array<Pattern>) {
     // if no patterns are in the list then there's nothing to do
     if (!newPatterns || !newPatterns.length) {
       return;
@@ -89,7 +96,7 @@ class PatternMatcher {
    * @param value
    * @returns {*}
    */
-  match(context, value) {
+  match(context: PatternContext, value: string) {
     if (!value) {
       return [];
     }
@@ -128,7 +135,7 @@ class PatternMatcher {
    * @param matchTag
    * @returns {MatchState}
    */
-  matchStart(context, matchTag) {
+  matchStart(context: PatternContext, matchTag: string) {
     const root = this.compiledPatterns[matchTag];
     if (!root) {
       return null;
@@ -147,7 +154,7 @@ class PatternMatcher {
    * @param isFinal
    * @returns {boolean} - true if this is still a valid match, false otherwise
    */
-  matchNext(state, c, isFinal) {
+  matchNext(state: MatchState, c: string, isFinal: boolean) {
     const candidateNodes = state.getCandidateNodes();
     for (let i = 0; i < candidateNodes.length; i++) {
       const candidate = candidateNodes[i];
@@ -189,7 +196,7 @@ class PatternMatcher {
    * @param state
    * @returns {boolean}
    */
-  hasResults(state) {
+  hasResults(state: MatchState) {
     const candidateNodes = state.getCandidateNodes();
 
     if (!this.patterns[state.matchTag]) {
@@ -213,7 +220,7 @@ class PatternMatcher {
    * @param state {MatchState} - The current matching state
    * @returns {Object[]} - The list of matches
    */
-  matchResults(state) {
+  matchResults(state: MatchState) {
     const results = [];
 
     const { context, candidateNodes } = state;
@@ -276,7 +283,7 @@ class PatternMatcher {
    * @param isFinal {boolean} - True if this is the final match and no further values will be added
    * @returns {boolean} - true if the value can be parsed successfully using the token
    */
-  validateToken(state, node, isFinal) {
+  validateToken(state: MatchState, node: PathNode, isFinal: boolean) {
     // if it is finalized then it is definitely also valid
     if (node.isFinalized) {
       return true;
@@ -308,7 +315,7 @@ class PatternMatcher {
       if (isFinal) {
         return this.hasResults(node.matchState);
       }
-      return this.matchNext(node.matchState, textValue[textValue.length - 1]);
+      return this.matchNext(node.matchState, textValue[textValue.length - 1], false);
     }
 
     // check if a validator is registered for this token
@@ -328,7 +335,7 @@ class PatternMatcher {
    * @param state
    * @param node
    */
-  finalizeValue(state, node) {
+  finalizeValue(state: MatchState, node: PathNode) {
     /* eslint-disable no-param-reassign */
     // already finalized
     if (node.isFinalized) {

@@ -1,5 +1,6 @@
 import DefaultValidator from './validators/DefaultValidator';
 import BooleanParserModule from './modules/BooleanParserModule';
+import NumberParserModule from './modules/NumberParserModule';
 import PatternMatcher from './PatternMatcher';
 import PatternContext from './PatternContext';
 
@@ -18,6 +19,7 @@ import PatternContext from './PatternContext';
 const moduleTypes = [
   DefaultValidator,
   BooleanParserModule,
+  NumberParserModule,
 ];
 
 const namedPatternMatchers = {};

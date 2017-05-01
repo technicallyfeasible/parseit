@@ -1,10 +1,15 @@
+// @flow
 import Token from './Token';
 
 class Pattern {
+  match: string;
+  parser: Function;
+  tokens: Array<Token>;
+
   /**
    * Pattern object
    */
-  constructor(match, parser) {
+  constructor(match: string, parser: Function) {
     this.match = match || '';
     this.parser = parser;
     this.tokens = Pattern.tokenize(this);
@@ -14,11 +19,11 @@ class Pattern {
     return this.match;
   }
 
-  parse(context, values) {
+  parse(context: Object, values: Array<string>) {
     return this.parser(context, values);
   }
 
-  equals(other) {
+  equals(other: Pattern) {
     if (!other) return false;
     return this.match === other.match;
   }
@@ -28,7 +33,7 @@ class Pattern {
    * @param p
    * @returns {Token[]}
    */
-  static tokenize(p) {
+  static tokenize(p: Pattern): Array<Token> {
     const pattern = p.match;
     const tokens = [];
 

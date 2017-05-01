@@ -1,7 +1,8 @@
+// @flow
 import Pattern from '../../matching/Pattern';
 import NumberValue from '../../values/NumberValue';
 
-function makeScientific(sign, integral, exponent, fractional, groupSeparator, unit) {
+function makeScientific(sign: string, integral: string, exponent: string, fractional: string, groupSeparator: string, unit: string) {
   /* eslint-disable no-param-reassign */
   const decimals = (fractional ? fractional.length : 0);
 
@@ -22,14 +23,14 @@ function makeScientific(sign, integral, exponent, fractional, groupSeparator, un
     if (exp >= 0) {
       val *= (10 ** exp);
     } else {
-      val /= (10 ** -exp);
+      val /= (10 ** (-exp));
     }
   }
   return new NumberValue(val, (unit || ''), decimals);
   /* eslint-enable */
 }
 
-function make(sign, integral, fractional, groupSeparator, unit) {
+function make(sign: string, integral: string, fractional: string, groupSeparator: string, unit: string) {
   return makeScientific(sign, integral, '', fractional, groupSeparator, unit);
 }
 
@@ -37,14 +38,14 @@ function make(sign, integral, fractional, groupSeparator, unit) {
 // Patterns for languages with group separator "," and decimal separator "."
 //
 
-const floatPatternsDot = [
+export const floatPatternsDot = [
   new Pattern('{-+:?}{#,:+}.{#:*}', v => make(v[0], v[1], v[3], ',', '')),
   new Pattern('{-+:?}{#:*}.{#:+}', v => make(v[0], v[1], v[3], '', '')),
   new Pattern('{-+:?}{#,:+}.{#:*}e{-+:?}{#:+}', v => makeScientific(v[0], v[1], v[5] + v[6], v[3], ',', '')),
   new Pattern('{-+:?}{#:+}.{#:*}e{-+:?}{#:+}', v => makeScientific(v[0], v[1], v[5] + v[6], v[3], '', '')),
 ];
 
-const integerPatternsDot = [
+export const integerPatternsGroupComma = [
   new Pattern('{-+:?}{#:+}', v => make(v[0], v[1], '', '', '')),
   new Pattern('{-+:?}{#,:+}', v => make(v[0], v[1], '', ',', '')),
   new Pattern('{-+:?}{#:+}e{-+:?}{#:+}', v => makeScientific(v[0], v[1], v[3] + v[4], '', '', '')),
@@ -55,14 +56,14 @@ const integerPatternsDot = [
 // Patterns for languages with group separator "." and decimal separator ","
 //
 
-const floatPatternsComma = [
+export const floatPatternsComma = [
   new Pattern('{-+:?}{#.:+},{#:*}', v => make(v[0], v[1], v[3], '.', '')),
   new Pattern('{-+:?}{#:*},{#:+}', v => make(v[0], v[1], v[3], '', '')),
   new Pattern('{-+:?}{#.:+},{#:*}e{-+:?}{#:+}', v => makeScientific(v[0], v[1], v[5] + v[6], v[3], '.', '')),
   new Pattern('{-+:?}{#:+},{#:*}e{-+:?}{#:+}', v => makeScientific(v[0], v[1], v[5] + v[6], v[3], '', '')),
 ];
 
-const integerPatternsComma = [
+export const integerPatternsGroupDot = [
   new Pattern('{-+:?}{#:+}', v => make(v[0], v[1], '', '', '')),
   new Pattern('{-+:?}{#.:+}', v => make(v[0], v[1], '', '.', '')),
   new Pattern('{-+:?}{#:+}e{-+:?}{#:+}', v => makeScientific(v[0], v[1], v[3] + v[4], '', '', '')),
@@ -74,33 +75,15 @@ const integerPatternsComma = [
  * Create the options based on constants
  * @param constants
  */
-function makeOptions(constants) {
-  /**
-   * Make the final output value
-   * @param [context] - parser context
-   * @param [v]
-   * @returns {NumberValue}
-   */
-  function make(context, v) {
-    const value = v && v[1];
-    let boolValue = false;
-    if (typeof value === 'boolean') {
-      boolValue = value;
-    } else if (value) {
-      const lowerValue = value.toString().toLowerCase();
-      boolValue = !!trueLookup[lowerValue];
-    }
-    return new NumberValue(boolValue);
-  }
+function makeOptions(constants : Object) {
+  const { commaDecimal } = constants;
 
   return {
     ...constants,
-    trueLookup,
-    falseLookup,
     patterns: {
       '': [
-        new Pattern('{emptyline:*}{booleantrue}{emptyline:*}', make),
-        new Pattern('{emptyline:*}{booleanfalse}{emptyline:*}', make),
+        ...(commaDecimal ? floatPatternsComma : floatPatternsDot),
+        ...(commaDecimal ? integerPatternsGroupDot : integerPatternsGroupComma),
       ],
     },
     make,

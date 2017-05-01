@@ -33,3 +33,18 @@ export function matchAll(str, chars, startIndex) {
   }
   return true;
 }
+
+/**
+ * Count occurrences of numbers
+ * @param value
+ * @return {number}
+ * @constructor
+ */
+export function countNumbers(value) {
+  let count = 0;
+  for (let i = 0; i < value.length; i++) {
+    const c = value.charAt(i);
+    if (c >= '0' && c <= '9') count++;
+  }
+  return count;
+}

@@ -1,9 +1,12 @@
+// @flow
 
 /**
  * Validator base class to reduce some boilerplate
  */
 class ValidatorBase {
-  constructor(context) {
+  context: Object;
+
+  constructor(context: Object) {
     this.context = context;
   }
 
@@ -52,7 +55,7 @@ class ValidatorBase {
    * @param isFinal - True if this is the final validation and no more characters are expected for the value
    * @returns {*} - Returns true if the value matches the token, false if it doesn't match or the token is unknown
    */
-  validateToken(context, token, value, isFinal) {
+  validateToken(context: Object, token: Object, value: string, isFinal: boolean) {
     return false;
   }
 
@@ -63,7 +66,7 @@ class ValidatorBase {
    * @param value - The text value to parse
    * @returns {*} - Returns the parsed result
    */
-  finalizeValue(context, token, value) {
+  finalizeValue(context: Object, token: Object, value: string): any {
     return value;
   }
 
