@@ -66,7 +66,7 @@ export default class MultiCheckbox extends Component {
         const isSelected = (selected && selected.indexOf(option.value) !== -1);
         return (
           <span key={option.label}>
-            <input type="checkbox" id={inputId} value={isSelected || false} onClick={e => this.onClick(option.value, e.target.checked)} />
+            <input type="checkbox" id={inputId} checked={isSelected || false} onChange={e => this.onClick(option.value, e.target.checked)} />
             <label htmlFor={inputId}>{ option.label }</label>
           </span>
         );

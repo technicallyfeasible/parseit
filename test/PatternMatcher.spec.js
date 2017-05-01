@@ -211,7 +211,10 @@ describe('PatternMatcher', () => {
 
       mock.verify();
 
-      assert.strictEqual(result, matches);
+      assert.deepEqual(result, {
+        values: matches,
+        reasons: undefined,
+      });
     });
   });
 

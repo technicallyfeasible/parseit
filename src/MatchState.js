@@ -15,7 +15,7 @@ class MatchState {
     this.validators = null;
 
     if (context) {
-      this.logReasons = !!context.reasons;
+      this.logReasons = Boolean(context.reasons);
       this.reasons = [];
     }
   }
@@ -23,6 +23,7 @@ class MatchState {
   /**
    * Add candidate tokens from the path
    * @param root
+   * @param previousValues
    */
   addCandidates(root, previousValues = []) {
     root.children.forEach(({ token, path }) => {

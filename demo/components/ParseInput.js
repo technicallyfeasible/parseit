@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 
 import DataParser from '../../src/DataParser';
+import Context from '../../src/PatternContext';
 
 export default class DataParserTest extends Component {
   static propTypes = {
@@ -31,11 +32,15 @@ export default class DataParserTest extends Component {
     const { parser } = this.props;
 
     const start = new Date().getTime();
-    const results = parser.parse(text);
+    const context = new Context({
+      reasons: true,
+    });
+    const result = parser.parse(text, context);
     const parse = new Date().getTime() - start;
 
     this.setState({
-      results,
+      results: result.values,
+      reasons: result.reasons,
       stats: {
         parse,
       },
@@ -44,7 +49,7 @@ export default class DataParserTest extends Component {
 
   render() {
     const { parser } = this.props;
-    const { stats, results } = this.state;
+    const { stats, results, reasons } = this.state;
 
     if (!parser) {
       return null;
@@ -52,7 +57,22 @@ export default class DataParserTest extends Component {
 
     let resultElements = 'No results';
     if (results && results.length > 0) {
-      resultElements = JSON.stringify(results, null, 2);
+      resultElements = results.map((result, index) => {
+        const type = result.constructor.name;
+        /* eslint-disable react/no-array-index-key */
+        return (
+          <div key={index}>
+            <span className="label label-primary">{ type }</span>
+            { result.toString() }
+          </div>
+        );
+        /* eslint-enable */
+      });
+    }
+
+    let reasonElements = 'No reasons';
+    if (reasons && reasons.length > 0) {
+      reasonElements = JSON.stringify(reasons, null, 2);
     }
 
     return (
@@ -62,9 +82,15 @@ export default class DataParserTest extends Component {
           <textarea type="text" className="form-control" onChange={e => this.onChange(e)} />
         </div>
 
-        <div>
-          <h3>Results{ typeof stats.parse === 'number' ? `: ${stats.parse}ms` : '' }</h3>
-          <div>{ resultElements }</div>
+        <div className="row">
+          <div className="col col-xs-12 col-sm-6">
+            <h3>Results{ typeof stats.parse === 'number' ? `: ${stats.parse}ms` : '' }</h3>
+            <div>{ resultElements }</div>
+          </div>
+          <div className="col col-xs-12 col-sm-6">
+            <h3>Reasons{ reasons ? `: ${reasons.length}` : '' }</h3>
+            <pre>{ reasonElements }</pre>
+          </div>
         </div>
       </div>
     );

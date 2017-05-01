@@ -32,6 +32,12 @@ class Pattern {
     const pattern = p.match;
     const tokens = [];
 
+    const pushToken = (value, exactMatch, index) => {
+      const token = new Token(value, exactMatch);
+      token.pos = index - value.length - 1;
+      tokens.push(token);
+    };
+
     let currentToken = '';
     let i;
     for (i = 0; i < pattern.length; i++) {
@@ -40,11 +46,11 @@ class Pattern {
           if (!currentToken.length) {
             break;
           }
-          tokens.push(new Token(currentToken, true));
+          pushToken(currentToken, true, i);
           currentToken = '';
           break;
         case '}':
-          tokens.push(new Token(currentToken, false));
+          pushToken(currentToken, false, i);
           currentToken = '';
           break;
         default:
@@ -54,7 +60,7 @@ class Pattern {
     }
 
     if (currentToken) {
-      tokens.push(new Token(currentToken, true));
+      pushToken(currentToken, true, pattern.length);
     }
     return tokens;
   }

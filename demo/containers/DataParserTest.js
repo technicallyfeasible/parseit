@@ -24,7 +24,7 @@ export default class DataParserTest extends Component {
     this.state = {
       parser: null,
       stats: {},
-      modules: null,
+      modules: moduleTypes.map(type => type.value),
     };
     window.setTimeout(() => {
       this.createParser();

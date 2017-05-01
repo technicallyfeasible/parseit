@@ -37,7 +37,6 @@ function PatternMatcherLegacy(patterns) {
 PatternMatcherLegacy.prototype.clearPatterns = function clearPatterns() {
   this.patterns = {};
   this.compiledPatterns = {};
-
 };
 
 /**
@@ -53,12 +52,14 @@ PatternMatcherLegacy.prototype.addPatterns = function addPatterns(matchTag, newP
 
   let targetPatterns = this.patterns[matchTag];
   if (!targetPatterns) {
-    targetPatterns = this.patterns[matchTag] = [];
+    targetPatterns = [];
+    this.patterns[matchTag] = targetPatterns;
   }
 
   let pathRoot = this.compiledPatterns[matchTag];
   if (!pathRoot) {
-    pathRoot = this.compiledPatterns[matchTag] = {};
+    pathRoot = {};
+    this.compiledPatterns[matchTag] = pathRoot;
   }
 
   // parse each pattern into tokens and then parse the tokens
@@ -122,7 +123,8 @@ PatternMatcherLegacy.prototype.addPatterns = function addPatterns(matchTag, newP
       // check if the exact same node exists and take it if it does
       let nextPath = paths[tokenKey];
       if (!nextPath) {
-        nextPath = paths[tokenKey] = new PatternPath();
+        nextPath = new PatternPath();
+        paths[tokenKey] = nextPath;
       }
       path = nextPath;
       paths = nextPath.paths;

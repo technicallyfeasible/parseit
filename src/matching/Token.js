@@ -18,19 +18,21 @@ class Token {
     this.exactMatch = Boolean(exactMatch);
     if (this.exactMatch) {
       this.value = value;
-      this.minCount = this.maxCount = 1;
+      this.minCount = 1;
+      this.maxCount = this.minCount;
       return;
     }
 
     const parts = (value || '').split(':');
     this.value = (parts.length > 0 ? parts[0] : '');
     if (parts.length === 1) {
-      this.minCount = this.maxCount = 1;
+      this.minCount = 1;
+      this.maxCount = this.minCount;
     } else if (parts.length > 1) {
       switch (parts[1]) {
         case '':
           this.minCount = 1;
-          this.maxCount = 1;
+          this.maxCount = this.minCount;
           break;
         case '+':
           this.minCount = 1;
@@ -47,7 +49,8 @@ class Token {
         default: {
           const countParts = parts[1].split('-');
           if (countParts.length === 1) {
-            this.minCount = this.maxCount = parseInt(countParts[0], 10);
+            this.minCount = parseInt(countParts[0], 10);
+            this.maxCount = this.minCount;
           } else if (countParts.length >= 2) {
             this.minCount = parseInt(countParts[0] || '0', 10);
             this.maxCount = parseInt(countParts[1] || '0', 10);

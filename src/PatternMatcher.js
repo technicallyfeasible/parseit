@@ -104,15 +104,21 @@ class PatternMatcher {
     for (let i = 0; i < len; i++) {
       const c = value.charAt(i);
       if (!this.matchNext(state, c, i === finalIndex)) {
-        PatternMatcher.logReasons(state);
-        return [];
+        PatternMatcher.finalizeReasons(state);
+        return {
+          values: [],
+          reasons: state.reasons,
+        };
       }
     }
 
     const results = this.matchResults(state);
     // reverse results since the longest matches will be found last but are the most specific
     results.reverse();
-    return results;
+    return {
+      values: results,
+      reasons: state.reasons,
+    };
   }
 
 
@@ -163,9 +169,12 @@ class PatternMatcher {
     return candidateNodes.length > 0;
   }
 
-  static logReasons(state) {
+  static finalizeReasons(state) {
     if (state.context.reasons) {
-      state.reasons = state.reasons.concat(state.getCandidateNodes());  // eslint-disable-line no-param-reassign
+      const candidates = state.getCandidateNodes();
+      if (state.reasons && candidates) {
+        state.reasons = state.reasons.concat(state.getCandidateNodes());  // eslint-disable-line no-param-reassign
+      }
       // state.reasons.forEach(node => {
       //   console.log('\n', node.token.toString());
       //   node.reasons.forEach(reason => {
@@ -237,7 +246,7 @@ class PatternMatcher {
         }
       });
     }
-    PatternMatcher.logReasons(state);
+    PatternMatcher.finalizeReasons(state);
     return results;
   }
 

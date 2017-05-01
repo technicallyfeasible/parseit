@@ -1,13 +1,13 @@
 import Pattern from '../../matching/Pattern';
 import NumberValue from '../../values/NumberValue';
 
-function makeScientific(sign, integral, exponent, fractional, groupSeparator, unit)
-{
+function makeScientific(sign, integral, exponent, fractional, groupSeparator, unit) {
+  /* eslint-disable no-param-reassign */
   const decimals = (fractional ? fractional.length : 0);
 
   if (!integral) {
     integral = '0';
-  } else if(groupSeparator.length > 0) {
+  } else if (groupSeparator.length > 0) {
     integral = integral.replace(groupSeparator, '');
   }
   if (!fractional) {
@@ -19,12 +19,14 @@ function makeScientific(sign, integral, exponent, fractional, groupSeparator, un
   }
   if (exponent) {
     const exp = parseFloat(exponent);
-    if (exp >= 0)
-      val *= Math.pow(10, exp);
-    else
-      val /= Math.pow(10, -exp);
+    if (exp >= 0) {
+      val *= (10 ** exp);
+    } else {
+      val /= (10 ** -exp);
+    }
   }
   return new NumberValue(val, (unit || ''), decimals);
+  /* eslint-enable */
 }
 
 function make(sign, integral, fractional, groupSeparator, unit) {
