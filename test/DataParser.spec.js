@@ -12,6 +12,9 @@ import DefaultValidator from '../src/validators/DefaultValidator';
 import BooleanParserModule from '../src/modules/BooleanParserModule';
 import BooleanValue from '../src/values/BooleanValue';
 
+import NumberParserModule from '../src/modules/NumberParserModule';
+import NumberValue from '../src/values/NumberValue';
+
 const assert = chai.assert;
 
 describe('DataParser', () => {
@@ -79,6 +82,36 @@ describe('DataParser', () => {
         assert.lengthOf(values, 1);
         assert.instanceOf(values[0], BooleanValue);
         assert.strictEqual(values[0].bool, testValues[index], 'Expected the parsed value to be correct');
+      });
+    });
+
+    it('returns NumberValue when parsing numbers with or without surrounding spaces', () => {
+      const parser = new DataParser('number', [DefaultValidator, NumberParserModule]);
+
+      const tests = {
+        2: 2,
+        32: 32,
+        76.3: 76.3,
+        '23,598': 23598,
+        '43,671,324.3245': 43671324.3245,
+        43671324.3245: 43671324.3245,
+        '34m': { number: 34, unit: 'm', decimals: 0 },
+        '  98': 98,
+        ' 87 steps  ': { number: 87, unit: 'steps', decimals: 0 },
+      };
+      Object.keys(tests).forEach(str => {
+        const expected = tests[str];
+
+        const result = parser.parse(str);
+        const values = result.values;
+        assert.isArray(values);
+        assert.lengthOf(values, 1, `"${str}" parsed as ${JSON.stringify(values)}`);
+        assert.instanceOf(values[0], NumberValue);
+        if (typeof expected === 'object') {
+          assert.deepEqual(values[0], expected, `Expected "${str}" to be correct: ${JSON.stringify(values)}`);
+        } else {
+          assert.strictEqual(values[0].number, expected, `Expected "${str}" to be correct: ${JSON.stringify(values)}`);
+        }
       });
     });
   });

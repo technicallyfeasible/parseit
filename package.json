@@ -42,9 +42,6 @@
     "glob": "^7.1.1",
     "gulp": "^3.9.1",
     "gulp-cached": "^1.1.1",
-    "gulp-load-plugins": "^1.4.0",
-    "gulp-mocha": "^4.3.0",
-    "gulp-util": "^3.0.8",
     "minimist": "^1.2.0",
     "mocha": "^3.2.0",
     "react": "^15.4.2",
@@ -55,5 +52,7 @@
     "webpack-dev-middleware": "^1.9.0",
     "webpack-hot-middleware": "^2.14.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "prop-types": "^15.5.8"
+  }
 }

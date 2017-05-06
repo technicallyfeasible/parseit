@@ -6,6 +6,7 @@ import ParseInput from '../components/ParseInput';
 
 import DefaultValidator from '../../src/validators/DefaultValidator';
 import BooleanParserModule from '../../src/modules/BooleanParserModule';
+import NumberParserModule from '../../src/modules/NumberParserModule';
 
 const moduleTypes = [
   {
@@ -15,6 +16,10 @@ const moduleTypes = [
   {
     label: 'Boolean',
     value: BooleanParserModule,
+  },
+  {
+    label: 'Number',
+    value: NumberParserModule,
   },
 ];
 

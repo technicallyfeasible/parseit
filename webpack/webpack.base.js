@@ -48,7 +48,7 @@ function configure(o) {
   const publicPath = o.publicPath || '/release/';
   const env = o.environment || (DEBUG ? 'development' : 'production');
 
-  const hotPlugins = o.hot ? plugins.hot : [];
+  const hotPlugins = o.hot ? plugins.hot : () => [];
 
   const config = {
     context: __dirname,

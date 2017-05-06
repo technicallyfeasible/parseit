@@ -89,7 +89,7 @@ describe('BooleanParserModule', () => {
 
     it('returns true for integers with "," group separator', () => {
       const token = new Token('#,:+');
-      const groups = ['70', '12', '33,645', '0,928', '1'];
+      const groups = ['70', '12', '33,645', '0,928', '1', '43,671,324'];
       const nonGroups = ['70.005', '12.12', '336,45', '10928', '-100', ''];
       validateTokenValuesFinal(token, groups);
       validateTokenValuesFinal(token, nonGroups, false);

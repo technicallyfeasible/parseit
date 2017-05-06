@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import DataParser from '../../src/DataParser';
 import Context from '../../src/PatternContext';
@@ -62,8 +63,7 @@ export default class DataParserTest extends Component {
         /* eslint-disable react/no-array-index-key */
         return (
           <div key={index}>
-            <span className="label label-primary">{ type }</span>
-            { result.toString() }
+            <span className="label label-primary">{ type }</span> { JSON.stringify(result) }
           </div>
         );
         /* eslint-enable */
@@ -72,7 +72,8 @@ export default class DataParserTest extends Component {
 
     let reasonElements = 'No reasons';
     if (reasons && reasons.length > 0) {
-      reasonElements = JSON.stringify(reasons, null, 2);
+      // reasonElements = JSON.stringify(reasons, null, 2);
+      reasonElements = `${reasons.length}`;
     }
 
     return (
