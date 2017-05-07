@@ -12,27 +12,31 @@ const moduleTypes = [
   {
     label: 'Default',
     value: DefaultValidator,
+    selected: true,
   },
   {
     label: 'Boolean',
     value: BooleanParserModule,
+    selected: true,
   },
   {
     label: 'Number',
     value: NumberParserModule,
+    selected: true,
   },
 ];
 
 export default class DataParserTest extends Component {
   constructor() {
     super();
+    const modules = moduleTypes.filter(type => type.selected).map(type => type.value);
     this.state = {
       parser: null,
       stats: {},
-      modules: moduleTypes.map(type => type.value),
+      modules,
     };
     window.setTimeout(() => {
-      this.createParser();
+      this.createParser(modules);
     }, 0);
   }
 

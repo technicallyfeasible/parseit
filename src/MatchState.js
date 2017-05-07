@@ -20,15 +20,23 @@ class MatchState {
     }
   }
 
+  clone() {
+    const cloned = new MatchState(this.matchTag, this.context);
+    cloned.candidateNodes = this.candidateNodes.map(node => node.clone());
+    return cloned;
+  }
+
   /**
    * Add candidate tokens from the path
    * @param root
    * @param previousValues
+   * @param previousNodes
    */
-  addCandidates(root, previousValues = []) {
+  addCandidates(root, previousValues = [], previousNodes = []) {
     root.children.forEach(({ token, path }) => {
       const node = new PathNode(token, path);
       node.previousValues = previousValues;
+      node.previousNodes = previousNodes;
       this.candidateNodes.push(node);
     });
   }
