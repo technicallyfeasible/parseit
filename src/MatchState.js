@@ -30,13 +30,13 @@ class MatchState {
    * Add candidate tokens from the path
    * @param root
    * @param previousValues
-   * @param previousNodes
+   * @param parent
    */
-  addCandidates(root, previousValues = [], previousNodes = []) {
+  addCandidates(root, previousValues = [], parent) {
     root.children.forEach(({ token, path }) => {
       const node = new PathNode(token, path);
       node.previousValues = previousValues;
-      node.previousNodes = previousNodes;
+      node.parent = parent;
       this.candidateNodes.push(node);
     });
   }

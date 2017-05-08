@@ -23,8 +23,6 @@ class PathNode {
     this.value = null;
     // All values of earlier tokens
     this.previousValues = null;
-    // All nodes of earlier tokens
-    this.previousNodes = null;
 
     // True if the value has been finalized and assigned
     this.isFinalized = null;
@@ -36,7 +34,7 @@ class PathNode {
   clone() {
     const clone = new PathNode(this.token, this.path, this.textValue);
     clone.previousValues = this.previousValues.slice();
-    clone.previousNodes = this.previousNodes.slice();
+    clone.parent = this.parent;
     return clone;
   }
 

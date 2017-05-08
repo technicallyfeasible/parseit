@@ -17,7 +17,7 @@ const moduleTypes = [
   {
     label: 'Boolean',
     value: BooleanParserModule,
-    selected: true,
+    selected: false,
   },
   {
     label: 'Number',

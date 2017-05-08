@@ -88,6 +88,19 @@ class PatternMatcher {
       targetPatterns.push(pattern);
       pathRoot.addPattern(pattern);
     }
+
+    // update sub-match flag for all patterns
+    // TODO: this may be too slow to do each time when adding patterns?
+    Object.keys(this.patterns).forEach(key => {
+      this.patterns[key].forEach(pattern => {
+        pattern.tokens.forEach(token => {
+          if (!token.exactMatch && Object.prototype.hasOwnProperty.call(this.compiledPatterns, token.value)) {
+            // eslint-disable-next-line no-param-reassign
+            token.isSubMatch = true;
+          }
+        });
+      });
+    });
   }
 
   /**
@@ -157,37 +170,36 @@ class PatternMatcher {
   matchNext(state: MatchState, c: string, isFinal: boolean): boolean {
     const candidateNodes = state.getCandidateNodes();
     for (let i = 0; i < candidateNodes.length; i++) {
-      const candidate = candidateNodes[i];
+      const node = candidateNodes[i];
 
       // initialize a sub-match
-      const token = candidate.token;
-      const isSubMatch = !!this.compiledPatterns[token.value];
-      if (isSubMatch && !candidate.matchState) {
+      const token = node.token;
+      if (token.isSubMatch && !node.matchState) {
         // sub matching is possible, so start a new one or continue the previous one
         // eslint-disable-next-line no-param-reassign
-        candidate.matchState = this.matchStart(state.context, token.value);
+        node.matchState = this.matchStart(state.context, token.value);
       }
 
       // first check if any of the child nodes validate with the new character and remember them as candidates
       // any children can only be candidates if the final validation of the current value succeeds
-      if (this.validateToken(state, candidate, true)) {
+      if (this.validateToken(state, node, true)) {
         // TODO: not efficient
-        const clone = candidate.clone();
-        if (candidate.matchState) {
-          clone.matchState = candidate.matchState.clone();
+        const clone = node.clone();
+        if (node.matchState) {
+          clone.matchState = node.matchState.clone();
         }
-        state.addCandidates(candidate.path, candidate.previousValues.concat(candidate.textValue), candidate.previousNodes.concat(clone));
+        state.addCandidates(node.path, node.previousValues.concat(node.textValue), clone);
       }
 
       // validate this candidate and remove it if it doesn't validate anymore
-      candidate.isFinalized = false;
-      candidate.textValue += c;
+      node.isFinalized = false;
+      node.textValue += c;
       let subResult = true;
-      if (isSubMatch) {
+      if (token.isSubMatch) {
         // if it's a sub-match then check separately
-        subResult = this.matchNext(candidate.matchState, c, isFinal);
+        subResult = this.matchNext(node.matchState, c, isFinal);
       }
-      if (!subResult || !this.validateToken(state, candidate, isFinal)) {
+      if (!subResult || !this.validateToken(state, node, isFinal)) {
         state.removeCandidate(i--);
       }
     }
@@ -248,15 +260,25 @@ class PatternMatcher {
     for (let i = 0; i < candidateNodes.length; i++) {
       const node = candidateNodes[i];
 
-      // finalize all previous values
-      let previousValues = node.previousNodes.map((previousNode, index) => {
-        // eslint-disable-next-line no-param-reassign
-        previousNode.textValue = node.previousValues[index];
-        this.finalizeValue(state, previousNode);
-        return previousNode.value;
-      });
-      this.finalizeValue(state, node);
-      previousValues = previousValues.concat(node.value);
+      // finalize last node first
+      const previousValues = node.previousValues.concat(node.textValue);
+      let valueIndex = previousValues.length - 1;
+      let cur = node;
+      while (cur) {
+        cur.textValue = previousValues[valueIndex];
+        this.finalizeValue(state, cur);
+        previousValues[valueIndex--] = cur.value;
+        cur = cur.parent;
+      }
+      // // finalize all previous values
+      // let previousValues = node.previousNodes.map((previousNode, index) => {
+      //   // eslint-disable-next-line no-param-reassign
+      //   previousNode.textValue = node.previousValues[index];
+      //   this.finalizeValue(state, previousNode);
+      //   return previousNode.value;
+      // });
+      // this.finalizeValue(state, node);
+      // previousValues = previousValues.concat(node.value);
 
       const previousValuesCount = previousValues.length - 1;
       let lastDepth = 1;
@@ -334,7 +356,7 @@ class PatternMatcher {
     }
 
     // check pattern tags and do a sub match for each of them
-    if (this.compiledPatterns[token.value]) {
+    if (token.isSubMatch) {
       // if this is the last match then assemble the results
       if (isFinal) {
         return this.hasResults(node.matchState);
