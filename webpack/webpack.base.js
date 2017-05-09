@@ -93,6 +93,11 @@ function configure(o) {
       }),
     ].concat(plugins[env]()).concat(hotPlugins()),
     module: {
+      noParse: [
+        // Suppress warnings and errors logged by benchmark.js when bundled using webpack.
+        // https://github.com/bestiejs/benchmark.js/issues/106
+        /benchmark/,
+      ],
       rules: [
         {
           enforce: 'pre',

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import DataParser from '../../src/DataParser';
 import MultiCheckbox from '../components/MultiCheckbox';
 import ParseInput from '../components/ParseInput';
+import ParserBenchmark from '../components/ParserBenchmark';
 
 import DefaultValidator from '../../src/validators/DefaultValidator';
 import BooleanParserModule from '../../src/modules/BooleanParserModule';
@@ -71,6 +72,11 @@ export default class DataParserTest extends Component {
         <div className="row">
           <div className="col col-xs-12">
             <ParseInput parser={parser} />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col col-xs-12">
+            <ParserBenchmark />
           </div>
         </div>
       </div>

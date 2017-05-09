@@ -28,6 +28,7 @@
     "babel-preset-stage-0": "^6.16.0",
     "babel-register": "^6.18.0",
     "babel-template": "^6.16.0",
+    "benchmark": "^2.1.4",
     "chai": "^3.5.0",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^14.0.0",
@@ -42,8 +43,10 @@
     "glob": "^7.1.1",
     "gulp": "^3.9.1",
     "gulp-cached": "^1.1.1",
+    "lodash": "^4.17.4",
     "minimist": "^1.2.0",
     "mocha": "^3.2.0",
+    "prop-types": "^15.5.8",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "sinon": "^2.1.0",
@@ -52,7 +55,5 @@
     "webpack-dev-middleware": "^1.9.0",
     "webpack-hot-middleware": "^2.14.0"
   },
-  "dependencies": {
-    "prop-types": "^15.5.8"
-  }
+  "dependencies": {}
 }
