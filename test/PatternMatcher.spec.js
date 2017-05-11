@@ -5,6 +5,7 @@
 import chai from 'chai';
 import sinon from 'sinon';
 
+import { allSubStrings } from './utils';
 import Pattern from '../src/matching/Pattern';
 import Token from '../src/matching/Token';
 import PathNode from '../src/matching/PathNode';
@@ -35,8 +36,8 @@ describe('PatternMatcher', () => {
   it('calls addPatterns if patterns are supplied', () => {
     sandbox.spy(PatternMatcher.prototype, 'addPatterns');
     const testPatterns = [
-      new Pattern('{emptyline:*}{booleantrue}{emptyline:*}', () => true),
-      new Pattern('{emptyline:*}{booleanfalse}{emptyline:*}', () => false),
+      new Pattern('{el:*}{booleantrue}{el:*}', () => true),
+      new Pattern('{el:*}{booleanfalse}{el:*}', () => false),
     ];
     const matcher = new PatternMatcher(testPatterns);
     assert.isTrue(matcher.addPatterns.called);
@@ -56,8 +57,8 @@ describe('PatternMatcher', () => {
       assert.isObject(matcher.compiledPatterns);
       assert.isObject(matcher.validators);
       matcher.addPatterns('', [
-        new Pattern('{emptyline:?}', null),
-        new Pattern('{emptyline:?}', null),
+        new Pattern('{el:?}', null),
+        new Pattern('{el:?}', null),
       ]);
 
       assert.isArray(matcher.patterns['']);
@@ -92,13 +93,13 @@ describe('PatternMatcher', () => {
 
     it('remembers the pattern for each compiled node', () => {
       const testPatterns = [
-        new Pattern('{emptyline:*}{booleantrue}{emptyline:*}', () => true),
-        new Pattern('{emptyline:*}{booleanfalse}{emptyline:*}', () => false),
+        new Pattern('{el:*}{booleantrue}{el:*}', () => true),
+        new Pattern('{el:*}{booleanfalse}{el:*}', () => false),
       ];
       const matcher = new PatternMatcher();
       matcher.addPatterns('', testPatterns);
 
-      const tag = `emptyline:0-${Token.MAX_VALUE}`;
+      const tag = `el:0-${Token.MAX_VALUE}`;
       const compiled = matcher.compiledPatterns[''];
       const root = compiled.paths[tag];
       assert.strictEqual(root.matchedPatterns.length, 0);
@@ -122,8 +123,8 @@ describe('PatternMatcher', () => {
     let matcher;
     beforeEach(() => {
       matcher = new PatternMatcher([
-        new Pattern('{emptyline:*}true{emptyline:*}', () => true),
-        new Pattern('{emptyline:*}false{emptyline:*}', () => false),
+        new Pattern('{el:*}true{el:*}', () => true),
+        new Pattern('{el:*}false{el:*}', () => false),
       ]);
     });
 
@@ -169,8 +170,8 @@ describe('PatternMatcher', () => {
     let context;
     beforeEach(() => {
       matcher = new PatternMatcher([
-        new Pattern('{emptyline:*}true{emptyline:*}', () => true),
-        new Pattern('{emptyline:*}false{emptyline:*}', () => false),
+        new Pattern('{el:*}true{el:*}', () => true),
+        new Pattern('{el:*}false{el:*}', () => false),
       ]);
       context = new PatternContext();
     });
@@ -227,8 +228,8 @@ describe('PatternMatcher', () => {
       context = new PatternContext();
       exactToken = new Token('true', true);
       matcher = new PatternMatcher([
-        new Pattern('{emptyline:*}true{emptyline:*}', () => true),
-        new Pattern('{emptyline:*}false{emptyline:*}', () => false),
+        new Pattern('{el:*}true{el:*}', () => true),
+        new Pattern('{el:*}false{el:*}', () => false),
       ]);
       const defaultValidator = new DefaultValidator(context);
       DefaultValidator.tokenTags.forEach(tag => matcher.registerValidator(tag, defaultValidator));
@@ -237,10 +238,10 @@ describe('PatternMatcher', () => {
 
     const predefTokens = {
       ' ': { correct: ['   ', '\t \t'], wrong: ['test'] },
-      newline: { correct: ['\r', '\n', '\r\n'], wrong: [' ', '\t'] },
-      emptyline: { correct: ['   ', '\t \t', '\r', '\n', '\r\n'], wrong: ['test'] },
-      letter: { correct: ['longwordnospaces', 'UPPERCASE'], wrong: ['long word with spaces'] },
-      any: { correct: ['   ', '\t ', 'abc', 'some text'], wrong: [] },
+      nl: { correct: ['\r', '\n', '\r\n'], wrong: [' ', '\t'] },
+      el: { correct: ['   ', '\t \t', '\r', '\n', '\r\n'], wrong: ['test'] },
+      w: { correct: ['longwordnospaces', 'UPPERCASE'], wrong: ['long word with spaces'] },
+      '.': { correct: ['   ', '\t ', 'abc', 'some text'], wrong: [] },
     };
 
 
@@ -317,8 +318,8 @@ describe('PatternMatcher', () => {
         let i;
         for (i = 0; i < tests.wrong.length; i++) {
           const textValue = tests.wrong[i];
-          const node = new PathNode(token, null, textValue);
-          const result = matcher.validateToken(state, node, false);
+          // eslint-disable-next-line no-loop-func
+          const result = allSubStrings(textValue, subTextValue => matcher.validateToken(state, new PathNode(token, null, subTextValue), false));
           assert.isFalse(result, `token "${value}" should not match text "${textValue}`);
         }
       }

@@ -41,6 +41,7 @@ class PathNode {
   /**
    * Log a validation reason with result
    * @param test
+   * @param args
    * @param result
    */
   logReason(test, args, result) {

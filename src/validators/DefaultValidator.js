@@ -11,7 +11,7 @@ const EMPTYLINE_CHARS = ['\r', '\n', ' ', '\t'];
  * Matches some basic patterns like whitespace, letters and numbers
  */
 class DefaultValidator extends ValidatorBase {
-  static tokenTags = [' ', 'newline', 'emptyline', 'letter', 'any'];
+  static tokenTags = [' ', 'nl', 'el', 'w', '.'];
 
   /* eslint-disable class-methods-use-this */
 
