@@ -155,7 +155,7 @@ class PatternMatcher {
     }
 
     const state = new MatchState(matchTag, context || new PatternContext());
-    state.addCandidates(root);
+    state.addCandidates(root, [], null);
 
     return state;
   }
@@ -238,7 +238,7 @@ class PatternMatcher {
     for (let index = 0; index < candidateNodes.length; index++) {
       const path = candidateNodes[index];
       let result = false;
-      PatternMatcher.matchToLast(path.path, () => { result = true; });
+      PatternMatcher.matchToLast(path.path, () => { result = true; }, 0);
       if (result) {
         return result;
       }
@@ -301,7 +301,7 @@ class PatternMatcher {
             results.push(result);
           }
         }
-      });
+      }, 0);
     }
     PatternMatcher.finalizeReasons(state);
     return results;
@@ -318,12 +318,13 @@ class PatternMatcher {
       add(path, depth);
     }
     // check children if they allow 0 length as well
-    path.children.forEach(child => {
+    for (let i = 0; i < path.children.length; i++) {
+      const child = path.children[i];
       if (child.token.minCount > 0) {
         return;
       }
       PatternMatcher.matchToLast(child.path, add, depth + 1);
-    });
+    }
   }
 
   /**
