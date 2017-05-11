@@ -1,8 +1,10 @@
+import PatternMatcher from './PatternMatcher';
+import PatternContext from './PatternContext';
+
 import DefaultValidator from './validators/DefaultValidator';
 import BooleanParserModule from './modules/BooleanParserModule';
 import NumberParserModule from './modules/NumberParserModule';
-import PatternMatcher from './PatternMatcher';
-import PatternContext from './PatternContext';
+import EmailParserModule from './modules/EmailParserModule';
 
 /**
  * @function getPatterns
@@ -20,6 +22,7 @@ const moduleTypes = [
   DefaultValidator,
   BooleanParserModule,
   NumberParserModule,
+  EmailParserModule,
 ];
 
 const namedPatternMatchers = {};

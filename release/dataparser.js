@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/release/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 319);
+/******/ 	return __webpack_require__(__webpack_require__.s = 322);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -110,7 +110,7 @@ exports.default = function (instance, Constructor) {
 
 exports.__esModule = true;
 
-var _defineProperty = __webpack_require__(/*! ../core-js/object/define-property */ 81);
+var _defineProperty = __webpack_require__(/*! ../core-js/object/define-property */ 82);
 
 var _defineProperty2 = _interopRequireDefault(_defineProperty);
 
@@ -1298,7 +1298,7 @@ var _ValidatorBase3 = _interopRequireDefault(_ValidatorBase2);
 
 var _arrayUtils = __webpack_require__(/*! ../utils/arrayUtils */ 34);
 
-var _boolean = __webpack_require__(/*! ./contexts/boolean.global */ 79);
+var _boolean = __webpack_require__(/*! ./contexts/boolean.global */ 80);
 
 var _boolean2 = _interopRequireDefault(_boolean);
 
@@ -1455,7 +1455,7 @@ var _ValidatorBase3 = _interopRequireDefault(_ValidatorBase2);
 
 var _stringUtils = __webpack_require__(/*! ../utils/stringUtils */ 35);
 
-var _number = __webpack_require__(/*! ./contexts/number.global */ 80);
+var _number = __webpack_require__(/*! ./contexts/number.global */ 81);
 
 var _number2 = _interopRequireDefault(_number);
 
@@ -1757,7 +1757,7 @@ var DefaultValidator = function (_ValidatorBase) {
   return DefaultValidator;
 }(_ValidatorBase3.default);
 
-DefaultValidator.tokenTags = [' ', 'newline', 'emptyline', 'letter', 'any'];
+DefaultValidator.tokenTags = [' ', 'nl', 'el', 'w', '.'];
 DefaultValidator.displayName = 'DefaultValidator';
 exports.default = DefaultValidator;
 
@@ -2320,7 +2320,7 @@ var PatternMatcher = function () {
       for (var i = 0; i < path.children.length; i++) {
         var child = path.children[i];
         if (child.token.minCount > 0) {
-          return;
+          continue;
         }
         PatternMatcher.matchToLast(child.path, add, depth + 1);
       }
@@ -2401,6 +2401,7 @@ var PathNode = function () {
     /**
      * Log a validation reason with result
      * @param test
+     * @param args
      * @param result
      */
 
@@ -2759,7 +2760,8 @@ module.exports = __webpack_require__(/*! ./_hide */ 14);
 
 /***/ }),
 /* 73 */,
-/* 74 */
+/* 74 */,
+/* 75 */
 /* unknown exports provided */
 /* all exports used */
 /*!****************************!*\
@@ -2909,10 +2911,10 @@ DataParser.displayName = 'DataParser';
 exports.default = DataParser;
 
 /***/ }),
-/* 75 */,
 /* 76 */,
 /* 77 */,
-/* 78 */
+/* 78 */,
+/* 79 */
 /* unknown exports provided */
 /* all exports used */
 /*!***********************!*\
@@ -2927,7 +2929,7 @@ var _PatternMatcher = __webpack_require__(/*! ./PatternMatcher */ 58);
 
 var _PatternMatcher2 = _interopRequireDefault(_PatternMatcher);
 
-var _DataParser = __webpack_require__(/*! ./DataParser */ 74);
+var _DataParser = __webpack_require__(/*! ./DataParser */ 75);
 
 var _DataParser2 = _interopRequireDefault(_DataParser);
 
@@ -2995,7 +2997,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 79 */
+/* 80 */
 /* unknown exports provided */
 /* all exports used */
 /*!*************************************************!*\
@@ -3069,7 +3071,7 @@ function makeOptions(constants) {
 exports.default = makeOptions;
 
 /***/ }),
-/* 80 */
+/* 81 */
 /* unknown exports provided */
 /* all exports used */
 /*!************************************************!*\
@@ -3194,32 +3196,42 @@ function getIntegerPatterns(commaDecimal) {
   })];
 }
 
-function getMainPatterns() /* commaDecimal */{
-  // const { decimal, groupSep, group } = getTokens(commaDecimal);
+function getMainPatterns(commaDecimal) {
+  var _getTokens3 = getTokens(commaDecimal),
+      decimal = _getTokens3.decimal,
+      groupSep = _getTokens3.groupSep,
+      group = _getTokens3.group;
+
   var pre = '{ :*}';
   var post = '{ :*}{unit:*}{ :*}';
   return [
-  // // float
-  // new Pattern(`${pre}{-+:?}${group}${decimal}{#:*}${post}`, (c, v) => make(v[1], v[2], null, v[4], groupSep, v[6])),
-  // new Pattern(`${pre}{-+:?}{#:*}${decimal}{#:+}${post}`, (c, v) => make(v[1], v[2], null, v[4], null, v[6])),
-  // new Pattern(`${pre}{-+:?}${group}${decimal}{#:*}e{-+:?}{#:+}${post}`, (c, v) => make(v[1], v[2], v[6] + v[7], v[4], groupSep, v[9])),
-  // new Pattern(`${pre}{-+:?}${group}${decimal}{#:*}e{-+:?}{#:+}${decimal}{#:+}${post}`, (c, v) => make(v[1], v[2], `${v[6]}${v[7]}.${v[9]}`, v[4], groupSep, v[11])),
-  // new Pattern(`${pre}{-+:?}{#:+}${decimal}{#:*}e{-+:?}{#:+}${post}`, (c, v) => make(v[1], v[2], v[6] + v[7], v[4], null, v[9])),
-  // new Pattern(`${pre}{-+:?}{#:+}${decimal}{#:*}e{-+:?}{#:+}${decimal}{#:+}${post}`, (c, v) => make(v[1], v[2], `${v[6]}${v[7]}.${v[9]}`, v[4], null, v[11])),
-  // // integer
-  // new Pattern(`${pre}{-+:?}{#:+}${post}`, (c, v) => make(v[1], v[2], null, '', null, v[4])),
-  // new Pattern(`${pre}{-+:?}${group}${post}`, (c, v) => make(v[1], v[2], null, '', groupSep, v[4])),
-  // new Pattern(`${pre}{-+:?}{#:+}e{-+:?}{#:+}${post}`, (c, v) => make(v[1], v[2], v[4] + v[5], '', null, v[7])),
-  // new Pattern(`${pre}{-+:?}{#:+}e{-+:?}{#:+}${decimal}{#:+}${post}`, (c, v) => make(v[1], v[2], `${v[4]}${v[5]}.${v[7]}`, '', null, v[9])),
-  // new Pattern(`${pre}{-+:?}${group}e{-+:?}{#:+}${post}`, (c, v) => make(v[1], v[2], v[4] + v[5], '', groupSep, v[7])),
-  // new Pattern(`${pre}{-+:?}${group}e{-+:?}{#:+}${decimal}{#:+}${post}`, (c, v) => make(v[1], v[2], `${v[4]}${v[5]}.${v[7]}`, '', groupSep, v[9])),
-  // eslint-disable-next-line no-param-reassign
-  new _Pattern2.default(pre + '{float:+}' + post, function (c, v) {
-    v[1].unit = v[3] || '';return v[1];
+  // float
+  new _Pattern2.default(pre + '{-+:?}' + group + decimal + '{#:*}' + post, function (c, v) {
+    return make(v[1], v[2], null, v[4], groupSep, v[6]);
+  }), new _Pattern2.default(pre + '{-+:?}{#:*}' + decimal + '{#:+}' + post, function (c, v) {
+    return make(v[1], v[2], null, v[4], null, v[6]);
+  }), new _Pattern2.default(pre + '{-+:?}' + group + decimal + '{#:*}e{-+:?}{#:+}' + post, function (c, v) {
+    return make(v[1], v[2], v[6] + v[7], v[4], groupSep, v[9]);
+  }), new _Pattern2.default(pre + '{-+:?}' + group + decimal + '{#:*}e{-+:?}{#:+}' + decimal + '{#:+}' + post, function (c, v) {
+    return make(v[1], v[2], '' + v[6] + v[7] + '.' + v[9], v[4], groupSep, v[11]);
+  }), new _Pattern2.default(pre + '{-+:?}{#:+}' + decimal + '{#:*}e{-+:?}{#:+}' + post, function (c, v) {
+    return make(v[1], v[2], v[6] + v[7], v[4], null, v[9]);
+  }), new _Pattern2.default(pre + '{-+:?}{#:+}' + decimal + '{#:*}e{-+:?}{#:+}' + decimal + '{#:+}' + post, function (c, v) {
+    return make(v[1], v[2], '' + v[6] + v[7] + '.' + v[9], v[4], null, v[11]);
   }),
-  // eslint-disable-next-line no-param-reassign
-  new _Pattern2.default(pre + '{int:+}' + post, function (c, v) {
-    v[1].unit = v[3] || '';return v[1];
+  // integer
+  new _Pattern2.default(pre + '{-+:?}{#:+}' + post, function (c, v) {
+    return make(v[1], v[2], null, '', null, v[4]);
+  }), new _Pattern2.default(pre + '{-+:?}' + group + post, function (c, v) {
+    return make(v[1], v[2], null, '', groupSep, v[4]);
+  }), new _Pattern2.default(pre + '{-+:?}{#:+}e{-+:?}{#:+}' + post, function (c, v) {
+    return make(v[1], v[2], v[4] + v[5], '', null, v[7]);
+  }), new _Pattern2.default(pre + '{-+:?}{#:+}e{-+:?}{#:+}' + decimal + '{#:+}' + post, function (c, v) {
+    return make(v[1], v[2], '' + v[4] + v[5] + '.' + v[7], '', null, v[9]);
+  }), new _Pattern2.default(pre + '{-+:?}' + group + 'e{-+:?}{#:+}' + post, function (c, v) {
+    return make(v[1], v[2], v[4] + v[5], '', groupSep, v[7]);
+  }), new _Pattern2.default(pre + '{-+:?}' + group + 'e{-+:?}{#:+}' + decimal + '{#:+}' + post, function (c, v) {
+    return make(v[1], v[2], '' + v[4] + v[5] + '.' + v[7], '', groupSep, v[9]);
   })];
 }
 
@@ -3254,7 +3266,7 @@ function makeOptions(constants) {
 exports.default = makeOptions;
 
 /***/ }),
-/* 81 */
+/* 82 */
 /* unknown exports provided */
 /* all exports used */
 /*!************************************************************!*\
@@ -3265,7 +3277,6 @@ exports.default = makeOptions;
 module.exports = { "default": __webpack_require__(/*! core-js/library/fn/object/define-property */ 98), __esModule: true };
 
 /***/ }),
-/* 82 */,
 /* 83 */,
 /* 84 */,
 /* 85 */,
@@ -4959,7 +4970,10 @@ for(var collections = ['NodeList', 'DOMTokenList', 'MediaList', 'StyleSheetList'
 /* 316 */,
 /* 317 */,
 /* 318 */,
-/* 319 */
+/* 319 */,
+/* 320 */,
+/* 321 */,
+/* 322 */
 /* unknown exports provided */
 /* all exports used */
 /*!*****************************!*\
@@ -4967,7 +4981,7 @@ for(var collections = ['NodeList', 'DOMTokenList', 'MediaList', 'StyleSheetList'
   \*****************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! ../src/index.js */78);
+module.exports = __webpack_require__(/*! ../src/index.js */79);
 
 
 /***/ })

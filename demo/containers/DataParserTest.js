@@ -8,6 +8,7 @@ import ParserBenchmark from '../components/ParserBenchmark';
 import DefaultValidator from '../../src/validators/DefaultValidator';
 import BooleanParserModule from '../../src/modules/BooleanParserModule';
 import NumberParserModule from '../../src/modules/NumberParserModule';
+import EmailParserModule from '../../src/modules/EmailParserModule';
 
 const moduleTypes = [
   {
@@ -18,11 +19,16 @@ const moduleTypes = [
   {
     label: 'Boolean',
     value: BooleanParserModule,
-    selected: false,
+    selected: true,
   },
   {
     label: 'Number',
     value: NumberParserModule,
+    selected: true,
+  },
+  {
+    label: 'Email',
+    value: EmailParserModule,
     selected: true,
   },
 ];
