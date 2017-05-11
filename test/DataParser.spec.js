@@ -79,7 +79,7 @@ describe('DataParser', () => {
         const result = parser.parse(str);
         const values = result.values;
         assert.isArray(values);
-        assert.lengthOf(values, 1);
+        assert.lengthOf(values, 1, `Failing case: [${str}]`);
         assert.instanceOf(values[0], BooleanValue);
         assert.strictEqual(values[0].bool, testValues[index], 'Expected the parsed value to be correct');
       });

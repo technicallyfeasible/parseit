@@ -321,7 +321,7 @@ class PatternMatcher {
     for (let i = 0; i < path.children.length; i++) {
       const child = path.children[i];
       if (child.token.minCount > 0) {
-        return;
+        continue;
       }
       PatternMatcher.matchToLast(child.path, add, depth + 1);
     }

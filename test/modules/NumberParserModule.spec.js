@@ -4,11 +4,12 @@
 
 import { assert } from 'chai';
 
+import { allSubStrings } from '../utils';
 import Token from '../../src/matching/Token';
 import NumberParserModule, { optionsCache } from '../../src/modules/NumberParserModule';
 
 
-describe('BooleanParserModule', () => {
+describe('NumberParserModule', () => {
   let context;
   beforeEach(() => {
     context = {
@@ -51,10 +52,16 @@ describe('BooleanParserModule', () => {
 
 
   describe('.validateToken', () => {
-    function validateTokenValuesFinal(token, values, expected = true) {
+    function validateTokenValuesFinal(token, values, expected = true, subMatch = false) {
       const parser = new NumberParserModule(context);
       values.forEach(value => {
-        assert.strictEqual(parser.validateToken(context, token, value, true), expected, `Failing case: ${value}`);
+        let result;
+        if (subMatch) {
+          result = allSubStrings(value, subValue => parser.validateToken(context, token, subValue, true));
+        } else {
+          result = parser.validateToken(context, token, value, true);
+        }
+        assert.strictEqual(result, expected, `Failing case: "${value}"`);
       });
     }
 
@@ -67,16 +74,16 @@ describe('BooleanParserModule', () => {
       const token = new Token('-+:?');
       const signs = ['-', '+'];
       const nonSigns = ['--', '+-', '1', '-+', '++', ''];
-      validateTokenValuesFinal(token, signs);
-      validateTokenValuesFinal(token, nonSigns, false);
+      validateTokenValuesFinal(token, signs, true, true);
+      validateTokenValuesFinal(token, nonSigns, false, true);
     });
 
-    it('returns true simple integers', () => {
+    it('returns true for simple integers', () => {
       const token = new Token('#:+');
       const ints = ['70', '12', '33645', '0928', '1'];
       const nonInts = ['70.5', '12,12', '33645a', '09g28', '-100', ''];
-      validateTokenValuesFinal(token, ints);
-      validateTokenValuesFinal(token, nonInts, false);
+      validateTokenValuesFinal(token, ints, true, true);
+      validateTokenValuesFinal(token, nonInts, false, true);
     });
 
     it('returns true for integers with "." group separator', () => {
@@ -99,16 +106,16 @@ describe('BooleanParserModule', () => {
       const token = new Token('unit:+');
       const units = ['m^2', 'm', 'a', 'g', 'kg', 'ml', 'MB', 'l/d', 'Kilometer', 'km', 'mol', 'N/m^2', 'J/Kg'];
       const nonUnits = ['12', '^m', '/d', '5m', 'per day', '-', ''];
-      validateTokenValuesFinal(token, units);
-      validateTokenValuesFinal(token, nonUnits, false);
+      validateTokenValuesFinal(token, units, true, true);
+      validateTokenValuesFinal(token, nonUnits, false, true);
     });
 
     it('returns true hexadecimal numbers', () => {
       const token = new Token('X:+');
       const hex = ['70', '12', '33acf', '0a6d7f', 'aaa', 'def', 'ffff', 'abcdef'];
       const nonHex = ['abcdefg', '0436h90', 'a.b', '0.5a', ''];
-      validateTokenValuesFinal(token, hex);
-      validateTokenValuesFinal(token, nonHex, false);
+      validateTokenValuesFinal(token, hex, true, true);
+      validateTokenValuesFinal(token, nonHex, false, true);
     });
   });
 

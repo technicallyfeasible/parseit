@@ -80,29 +80,29 @@ function getIntegerPatterns(commaDecimal) {
   ];
 }
 
-function getMainPatterns(/* commaDecimal */) {
-  // const { decimal, groupSep, group } = getTokens(commaDecimal);
+function getMainPatterns(commaDecimal) {
+  const { decimal, groupSep, group } = getTokens(commaDecimal);
   const pre = '{ :*}';
   const post = '{ :*}{unit:*}{ :*}';
   return [
-    // // float
-    // new Pattern(`${pre}{-+:?}${group}${decimal}{#:*}${post}`, (c, v) => make(v[1], v[2], null, v[4], groupSep, v[6])),
-    // new Pattern(`${pre}{-+:?}{#:*}${decimal}{#:+}${post}`, (c, v) => make(v[1], v[2], null, v[4], null, v[6])),
-    // new Pattern(`${pre}{-+:?}${group}${decimal}{#:*}e{-+:?}{#:+}${post}`, (c, v) => make(v[1], v[2], v[6] + v[7], v[4], groupSep, v[9])),
-    // new Pattern(`${pre}{-+:?}${group}${decimal}{#:*}e{-+:?}{#:+}${decimal}{#:+}${post}`, (c, v) => make(v[1], v[2], `${v[6]}${v[7]}.${v[9]}`, v[4], groupSep, v[11])),
-    // new Pattern(`${pre}{-+:?}{#:+}${decimal}{#:*}e{-+:?}{#:+}${post}`, (c, v) => make(v[1], v[2], v[6] + v[7], v[4], null, v[9])),
-    // new Pattern(`${pre}{-+:?}{#:+}${decimal}{#:*}e{-+:?}{#:+}${decimal}{#:+}${post}`, (c, v) => make(v[1], v[2], `${v[6]}${v[7]}.${v[9]}`, v[4], null, v[11])),
-    // // integer
-    // new Pattern(`${pre}{-+:?}{#:+}${post}`, (c, v) => make(v[1], v[2], null, '', null, v[4])),
-    // new Pattern(`${pre}{-+:?}${group}${post}`, (c, v) => make(v[1], v[2], null, '', groupSep, v[4])),
-    // new Pattern(`${pre}{-+:?}{#:+}e{-+:?}{#:+}${post}`, (c, v) => make(v[1], v[2], v[4] + v[5], '', null, v[7])),
-    // new Pattern(`${pre}{-+:?}{#:+}e{-+:?}{#:+}${decimal}{#:+}${post}`, (c, v) => make(v[1], v[2], `${v[4]}${v[5]}.${v[7]}`, '', null, v[9])),
-    // new Pattern(`${pre}{-+:?}${group}e{-+:?}{#:+}${post}`, (c, v) => make(v[1], v[2], v[4] + v[5], '', groupSep, v[7])),
-    // new Pattern(`${pre}{-+:?}${group}e{-+:?}{#:+}${decimal}{#:+}${post}`, (c, v) => make(v[1], v[2], `${v[4]}${v[5]}.${v[7]}`, '', groupSep, v[9])),
-    // eslint-disable-next-line no-param-reassign
-    new Pattern(`${pre}{float:+}${post}`, (c, v) => { v[1].unit = v[3] || ''; return v[1]; }),
-    // eslint-disable-next-line no-param-reassign
-    new Pattern(`${pre}{int:+}${post}`, (c, v) => { v[1].unit = v[3] || ''; return v[1]; }),
+    // float
+    new Pattern(`${pre}{-+:?}${group}${decimal}{#:*}${post}`, (c, v) => make(v[1], v[2], null, v[4], groupSep, v[6])),
+    new Pattern(`${pre}{-+:?}{#:*}${decimal}{#:+}${post}`, (c, v) => make(v[1], v[2], null, v[4], null, v[6])),
+    new Pattern(`${pre}{-+:?}${group}${decimal}{#:*}e{-+:?}{#:+}${post}`, (c, v) => make(v[1], v[2], v[6] + v[7], v[4], groupSep, v[9])),
+    new Pattern(`${pre}{-+:?}${group}${decimal}{#:*}e{-+:?}{#:+}${decimal}{#:+}${post}`, (c, v) => make(v[1], v[2], `${v[6]}${v[7]}.${v[9]}`, v[4], groupSep, v[11])),
+    new Pattern(`${pre}{-+:?}{#:+}${decimal}{#:*}e{-+:?}{#:+}${post}`, (c, v) => make(v[1], v[2], v[6] + v[7], v[4], null, v[9])),
+    new Pattern(`${pre}{-+:?}{#:+}${decimal}{#:*}e{-+:?}{#:+}${decimal}{#:+}${post}`, (c, v) => make(v[1], v[2], `${v[6]}${v[7]}.${v[9]}`, v[4], null, v[11])),
+    // integer
+    new Pattern(`${pre}{-+:?}{#:+}${post}`, (c, v) => make(v[1], v[2], null, '', null, v[4])),
+    new Pattern(`${pre}{-+:?}${group}${post}`, (c, v) => make(v[1], v[2], null, '', groupSep, v[4])),
+    new Pattern(`${pre}{-+:?}{#:+}e{-+:?}{#:+}${post}`, (c, v) => make(v[1], v[2], v[4] + v[5], '', null, v[7])),
+    new Pattern(`${pre}{-+:?}{#:+}e{-+:?}{#:+}${decimal}{#:+}${post}`, (c, v) => make(v[1], v[2], `${v[4]}${v[5]}.${v[7]}`, '', null, v[9])),
+    new Pattern(`${pre}{-+:?}${group}e{-+:?}{#:+}${post}`, (c, v) => make(v[1], v[2], v[4] + v[5], '', groupSep, v[7])),
+    new Pattern(`${pre}{-+:?}${group}e{-+:?}{#:+}${decimal}{#:+}${post}`, (c, v) => make(v[1], v[2], `${v[4]}${v[5]}.${v[7]}`, '', groupSep, v[9])),
+    // // eslint-disable-next-line no-param-reassign
+    // new Pattern(`${pre}{float:+}${post}`, (c, v) => { v[1].unit = v[3] || ''; return v[1]; }),
+    // // eslint-disable-next-line no-param-reassign
+    // new Pattern(`${pre}{int:+}${post}`, (c, v) => { v[1].unit = v[3] || ''; return v[1]; }),
   ];
 }
 
