@@ -37,8 +37,8 @@ function makeOptions(constants) {
     falseLookup,
     patterns: {
       '': [
-        new Pattern('{emptyline:*}{booleantrue}{emptyline:*}', make),
-        new Pattern('{emptyline:*}{booleanfalse}{emptyline:*}', make),
+        new Pattern('{el:*}{booleantrue}{el:*}', make),
+        new Pattern('{el:*}{booleanfalse}{el:*}', make),
       ],
     },
     make,

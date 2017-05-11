@@ -1,19 +1,23 @@
 // @flow
 import ValidatorBase from '../validators/ValidatorBase';
-import { matchAll, countNumbers } from '../utils/stringUtils';
+import { countNumbers } from '../utils/stringUtils';
 import makeOptions from './contexts/number.global';
+import { validateCount } from '../utils/validatorUtils';
 
 export const optionsCache = {};
+
+const SIGN_CHARS = '-+'.split('');
+const SEPARATOR_CHARS = '.,'.split('');
+const UNIT_CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!%?°^\'"/0123456789'.split('');
+const INVALID_BEGIN_UNIT_CHARS = '0123456789?^/'.split('');
+const NUMBER_CHARS = '0123456789'.split('');
+const HEX_CHARS = '0123456789abcdefABCDEF'.split('');
 
 /**
  * Parses booleans
  */
 class NumberParserModule extends ValidatorBase {
   static tokenTags = ['-+', '#', '#.', '#,', 'unit', 'X'];
-  static UnitChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!%?°^\'"/0123456789';
-  static InvalidBeginUnitChars = '0123456789?^/';
-  static NumberChars = '0123456789';
-  static HexChars = '0123456789abcdefABCDEF';
   options: Object;
 
   /**
@@ -47,24 +51,25 @@ class NumberParserModule extends ValidatorBase {
    * @returns {*} - Returns true if the value matches the token, false if it doesn't match or the token is unknown
    */
   validateToken(context: Object, token: Object, value: string, isFinal: boolean) {
-    if (!NumberParserModule.validateCount(token, value, isFinal)) {
+    if (!validateCount(token, value, isFinal)) {
       return false;
     }
 
+    const c = value.charAt(value.length - 1);
     switch (token.value) {
       case '-+':
-        return matchAll(value, '-+');
+        return SIGN_CHARS.indexOf(c) !== -1;
       case '.,':
-        return matchAll(value, '.,');
+        return SEPARATOR_CHARS.indexOf(c) !== -1;
       case '#':
-        return matchAll(value, NumberParserModule.NumberChars);
+        return NUMBER_CHARS.indexOf(c) !== -1;
       case '#.':
         return NumberParserModule.validateGroupedNumbers(value, '.', isFinal);
       case '#,':
         return NumberParserModule.validateGroupedNumbers(value, ',', isFinal);
       case 'unit': {
         // unit can contain numbers but not only consist of numbers
-        let isValid = matchAll(value, NumberParserModule.UnitChars) && !matchAll(value[0], NumberParserModule.InvalidBeginUnitChars);
+        let isValid = UNIT_CHARS.indexOf(c) !== -1 && INVALID_BEGIN_UNIT_CHARS.indexOf(value[0]) === -1;
         // check the ratio of numbers to other characters and reject unit if too many numbers
         if (isFinal && isValid) {
           const numCount = countNumbers(value);
@@ -75,7 +80,7 @@ class NumberParserModule extends ValidatorBase {
         return isValid;
       }
       case 'X':
-        return matchAll(value, NumberParserModule.HexChars);
+        return HEX_CHARS.indexOf(c) !== -1;
       default:
         return false;
     }
@@ -92,10 +97,6 @@ class NumberParserModule extends ValidatorBase {
     return value;
   }
 
-  static validateCount(token: Object, value: string, isFinal: boolean) {
-    return (!isFinal || value.length >= token.minCount) && value.length <= token.maxCount;
-  }
-
   /**
    * Validates a number with thousands separators included
    * @param value
@@ -106,7 +107,7 @@ class NumberParserModule extends ValidatorBase {
   static validateGroupedNumbers(value: string, separator: string, isFinal: boolean) {
     let first = true;
     let groupLength = 0;
-    for (let i = 0; i < value.length; i++) {
+    for (let i = 0; i < value.length && groupLength <= 3; i++) {
       const c = value.charAt(i);
       if (c === separator) {
         if (groupLength === 0 || (first && groupLength > 3) || (!first && groupLength !== 3)) {

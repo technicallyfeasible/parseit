@@ -32,13 +32,14 @@ class MatchState {
    * @param previousValues
    * @param parent
    */
-  addCandidates(root, previousValues = [], parent) {
-    root.children.forEach(({ token, path }) => {
+  addCandidates(root, previousValues, parent) {
+    for (let i = 0; i < root.children.length; i++) {
+      const { token, path } = root.children[i];
       const node = new PathNode(token, path);
       node.previousValues = previousValues;
       node.parent = parent;
       this.candidateNodes.push(node);
-    });
+    }
   }
 
   /**
@@ -58,7 +59,11 @@ class MatchState {
       const node = this.candidateNodes[index];
       this.reasons.push(node);
     }
-    this.candidateNodes.splice(index, 1);
+    // faster than splice
+    // this.candidateNodes.splice(index, 1);
+    const len = this.candidateNodes.length - 1;
+    this.candidateNodes[index] = this.candidateNodes[len];
+    this.candidateNodes.length--;
   }
 }
 

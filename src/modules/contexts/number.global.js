@@ -85,14 +85,14 @@ function getMainPatterns(/* commaDecimal */) {
   const pre = '{ :*}';
   const post = '{ :*}{unit:*}{ :*}';
   return [
-    // float
+    // // float
     // new Pattern(`${pre}{-+:?}${group}${decimal}{#:*}${post}`, (c, v) => make(v[1], v[2], null, v[4], groupSep, v[6])),
     // new Pattern(`${pre}{-+:?}{#:*}${decimal}{#:+}${post}`, (c, v) => make(v[1], v[2], null, v[4], null, v[6])),
     // new Pattern(`${pre}{-+:?}${group}${decimal}{#:*}e{-+:?}{#:+}${post}`, (c, v) => make(v[1], v[2], v[6] + v[7], v[4], groupSep, v[9])),
     // new Pattern(`${pre}{-+:?}${group}${decimal}{#:*}e{-+:?}{#:+}${decimal}{#:+}${post}`, (c, v) => make(v[1], v[2], `${v[6]}${v[7]}.${v[9]}`, v[4], groupSep, v[11])),
     // new Pattern(`${pre}{-+:?}{#:+}${decimal}{#:*}e{-+:?}{#:+}${post}`, (c, v) => make(v[1], v[2], v[6] + v[7], v[4], null, v[9])),
     // new Pattern(`${pre}{-+:?}{#:+}${decimal}{#:*}e{-+:?}{#:+}${decimal}{#:+}${post}`, (c, v) => make(v[1], v[2], `${v[6]}${v[7]}.${v[9]}`, v[4], null, v[11])),
-    // integer
+    // // integer
     // new Pattern(`${pre}{-+:?}{#:+}${post}`, (c, v) => make(v[1], v[2], null, '', null, v[4])),
     // new Pattern(`${pre}{-+:?}${group}${post}`, (c, v) => make(v[1], v[2], null, '', groupSep, v[4])),
     // new Pattern(`${pre}{-+:?}{#:+}e{-+:?}{#:+}${post}`, (c, v) => make(v[1], v[2], v[4] + v[5], '', null, v[7])),

@@ -1,8 +1,11 @@
 import ValidatorBase from './ValidatorBase';
-import { matchAll } from '../utils/stringUtils';
+import { validateCount } from '../utils/validatorUtils';
 
 /** @const */
-const LETTER_CHARACTERS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const LETTER_CHARACTERS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+const SPACE_CHARS = [' ', '\t'];
+const NEWLINE_CHARS = ['\r', '\n'];
+const EMPTYLINE_CHARS = ['\r', '\n', ' ', '\t'];
 
 /**
  * Matches some basic patterns like whitespace, letters and numbers
@@ -21,39 +24,33 @@ class DefaultValidator extends ValidatorBase {
    * @returns {*} - Returns true if the value matches the token, false if it doesn't match or the token is unknown
    */
   validateToken(context, token, value, isFinal) {
+    if (!validateCount(token, value, isFinal)) {
+      return false;
+    }
+
+    const c = value.charAt(value.length - 1);
     let result;
     switch (token.value) {
       // whitespace
       case ' ':
-        result = DefaultValidator.validateCount(token, value, isFinal) && matchAll(value, ' \t');
+        result = SPACE_CHARS.indexOf(c) !== -1;
         break;
-      case 'newline':
-        result = DefaultValidator.validateCount(token, value, isFinal) && matchAll(value, '\r\n');
+      case 'nl':
+        result = NEWLINE_CHARS.indexOf(c) !== -1;
         break;
-      case 'emptyline':
-        result = DefaultValidator.validateCount(token, value, isFinal) && matchAll(value, '\r\n \t');
+      case 'el':
+        result = EMPTYLINE_CHARS.indexOf(c) !== -1;
         break;
-      case 'letter':
-        result = DefaultValidator.validateCount(token, value, isFinal) && matchAll(value, LETTER_CHARACTERS);
+      case 'w':
+        result = LETTER_CHARACTERS.indexOf(c) !== -1;
         break;
-      case 'any':
-        result = DefaultValidator.validateCount(token, value, isFinal);
+      case '.':
+        result = true;
         break;
       default:
         result = false;
     }
     return result;
-  }
-
-  /**
-   * Checks whether the value is within the required length for token
-   * @param token
-   * @param value
-   * @param isFinal
-   * @returns {boolean}
-   */
-  static validateCount(token, value, isFinal) {
-    return (!isFinal || value.length >= token.minCount) && value.length <= token.maxCount;
   }
 
   /**
