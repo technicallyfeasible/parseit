@@ -10,29 +10,28 @@ import EmailValue from '../../values/EmailValue';
  * @return {EmailValue}
  */
 function make(user: string, host: string, displayName: string) {
-  const email = (!user && !host ? '' : `${user}@${host}`);
-  return new EmailValue(email, displayName);
+  return new EmailValue(user, host, displayName);
 }
 
 const mainPatterns = [
   // email@host.de
-  new Pattern('{el:*}{mail:+}@{mailh:+}{el:*}', (c, v) => make(v[1], v[3], '')),
+  new Pattern('{mail:+}@{mailh:+}', (c, v) => make(v[0], v[2], '')),
   // "Name Last" <email@host.de>
-  new Pattern('{el:*}"{mailn:*}"{el:*}<{mail:+}@{mailh:+}>{el:*}', (c, v) => make(v[6], v[8], v[2])),
+  new Pattern('"{mailn:*}"{el:*}<{mail:+}@{mailh:+}>', (c, v) => make(v[5], v[7], v[1])),
   // Name Last <email@host.de>
-  new Pattern('{el:*}{mailn:*}{el:+}<{mail:+}@{mailh:+}>{el:*}', (c, v) => make(v[4], v[6], v[1])),
+  new Pattern('{mailn:+}{el:+}<{mail:+}@{mailh:+}>', (c, v) => make(v[3], v[5], v[0])),
   // "Name Last" <>
-  new Pattern('{el:*}"{mailn:*}"{el:*}<>{el:*}', (c, v) => make('\'', '', v[2])),
+  new Pattern('"{mailn:*}"{el:*}<>', (c, v) => make('\'', '', v[1])),
   // (comment)email@host.de
-  new Pattern('{el:*}({mailc:*}){el:*}{mail:+}@{mailh:+}{el:*}', (c, v) => make(v[5], v[7], v[2])),
+  new Pattern('({mailc:*}){el:*}{mail:+}@{mailh:+}', (c, v) => make(v[4], v[6], v[1])),
   // email(comment)@host.de
-  new Pattern('{el:*}{mail:+}({mailc:*})@{mailh:+}{el:*}', (c, v) => make(v[1], v[5], v[3])),
+  new Pattern('{mail:+}({mailc:*})@{mailh:+}', (c, v) => make(v[0], v[4], v[2])),
   // email@host.de (comment)
-  new Pattern('{el:*}{mail:+}@{mailh:+}{el:*}({mailc:*}){el:*}', (c, v) => make(v[1], v[3], v[6])),
+  new Pattern('{mail:+}@{mailh:+}{el:*}({mailc:*})', (c, v) => make(v[0], v[2], v[5])),
   // Name (email@host.de), special format that is used in outlook as display sometimes
-  new Pattern('{el:*}{mailn:+}{el:+}({mail:+}@{mailh:+}){el:*}', (c, v) => make(v[4], v[6], v[1])),
+  new Pattern('{mailn:+}{el:+}({mail:+}@{mailh:+})', (c, v) => make(v[3], v[5], v[0])),
   // Name (email@host.de), special format that is used in outlook as display sometimes
-  new Pattern('{el:*}"{mailn:+}"@{mailh:+}{el:*}', (c, v) => make(`"${v[2]}"`, v[4], '')),
+  new Pattern('"{mailn:+}"@{mailh:+}', (c, v) => make(`"${v[1]}"`, v[3], '')),
 ];
 
 // patterns to find only an email address in any text

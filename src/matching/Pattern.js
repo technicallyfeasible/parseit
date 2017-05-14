@@ -39,7 +39,7 @@ class Pattern {
 
     const pushToken = (value, exactMatch, index) => {
       const token = new Token(value, exactMatch);
-      token.pos = index - value.length - 1;
+      token.pos = index - value.length - (exactMatch ? 0 : 1);
       tokens.push(token);
     };
 

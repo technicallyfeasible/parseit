@@ -7,6 +7,8 @@ import PatternPath from './matching/PatternPath';
 import MatchState from './MatchState';
 import PatternContext from './PatternContext';
 
+const EMPTYLINE_CHARS = ['\r', '\n', ' ', '\t'];
+
 /**
  * Matches patterns according to registered rules
  */
@@ -119,9 +121,15 @@ class PatternMatcher {
       return [];
     }
 
-    const len = value.length;
-    const finalIndex = len - 1;
-    for (let i = 0; i < len; i++) {
+    let startIndex = 0;
+    let finalIndex = value.length - 1;
+    // find the correct start and end index when whitespace should be trimmed
+    if (state.context.trimWhitespace) {
+      while (startIndex < finalIndex && EMPTYLINE_CHARS.indexOf(value[startIndex]) !== -1) startIndex++;
+      while (finalIndex > startIndex && EMPTYLINE_CHARS.indexOf(value[finalIndex]) !== -1) finalIndex--;
+    }
+
+    for (let i = startIndex; i <= finalIndex; i++) {
       const c = value.charAt(i);
       if (!this.matchNext(state, c, i === finalIndex)) {
         PatternMatcher.finalizeReasons(state);
@@ -211,7 +219,10 @@ class PatternMatcher {
     if (state.context.reasons) {
       const candidates = state.getCandidateNodes();
       if (state.reasons && candidates) {
-        state.reasons = state.reasons.concat(state.getCandidateNodes());  // eslint-disable-line no-param-reassign
+        candidates.forEach(node => {
+          // eslint-disable-next-line no-param-reassign
+          state.reasons.push(node.finalizeReasons());
+        });
       }
       // state.reasons.forEach(node => {
       //   console.log('\n', node.token.toString());

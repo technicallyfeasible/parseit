@@ -5,6 +5,7 @@ import DefaultValidator from './validators/DefaultValidator';
 import BooleanParserModule from './modules/BooleanParserModule';
 import NumberParserModule from './modules/NumberParserModule';
 import EmailParserModule from './modules/EmailParserModule';
+import UriParserModule from './modules/UriParserModule';
 
 /**
  * @function getPatterns
@@ -23,6 +24,7 @@ const moduleTypes = [
   BooleanParserModule,
   NumberParserModule,
   EmailParserModule,
+  UriParserModule,
 ];
 
 const namedPatternMatchers = {};

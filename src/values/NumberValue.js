@@ -1,8 +1,14 @@
+// @flow
+
 /**
  * Number result wrapper
  */
-class NumberValue {
-  constructor(number, unit, decimals) {
+export default class NumberValue {
+  number: number;
+  unit: ?string;
+  decimals: ?number;
+
+  constructor(number: number, unit: ?string, decimals: ?number) {
     this.number = number;
     this.unit = unit;
     this.decimals = decimals;
@@ -13,15 +19,10 @@ class NumberValue {
   }
 
   toString() {
-    return `${this.number}${this.unit}`;
+    return `${this.number}${this.unit || ''}`;
   }
 
-  equals(other) {
-    if (!(other instanceof NumberValue)) {
-      return false;
-    }
+  equals(other: NumberValue) {
     return this.number === other.number && this.unit === other.unit && this.decimals === other.decimals;
   }
 }
-
-export default NumberValue;

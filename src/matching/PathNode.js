@@ -55,6 +55,37 @@ class PathNode {
     });
   }
 
+  findPossiblePatterns(path, isReachable, patterns = []) {
+    if (path.matchedPatterns && path.matchedPatterns.length > 0) {
+      path.matchedPatterns.forEach(pattern => patterns.push({
+        pattern: pattern.match,
+        isReachable,
+      }));
+    }
+    if (path.children) {
+      for (let i = 0; i < path.children.length; i++) {
+        const child = path.children[i];
+        const token = child.token;
+        this.findPossiblePatterns(child.path, isReachable && token.minCount === 0, patterns);
+      }
+    }
+    return patterns;
+  }
+
+  finalizeReasons() {
+    // if the result of the last reason check is not false then this node was successfully matched to a pattern
+    const result = this.reasons[this.reasons.length - 1].result !== false;
+    // traverse node path to the matched patterns and output the failed patterns together with the text that did not match and position
+    const patterns = this.findPossiblePatterns(this.path, result);
+    return {
+      token: this.token,
+      textValue: this.textValue,
+      patterns,
+      reasons: this.reasons,
+      result,
+    };
+  }
+
   toString() {
     return `${this.token} ~ "${this.textValue}"`;
   }

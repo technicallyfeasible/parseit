@@ -19,6 +19,8 @@ export default class DataParserTest extends Component {
       stats: {},
       results: [],
       reasons: [],
+      showReasons: false,
+      reasonDetails: {},
     };
   }
 
@@ -48,9 +50,22 @@ export default class DataParserTest extends Component {
     });
   }
 
+  toggleShowReasons() {
+    this.setState({ showReasons: !this.state.showReasons });
+  }
+
+  toggleReasonDetails(index) {
+    this.setState({
+      reasonDetails: {
+        ...this.state.reasonDetails,
+        [index]: !this.state.reasonDetails[index],
+      },
+    });
+  }
+
   render() {
     const { parser } = this.props;
-    const { stats, results, reasons } = this.state;
+    const { stats, results, reasons, showReasons } = this.state;
 
     if (!parser) {
       return null;
@@ -70,10 +85,64 @@ export default class DataParserTest extends Component {
       });
     }
 
-    let reasonElements = 'No reasons';
-    if (reasons && reasons.length > 0) {
-      // reasonElements = JSON.stringify(reasons, null, 2);
-      reasonElements = `${reasons.length}`;
+    let reasonElements = '';
+    if (reasons && reasons.length > 0 && showReasons) {
+      // flatten reasons
+      const flatReasons = [];
+      reasons.forEach(reason => {
+        const { token, token: { pos }, patterns, result } = reason;
+        patterns.forEach(patternInfo => {
+          const { pattern, isReachable } = patternInfo;
+          let finalPos = pos;
+          if (result) {
+            finalPos = token.exactMatch ? pos + token.value.length : pattern.indexOf('}', pos) + 1;
+          }
+          flatReasons.push({
+            // advance position beyond the current token if it was still successful
+            pos: finalPos,
+            pattern,
+            isReachable,
+            reasons: reason.reasons,
+          });
+        });
+      });
+      // sort by success first
+      flatReasons.sort((a, b) => {
+        if (a.isReachable && !b.isReachable) return -1;
+        if (!a.isReachable && b.isReachable) return 1;
+        if (a.pos !== b.pos) {
+          return b.pos - a.pos;
+        }
+        return a.pattern.localeCompare(b.pattern);
+      });
+      // output paths with match position
+      reasonElements = flatReasons.map((patternInfo, index) => {
+        const { pos, isReachable, pattern, reasons: patternReasons } = patternInfo;
+        let texts;
+        if (isReachable) {
+          // whole pattern was successful
+          texts = [
+            pattern,
+          ];
+        } else {
+          texts = [
+            pattern.substring(0, pos),
+            pattern.substring(pos),
+          ];
+        }
+
+        const showDetails = this.state.reasonDetails[index];
+        return (
+          // eslint-disable-next-line react/no-array-index-key
+          <div key={index}>
+            <button className="btn btn-link" onClick={() => this.toggleReasonDetails(index)}>
+              <span style={{ color: 'green' }}>{ texts[0] }</span>
+              { texts[1] ? <span style={{ color: 'red' }}>{ texts[1] }</span> : null }
+            </button>
+            { !showDetails ? null : <div>{ JSON.stringify(patternReasons, null, 2) }</div> }
+          </div>
+        );
+      });
     }
 
     return (
@@ -89,7 +158,10 @@ export default class DataParserTest extends Component {
             <div>{ resultElements }</div>
           </div>
           <div className="col col-xs-12 col-sm-6">
-            <h3>Reasons{ reasons ? `: ${reasons.length}` : '' }</h3>
+            <h3>
+              Reasons{ reasons ? `: ${reasons.length}` : '' }
+              <button className="btn btn-link" onClick={() => this.toggleShowReasons()}>{ showReasons ? 'hide' : 'show' }</button>
+            </h3>
             <pre>{ reasonElements }</pre>
           </div>
         </div>

@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "private": true,
   "repository": {
-    "type": "git",
+    "version": "git",
     "url": "https://github.com/technicallyfeasible/dataparser"
   },
   "scripts": {

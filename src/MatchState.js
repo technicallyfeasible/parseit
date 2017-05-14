@@ -57,7 +57,7 @@ class MatchState {
   removeCandidate(index) {
     if (this.logReasons) {
       const node = this.candidateNodes[index];
-      this.reasons.push(node);
+      this.reasons.push(node.finalizeReasons());
     }
     // faster than splice
     // this.candidateNodes.splice(index, 1);

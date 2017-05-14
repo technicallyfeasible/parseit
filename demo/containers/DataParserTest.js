@@ -9,6 +9,7 @@ import DefaultValidator from '../../src/validators/DefaultValidator';
 import BooleanParserModule from '../../src/modules/BooleanParserModule';
 import NumberParserModule from '../../src/modules/NumberParserModule';
 import EmailParserModule from '../../src/modules/EmailParserModule';
+import UriParserModule from '../../src/modules/UriParserModule';
 
 const moduleTypes = [
   {
@@ -29,6 +30,11 @@ const moduleTypes = [
   {
     label: 'Email',
     value: EmailParserModule,
+    selected: true,
+  },
+  {
+    label: 'URI',
+    value: UriParserModule,
     selected: true,
   },
 ];

@@ -1,8 +1,12 @@
+// @flow
+
 /**
  * Boolean result wrapper
  */
-class BooleanValue {
-  constructor(value) {
+export default class BooleanValue {
+  bool: boolean;
+
+  constructor(value: boolean) {
     this.bool = Boolean(value);
   }
 
@@ -14,12 +18,7 @@ class BooleanValue {
     return this.bool.toString();
   }
 
-  equals(other) {
-    if (!(other instanceof BooleanValue)) {
-      return false;
-    }
+  equals(other: BooleanValue) {
     return this.bool === other.bool;
   }
 }
-
-export default BooleanValue;

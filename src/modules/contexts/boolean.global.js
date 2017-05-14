@@ -20,7 +20,7 @@ function makeOptions(constants) {
    * @returns {BooleanValue}
    */
   function make(context, v) {
-    const value = v && v[1];
+    const value = v && v[0];
     let boolValue = false;
     if (typeof value === 'boolean') {
       boolValue = value;
@@ -37,8 +37,8 @@ function makeOptions(constants) {
     falseLookup,
     patterns: {
       '': [
-        new Pattern('{el:*}{booleantrue}{el:*}', make),
-        new Pattern('{el:*}{booleanfalse}{el:*}', make),
+        new Pattern('{booleantrue}', make),
+        new Pattern('{booleanfalse}', make),
       ],
     },
     make,

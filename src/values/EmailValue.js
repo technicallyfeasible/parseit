@@ -1,28 +1,33 @@
+// @flow
+
 const displayRegex = /"/g;
 
 /**
  * Email result wrapper
  */
-class EmailValue {
-  constructor(email, displayName) {
-    this.email = email;
+export default class EmailValue {
+  name: string;
+  host: string;
+  displayName: ?string;
+
+  constructor(name: string, host: string, displayName: ?string) {
+    this.name = name;
+    this.host = host;
     this.displayName = displayName;
   }
 
   valueOf() {
-    return this.email;
+    return `${this.name}@${this.host}`;
   }
 
   toString() {
-    return `"${this.displayName.replace(displayRegex, '\\"')}" <${this.email}>`;
+    if (!this.displayName) {
+      return this.valueOf();
+    }
+    return `"${this.displayName.replace(displayRegex, '\\"')}" <${this.valueOf()}>`;
   }
 
-  equals(other) {
-    if (!(other instanceof EmailValue)) {
-      return false;
-    }
-    return this.displayName === other.displayName && this.email === other.email;
+  equals(other: EmailValue) {
+    return this.displayName === other.displayName && this.name === other.name && this.host === other.host;
   }
 }
-
-export default EmailValue;
