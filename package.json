@@ -2,13 +2,14 @@
   "name": "dataparser",
   "version": "0.1.0",
   "description": "JavaScript library to parse text data into its numeric or specific representation",
-  "main": "src/index.js",
+  "main": "bin/demo.js",
   "private": true,
   "repository": {
     "version": "git",
     "url": "https://github.com/technicallyfeasible/dataparser"
   },
   "scripts": {
+    "start": "gulp release && node bin/demo.js",
     "test": "jest",
     "test-dev": "jest --watch",
     "test-mocha": "webpack --config webpack/webpack.config.test.js && mocha release/dataparser.test.js",
@@ -17,7 +18,7 @@
   "author": "Jens Elstner",
   "license": "MIT",
   "engines": {
-    "node" : ">=4.3.0"
+    "node": ">=4.3.0"
   },
   "devDependencies": {
     "babel-core": "^6.21.0",
@@ -44,11 +45,13 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^3.0.2",
     "eslint-plugin-react": "^6.9.0",
-    "express": "^4.14.0",
+    "extract-text-webpack-plugin": "^2.1.0",
     "flow-bin": "^0.45.0",
     "glob": "^7.1.1",
     "gulp": "^3.9.1",
     "gulp-cached": "^1.1.1",
+    "html-webpack-plugin": "^2.28.0",
+    "html-webpack-plugin-remove": "^0.0.3",
     "jest": "^20.0.3",
     "lodash": "^4.17.4",
     "minimist": "^1.2.0",
@@ -65,6 +68,7 @@
   "dependencies": {
     "bootstrap": "^3.3.7",
     "css-loader": "^0.18.0",
+    "express": "^4.14.0",
     "file-loader": "^0.11.1",
     "less": "^2.7.2",
     "less-loader": "^2.2.3",
@@ -72,10 +76,17 @@
     "url-loader": "^0.5.8"
   },
   "jest": {
-    "moduleFileExtensions": ["js"],
-    "moduleDirectories": ["node_modules", "src", "demo"],
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "src",
+      "demo"
+    ],
     "testRegex": "/test/.*(test|spec)\\.js$",
     "transform": {
       "^.+\\.js$": "babel-jest"
     }
-  }}
+  }
+}
