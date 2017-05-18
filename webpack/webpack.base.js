@@ -1,5 +1,8 @@
-const path = require('path');
-const webpack = require('webpack');
+import path from 'path';
+import webpack from 'webpack';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import HtmlPluginRemove from 'html-webpack-plugin-remove'
 
 const babelOptions = require('./babelrc.prod');
 
@@ -9,6 +12,15 @@ const watcher = {
   ignore: /node_modules/,
 };
 
+const htmlConfig = {
+  title: 'ParseIT Demo',
+  filename: 'demo/index.html',
+  template: '../assets/index.ejs',
+  xhtml: true,
+  inject: 'head',
+};
+const htmlRemove = /<script type="text\/javascript" src="\/dataparser[^"]*"><\/script>/g;
+
 /**
  * Plugins by environment
  */
@@ -17,6 +29,8 @@ const plugins = {
     new webpack.LoaderOptionsPlugin({
       debug: true,
     }),
+    new HtmlWebpackPlugin(htmlConfig),
+    new HtmlPluginRemove(htmlRemove),
   ],
   production: () => [
     new webpack.LoaderOptionsPlugin({
@@ -29,6 +43,9 @@ const plugins = {
       },
     }),
     new webpack.optimize.AggressiveMergingPlugin(),
+    new ExtractTextPlugin('demo/css/demo.css'),
+    new HtmlWebpackPlugin(htmlConfig),
+    new HtmlPluginRemove(htmlRemove),
   ],
   hot: () => [
     new webpack.HotModuleReplacementPlugin(),
@@ -45,7 +62,7 @@ function configure(o) {
     '../src/index.js',
   ];
   const DEBUG = o.environment !== 'production';
-  const publicPath = o.publicPath || '/release/';
+  const publicPath = o.publicPath || '/';
   const env = o.environment || (DEBUG ? 'development' : 'production');
 
   const hotPlugins = o.hot ? plugins.hot : () => [];
@@ -58,7 +75,7 @@ function configure(o) {
     entry: {
       dataparser: files,
       'dataparser-with-locales': files.concat('../src/modules/contexts/index.js'),
-      demo: o.hot ? [
+      'demo/js/demo': o.hot ? [
         'webpack-hot-middleware/client?http://localhost:3000',
         '../demo/index.js',
       ] : [
@@ -118,7 +135,7 @@ function configure(o) {
         },
         {
           test: /\.less$/,
-          use: [{
+          use: DEBUG ? [{
             loader: 'style-loader',
           }, {
             loader: 'css-loader',
@@ -126,32 +143,41 @@ function configure(o) {
           }, {
             loader: 'less-loader',
             query: { sourceMap: true },
-          }],
+          }] : ExtractTextPlugin.extract({
+            fallback: 'style-loader',
+            use: [{
+              loader: 'css-loader',
+              query: { sourceMap: true },
+            }, {
+              loader: 'less-loader',
+              query: { sourceMap: true },
+            }],
+          }),
           exclude: /node_modules/,
         },
         {
           test: /\.woff(\?.*)?$/,
-          use: 'url-loader?name=fonts/[name].[ext]&limit=10000&mimetype=application/font-woff',
+          use: 'file-loader?name=demo/fonts/[name].[ext]&mimetype=application/font-woff',
         },
         {
           test: /\.woff2(\?.*)?$/,
-          use: 'url-loader?name=fonts/[name].[ext]&limit=10000&mimetype=application/font-woff',
+          use: 'file-loader?name=demo/fonts/[name].[ext]&mimetype=application/font-woff',
         },
         {
           test: /\.ttf(\?.*)?$/,
-          use: 'url-loader?name=fonts/[name].[ext]&limit=10000&mimetype=application/octet-stream',
+          use: 'file-loader?name=demo/fonts/[name].[ext]&mimetype=application/octet-stream',
         },
         {
           test: /\.otf(\?.*)?$/,
-          use: 'url-loader?name=fonts/[name].[ext]&limit=10000&mimetype=application/octet-stream',
+          use: 'file-loader?name=demo/fonts/[name].[ext]&mimetype=application/octet-stream',
         },
         {
           test: /\.eot(\?.*)?$/,
-          use: 'file-loader?name=fonts/[name].[ext]',
+          use: 'file-loader?name=demo/fonts/[name].[ext]',
         },
         {
           test: /\.svg(\?.*)?$/,
-          use: 'url-loader?name=svg/[name].[ext]&limit=10000&mimetype=image/svg+xml',
+          use: 'file-loader?name=demo/svg/[name].[ext]&mimetype=image/svg+xml',
         },
       ],
     },

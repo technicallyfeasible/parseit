@@ -1,11 +1,14 @@
 Data Parser
 =================
 
+[![CircleCI](https://circleci.com/gh/technicallyfeasible/dataparser.svg?style=svg)](https://circleci.com/gh/technicallyfeasible/dataparser)
+
+
 ## Setup ##
 
 Install dependencies
 
-	npm install
+	yarn
 
 Serve demo application
 
