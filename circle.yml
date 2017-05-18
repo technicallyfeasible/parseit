@@ -13,3 +13,8 @@ test:
     - yarn test
   post:
     - gulp release
+deployment:
+  staging:
+    branch: master
+    heroku:
+      appname: parseit-demo
