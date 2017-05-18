@@ -128,23 +128,25 @@ export default class ParserBenchmark extends Component {
       textAlign: 'right',
     };
 
-    return [
-      <div>
-        <h3 style={{ display: 'inline-block', marginRight: 10, verticalAlign: 'middle', marginTop: 7 }}>Benchmark</h3>
-        <button className="btn btn-default btn-xs" style={{ verticalAlign: 'middle' }} disabled={running} onClick={() => this.start()}>{ running ? 'Stop' : 'Start' }</button>
-      </div>,
-      <div>{ Object.keys(results).map(key => {
-        const stat = results[key];
-        const ms = ((1.0 / stat.hz) * 1000);
-        return (
-          <div key={key}>
-            <div style={{ display: 'inline-block', width: 200 }}>{ stat.name }</div>
-            <div style={metricStyle}>{ stat.count }</div>
-            <div style={metricStyle}>{ stat.hz.toFixed(0) } /s</div>
-            <div style={metricStyle}>{ ms.toFixed(ms < 10 ? 3 : 0) } ms</div>
-          </div>
-        );
-      }) }</div>,
-    ];
+    return (
+      <div className="container">
+        <div>
+          <h3 style={{ display: 'inline-block', marginRight: 10, verticalAlign: 'middle', marginTop: 7 }}>Benchmark</h3>
+          <button className="btn btn-default btn-xs" style={{ verticalAlign: 'middle' }} disabled={running} onClick={() => this.start()}>{ running ? 'Stop' : 'Start' }</button>
+        </div>
+        <div>{ Object.keys(results).map(key => {
+          const stat = results[key];
+          const ms = ((1.0 / stat.hz) * 1000);
+          return (
+            <div key={key}>
+              <div style={{ display: 'inline-block', width: 200 }}>{ stat.name }</div>
+              <div style={metricStyle}>{ stat.count }</div>
+              <div style={metricStyle}>{ stat.hz.toFixed(0) } /s</div>
+              <div style={metricStyle}>{ ms.toFixed(ms < 10 ? 3 : 0) } ms</div>
+            </div>
+          );
+        }) }</div>
+      </div>
+    );
   }
 }
