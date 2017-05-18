@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 
 import DataParser from '../../src/DataParser';
-import MultiCheckbox from '../components/MultiCheckbox';
+// import MultiCheckbox from '../components/MultiCheckbox';
 import ParseInput from '../components/ParseInput';
-import ParserBenchmark from '../components/ParserBenchmark';
 
 import DefaultValidator from '../../src/validators/DefaultValidator';
 import BooleanParserModule from '../../src/modules/BooleanParserModule';
@@ -71,24 +70,21 @@ export default class DataParserTest extends Component {
   }
 
   render() {
-    const { parser, modules, stats } = this.state;
+    const { parser } = this.state;
 
     return (
-      <div className="container">
+      <div>
+        {/*
         <div className="row">
           <div className="col col-xs-12">
-            <h3>Supported types{ typeof stats.create === 'number' ? `: ${stats.create}ms` : '' }</h3>
+            <h3>Supported types</h3>
             <MultiCheckbox options={moduleTypes} onChange={value => this.onModulesChange(value)} value={modules} />
           </div>
         </div>
+        */}
         <div className="row">
           <div className="col col-xs-12">
             <ParseInput parser={parser} />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col col-xs-12">
-            <ParserBenchmark />
           </div>
         </div>
       </div>

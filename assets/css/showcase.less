@@ -1,0 +1,52 @@
+.parse-input {
+  text-align: left;
+
+  .inputs {
+    border-radius: 4px;
+    white-space: nowrap;
+
+    .panel-showcase {
+      display: inline-block;
+      width: 50%;
+      vertical-align: top;
+      background-color: @input-background-color;
+      color: @text-color;
+
+      .panel-heading{
+        border-bottom: 1px solid @border-color;
+        background-color: @background-color;
+        text-align: center;
+      }
+
+      .panel-body{
+        height: 200px;
+      }
+
+      textarea {
+        background-color: @input-background-color;
+        color: @text-color;
+        height: 100%;
+        border: none;
+        outline: none;
+        padding: 0;
+        box-shadow: none;
+      }
+
+      &:first-child {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        .panel-heading {
+          border-top-right-radius: 0;
+        }
+      }
+      &:last-child {
+        border-left: none;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        .panel-heading {
+          border-top-left-radius: 0;
+        }
+      }
+    }
+  }
+}

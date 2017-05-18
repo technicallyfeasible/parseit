@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import Hero from '../components/Hero';
-import DataParserTest from './DataParserTest';
+import ParserBenchmark from '../components/ParserBenchmark';
 
 
 export default function Root() {
   return [
     <Header />,
     <Hero />,
-    <DataParserTest />,
+    <ParserBenchmark />,
   ];
 }
 
