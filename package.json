@@ -9,7 +9,8 @@
     "url": "https://github.com/technicallyfeasible/dataparser"
   },
   "scripts": {
-    "start": "gulp release && node bin/demo.js",
+    "postinstall": "gulp release",
+    "start": "node bin/demo.js",
     "test": "jest",
     "test-dev": "jest --watch",
     "test-mocha": "webpack --config webpack/webpack.config.test.js && mocha release/dataparser.test.js",
