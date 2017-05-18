@@ -95,32 +95,32 @@ describe('DataParser', () => {
         '23,598': 23598,
         '43,671,324.3245': 43671324.3245,
         43671324.3245: 43671324.3245,
-        '34m': { address: 34, symbol: 'm', decimals: 0 },
+        '34m': { number: 34, unit: 'm', decimals: 0 },
         '  98': 98,
-        ' 87 steps  ': { address: 87, symbol: 'steps', decimals: 0 },
+        ' 87 steps  ': { number: 87, unit: 'steps', decimals: 0 },
         // { :*}{-+:?}{#,:+}.{#:*}{ :*}{unit:*}{ :*}
-        ' -1,456.123 l/s ': { address: -1456.123, decimals: 3, symbol: 'l/s' },
-        ' +1,456.123 l/s ': { address: 1456.123, decimals: 3, symbol: 'l/s' },
+        ' -1,456.123 l/s ': { number: -1456.123, decimals: 3, unit: 'l/s' },
+        ' +1,456.123 l/s ': { number: 1456.123, decimals: 3, unit: 'l/s' },
         // { :*}{-+:?}{#:*}.{#:+}{ :*}{unit:*}{ :*}
-        ' -74809.456 m^2 ': { address: -74809.456, decimals: 3, symbol: 'm^2' },
-        ' +74809.456 m^2 ': { address: 74809.456, decimals: 3, symbol: 'm^2' },
+        ' -74809.456 m^2 ': { number: -74809.456, decimals: 3, unit: 'm^2' },
+        ' +74809.456 m^2 ': { number: 74809.456, decimals: 3, unit: 'm^2' },
         // { :*}{-+:?}{#,:+}.{#:*}e{-+:?}{#:+}{ :*}{unit:*}{ :*}
-        ' -1,025.6946e3 seconds ': { address: -1025.6946 * 1000, decimals: 1, symbol: 'seconds' },
-        ' 3,000.6946e-2 monkeys ': { address: 30.006946, decimals: 6, symbol: 'monkeys' },
+        ' -1,025.6946e3 seconds ': { number: -1025.6946 * 1000, decimals: 1, unit: 'seconds' },
+        ' 3,000.6946e-2 monkeys ': { number: 30.006946, decimals: 6, unit: 'monkeys' },
         // { :*}{-+:?}{#,:+}.{#:*}e{-+:?}{#:+}.{#:+}{ :*}{unit:*}{ :*}
-        ' -1,025.6946e2.7 mm ': { address: -514065.0391204318, decimals: 1, symbol: 'mm' },
+        ' -1,025.6946e2.7 mm ': { number: -514065.0391204318, decimals: 1, unit: 'mm' },
         // { :*}{-+:?}{#:+}.{#:*}e{-+:?}{#:+}.{#:+}{ :*}{unit:*}{ :*}
-        ' -1025.6946e2.7 mm ': { address: -514065.0391204318, decimals: 1, symbol: 'mm' },
+        ' -1025.6946e2.7 mm ': { number: -514065.0391204318, decimals: 1, unit: 'mm' },
         // { :*}{-+:?}{#:+}.{#:*}e{-+:?}{#:+}{ :*}{unit:*}{ :*}
-        ' -1025.6946e3 hands ': { address: -1025.6946 * 1000, decimals: 1, symbol: 'hands' },
+        ' -1025.6946e3 hands ': { number: -1025.6946 * 1000, decimals: 1, unit: 'hands' },
         // { :*}{-+:?}{#:+}{ :*}{unit:*}{ :*}
-        ' 7678233 km ': { address: 7678233, decimals: 0, symbol: 'km' },
+        ' 7678233 km ': { number: 7678233, decimals: 0, unit: 'km' },
         // { :*}{-+:?}{#,:+}{ :*}{unit:*}{ :*}
-        ' 7,678,233 km ': { address: 7678233, decimals: 0, symbol: 'km' },
+        ' 7,678,233 km ': { number: 7678233, decimals: 0, unit: 'km' },
         // { :*}{-+:?}{#:+}e{-+:?}{#:+}{ :*}{unit:*}{ :*}
-        ' -76e-5 stones ': { address: -0.00076, decimals: 5, symbol: 'stones' },
+        ' -76e-5 stones ': { number: -0.00076, decimals: 5, unit: 'stones' },
         // { :*}{-+:?}{#,:+}e{-+:?}{#:+}{ :*}{unit:*}{ :*}
-        ' -4,239e5 bears ': { address: -423900000, decimals: 0, symbol: 'bears' },
+        ' -4,239e5 bears ': { number: -423900000, decimals: 0, unit: 'bears' },
       };
       Object.keys(tests).forEach(str => {
         const expected = tests[str];
@@ -133,7 +133,7 @@ describe('DataParser', () => {
         if (typeof expected === 'object') {
           assert.deepEqual(values[0], expected, `Expected "${str}" to be correct: ${JSON.stringify(values)}`);
         } else {
-          assert.strictEqual(values[0].address, expected, `Expected "${str}" to be correct: ${JSON.stringify(values)}`);
+          assert.strictEqual(values[0].number, expected, `Expected "${str}" to be correct: ${JSON.stringify(values)}`);
         }
       });
     });

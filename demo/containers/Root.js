@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import Hero from '../components/Hero';
-import DataParserTest from './DataParserTest';
+import ParserBenchmark from '../components/ParserBenchmark';
 
 
 export default function Root() {
@@ -10,7 +10,8 @@ export default function Root() {
     <div>
       <Header />
       <Hero />
-      <DataParserTest />
+
+      <ParserBenchmark />
     </div>
   );
 }

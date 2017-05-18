@@ -116,6 +116,43 @@ function configure(o) {
           }],
           exclude: /node_modules/,
         },
+        {
+          test: /\.less$/,
+          use: [{
+            loader: 'style-loader',
+          }, {
+            loader: 'css-loader',
+            query: { sourceMap: true },
+          }, {
+            loader: 'less-loader',
+            query: { sourceMap: true },
+          }],
+          exclude: /node_modules/,
+        },
+        {
+          test: /\.woff(\?.*)?$/,
+          use: 'url-loader?name=fonts/[name].[ext]&limit=10000&mimetype=application/font-woff',
+        },
+        {
+          test: /\.woff2(\?.*)?$/,
+          use: 'url-loader?name=fonts/[name].[ext]&limit=10000&mimetype=application/font-woff',
+        },
+        {
+          test: /\.ttf(\?.*)?$/,
+          use: 'url-loader?name=fonts/[name].[ext]&limit=10000&mimetype=application/octet-stream',
+        },
+        {
+          test: /\.otf(\?.*)?$/,
+          use: 'url-loader?name=fonts/[name].[ext]&limit=10000&mimetype=application/octet-stream',
+        },
+        {
+          test: /\.eot(\?.*)?$/,
+          use: 'file-loader?name=fonts/[name].[ext]',
+        },
+        {
+          test: /\.svg(\?.*)?$/,
+          use: 'url-loader?name=svg/[name].[ext]&limit=10000&mimetype=image/svg+xml',
+        },
       ],
     },
   };

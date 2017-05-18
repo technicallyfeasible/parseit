@@ -71,7 +71,7 @@ export default class DataParserTest extends Component {
       return null;
     }
 
-    let resultElements = 'No results';
+    let resultElements = '';
     if (results && results.length > 0) {
       resultElements = results.map((result, index) => {
         const type = result.constructor.name;
@@ -146,21 +146,31 @@ export default class DataParserTest extends Component {
     }
 
     return (
-      <div>
-        <div>
-          <h3>Type some text to analyse it</h3>
-          <textarea type="text" className="form-control" onChange={e => this.onChange(e)} />
+      <div className="parse-input">
+        <div className="inputs">
+          <div className="panel panel-showcase">
+            <div className="panel-heading">
+              <h3 className="panel-title">Type some text to analyse it</h3>
+            </div>
+            <div className="panel-body">
+              <textarea type="text" className="form-control" onChange={e => this.onChange(e)} />
+            </div>
+          </div>
+          <div className="panel panel-showcase">
+            <div className="panel-heading">
+              <h3 className="panel-title">Results{ typeof stats.parse === 'number' ? `: ${stats.parse}ms` : '' }</h3>
+            </div>
+            <div className="panel-body">{ resultElements }</div>
+          </div>
         </div>
 
         <div className="row">
-          <div className="col col-xs-12 col-sm-6">
-            <h3>Results{ typeof stats.parse === 'number' ? `: ${stats.parse}ms` : '' }</h3>
-            <div>{ resultElements }</div>
-          </div>
-          <div className="col col-xs-12 col-sm-6">
+          <div className="col col-xs-12">
             <h3>
               Reasons{ reasons ? `: ${reasons.length}` : '' }
-              <button className="btn btn-link" onClick={() => this.toggleShowReasons()}>{ showReasons ? 'hide' : 'show' }</button>
+              <button className="btn btn-link" onClick={() => this.toggleShowReasons()}>
+                { showReasons ? 'hide' : 'show' }
+              </button>
             </h3>
             <pre>{ reasonElements }</pre>
           </div>
