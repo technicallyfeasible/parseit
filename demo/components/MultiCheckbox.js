@@ -73,10 +73,6 @@ export default class MultiCheckbox extends Component {
         );
       });
 
-    return (
-      <div>
-        { elements }
-      </div>
-    );
+    return elements;
   }
 }

@@ -6,14 +6,11 @@ import ParserBenchmark from '../components/ParserBenchmark';
 
 
 export default function Root() {
-  return (
-    <div>
-      <Header />
-      <Hero />
-
-      <ParserBenchmark />
-    </div>
-  );
+  return [
+    <Header />,
+    <Hero />,
+    <ParserBenchmark />,
+  ];
 }
 
 Root.propTypes = {
