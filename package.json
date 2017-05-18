@@ -22,9 +22,7 @@
     "node": ">=4.3.0"
   },
   "devDependencies": {
-    "flow-bin": "^0.45.0",
-    "webpack-dev-middleware": "^1.9.0",
-    "webpack-hot-middleware": "^2.14.0"
+    "flow-bin": "^0.45.0"
   },
   "dependencies": {
     "babel-core": "^6.21.0",
@@ -73,7 +71,9 @@
     "style-loader": "^0.12.4",
     "url-loader": "^0.5.8",
     "uuid": "^3.0.1",
-    "webpack": "2.4.1"
+    "webpack": "2.4.1",
+    "webpack-dev-middleware": "^1.9.0",
+    "webpack-hot-middleware": "^2.14.0"
   },
   "jest": {
     "moduleFileExtensions": [
