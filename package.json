@@ -16,6 +16,9 @@
   },
   "author": "Jens Elstner",
   "license": "MIT",
+  "engines": {
+    "node" : ">=4.3.0"
+  },
   "devDependencies": {
     "babel-core": "^6.21.0",
     "babel-eslint": "^7.1.1",
