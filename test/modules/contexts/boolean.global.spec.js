@@ -33,9 +33,9 @@ describe('boolean.global', () => {
 
   it('returns a BooleanValue for boolean arguments', () => {
     const make = booleanGlobal(constants).make;
-    let value = make(context, ['', false, '']);
+    let value = make(context, [false]);
     assert.strictEqual(value.bool, false);
-    value = make(context, ['', true, '']);
+    value = make(context, [true]);
     assert.strictEqual(value.bool, true);
   });
 
@@ -43,7 +43,7 @@ describe('boolean.global', () => {
     const make = booleanGlobal(constants).make;
 
     constants.trueValues.forEach((trueValue) => {
-      const value = make(context, ['', trueValue, '']);
+      const value = make(context, [trueValue]);
       assert.instanceOf(value, BooleanValue);
       assert.strictEqual(value.bool, true);
     });
@@ -53,7 +53,7 @@ describe('boolean.global', () => {
     const make = booleanGlobal(constants).make;
 
     constants.trueValues.forEach((trueValue) => {
-      const value = make(context, ['', trueValue, '']);
+      const value = make(context, [trueValue]);
       assert.instanceOf(value, BooleanValue);
       assert.strictEqual(value.bool, true);
     });

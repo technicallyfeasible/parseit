@@ -1,5 +1,6 @@
 import React from 'react';
 import constants from '../constants';
+import Showcase from '../containers/Showcase';
 
 const Hero = () => {
   const brandName = constants.PACKAGE_NAME;
@@ -9,6 +10,7 @@ const Hero = () => {
       <div className="container">
         <h1>{brandName}</h1>
         <p>{brandDesc}</p>
+        <Showcase />
       </div>
     </div>
   );

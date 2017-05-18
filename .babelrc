@@ -1,11 +1,21 @@
 {
   "presets": [
     "es2015",
-    "stage-0"
+    "stage-0",
+    "flow"
   ],
   "plugins": [
-    "transform-runtime",
-    "transform-class-display-name"
+    "transform-class-display-name",
+    "transform-runtime"
   ],
-  "sourceMaps": true
+  "sourceMaps": true,
+  "env": {
+    "test": {
+      "plugins": [
+        "transform-class-display-name",
+        "rewire",
+        "transform-runtime"
+      ]
+    }
+  }
 }
