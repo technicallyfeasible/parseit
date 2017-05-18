@@ -145,27 +145,25 @@ export default class DataParserTest extends Component {
       });
     }
 
-    return (
+    return [
       <div>
-        <div>
-          <h3>Type some text to analyse it</h3>
-          <textarea type="text" className="form-control" onChange={e => this.onChange(e)} />
-        </div>
+        <h3>Type some text to analyse it</h3>
+        <textarea type="text" className="form-control" onChange={e => this.onChange(e)} />
+      </div>,
 
-        <div className="row">
-          <div className="col col-xs-12 col-sm-6">
-            <h3>Results{ typeof stats.parse === 'number' ? `: ${stats.parse}ms` : '' }</h3>
-            <div>{ resultElements }</div>
-          </div>
-          <div className="col col-xs-12 col-sm-6">
-            <h3>
-              Reasons{ reasons ? `: ${reasons.length}` : '' }
-              <button className="btn btn-link" onClick={() => this.toggleShowReasons()}>{ showReasons ? 'hide' : 'show' }</button>
-            </h3>
-            <pre>{ reasonElements }</pre>
-          </div>
+      <div className="row">
+        <div className="col col-xs-12 col-sm-6">
+          <h3>Results{ typeof stats.parse === 'number' ? `: ${stats.parse}ms` : '' }</h3>
+          <div>{ resultElements }</div>
         </div>
-      </div>
-    );
+        <div className="col col-xs-12 col-sm-6">
+          <h3>
+            Reasons{ reasons ? `: ${reasons.length}` : '' }
+            <button className="btn btn-link" onClick={() => this.toggleShowReasons()}>{ showReasons ? 'hide' : 'show' }</button>
+          </h3>
+          <pre>{ reasonElements }</pre>
+        </div>
+      </div>,
+    ];
   }
 }

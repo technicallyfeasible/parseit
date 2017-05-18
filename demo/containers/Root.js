@@ -6,13 +6,11 @@ import DataParserTest from './DataParserTest';
 
 
 export default function Root() {
-  return (
-    <div>
-      <Header />
-      <Hero />
-      <DataParserTest />
-    </div>
-  );
+  return [
+    <Header />,
+    <Hero />,
+    <DataParserTest />,
+  ];
 }
 
 Root.propTypes = {
