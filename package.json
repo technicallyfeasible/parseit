@@ -18,7 +18,10 @@
     "prepublish": "gulp publish"
   },
   "files": [
-    "release"
+    "release",
+    "bin",
+    "assets",
+    "src"
   ],
   "author": "Jens Elstner",
   "license": "MIT",
