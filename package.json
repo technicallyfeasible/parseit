@@ -1,12 +1,12 @@
 {
-  "name": "dataparser",
-  "version": "0.1.0",
+  "name": "parseit",
+  "version": "0.1.2",
   "description": "JavaScript library to parse text data into its numeric or specific representation",
-  "main": "bin/demo.js",
-  "private": true,
+  "main": "release/lib/index.js",
+  "private": false,
   "repository": {
     "version": "git",
-    "url": "https://github.com/technicallyfeasible/dataparser"
+    "url": "https://github.com/technicallyfeasible/parseit"
   },
   "scripts": {
     "postinstall": "gulp release",
@@ -14,8 +14,12 @@
     "test": "jest",
     "test-dev": "jest --watch",
     "test-mocha": "webpack --config webpack/webpack.config.test.js && mocha release/dataparser.test.js",
-    "flow": "flow"
+    "flow": "flow",
+    "prepublish": "gulp publish"
   },
+  "files": [
+    "release"
+  ],
   "author": "Jens Elstner",
   "license": "MIT",
   "engines": {
@@ -56,6 +60,7 @@
     "file-loader": "^0.11.1",
     "glob": "^7.1.1",
     "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
     "html-webpack-plugin": "^2.28.0",
     "html-webpack-plugin-remove": "^0.0.3",
     "jest": "^20.0.3",
