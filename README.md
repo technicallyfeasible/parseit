@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/technicallyfeasible/dataparser.svg?style=svg)](https://circleci.com/gh/technicallyfeasible/dataparser)
+[![CircleCI](https://circleci.com/gh/technicallyfeasible/parseit.svg?style=svg)](https://circleci.com/gh/technicallyfeasible/parseit)
 
 Parse-IT
 ========
